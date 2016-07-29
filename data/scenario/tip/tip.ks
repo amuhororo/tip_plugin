@@ -21,7 +21,7 @@
 ;  　[call storage="tip/tip.ks"]
 ;　　
 ;　　リンクにしたい言葉を[tip][endtip]で囲みます。
-;　　例：[tip key="hoge" storage="hoge.php" color="0xff9999"]ほげ[endtip]
+;　　例：[tip key="hoge" storage="hoge.png" color="0xff9999"]ほげ[endtip]
 ;
 ;　　TIPタグ内には、[ruby]のみ入れられます。
 ;　　TIP画面のデザインは、data/others/tip フォルダ内のtip.cssにて変更可能です。
