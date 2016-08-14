@@ -1,4 +1,4 @@
-;【TIPプラグイン】 2016/7/18
+;【TIPプラグイン Ver.1.02】 2016/8/14
 ; by hororo http://hororo.wp.xdomain.jp/
 ;
 ; ＜機能＞
@@ -11,7 +11,7 @@
 ;　　TIP説明文のページ送りには対応していません。
 ;
 ;　　動作確認
-;　　ティラノスクリプトVer421
+;　　ティラノスクリプトVer423
 ;　　OS：Windows10
 ;　　ブラウザ：Chrome・Firefox・Edge
 ;
@@ -95,12 +95,12 @@ $("."+mp.key).click(function(){
 		var tip_img = '<span class="tip_img"></span>';
 		var tip_dd = tip_img + tip_dd;
 		var img_data = mp.storage;
-		$(".tip_img").css('background-image','url("./data/fgimage/'+img_data+'")');
-	};
+	}
 	
 	//TIPデータをhtmlへ追加
 	$(".tip_area dt").html(tip_dt);
 	$(".tip_area dd").html(tip_dd);
+	if(mp.storage != null)$(".tip_img").css('background-image','url("./data/fgimage/'+img_data+'")');
 	
 	//レイヤーメニューを表示
 	layer_menu.show();
@@ -118,7 +118,7 @@ $("."+mp.key).click(function(){
 
 
 [macro name="endtip"]
-[endlink][resetfont]
+[resetfont]
 [endmacro]
 
 
