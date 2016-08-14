@@ -29,7 +29,7 @@ TIPタグ内には、[ruby]のみ入れられます。
 TIP画面のデザインは、data/others/tip フォルダ内の tip.css にて変更可能です。  
   
 ##パラメータ  
-key　　　：　TIP呼び出しキー（必須）
+key　　　：　TIP呼び出しキー（必須）  
 　　　　　　　※tip_data.csv 1列目が呼び出しキーとなります。  
 color　　：　fontカラーを指定します。  
 　　　　　　　※ tip自体のデフォルトカラーを変更したい場合は、iscript内のデフォルトカラーを変更してください。  
@@ -42,10 +42,10 @@ storage　：　画像ファイルを指定します。
 ##CSVデータの作り方  
 ファイル名：tip_data.csv  
 データ内容：key（呼び出しキー）,title（TIPタイトル）,tip（TIP内容）,_EOF  
-　　※ファイル名は変更できません。
+　　※ファイル名は変更できません。  
 　　※others/tip/に置いてください。（/data/others/tip/tip_data.csv）  
 　　※1行目の見出しは必須です。改行で1件です。  
 　　※Excelで作成した場合、文字化けする場合は文字コードをUTF-8へ変更してください。  
-　　
+  
 　　例：1行目　key,title,tip,_EOF[改行]  
 　　　　2行目　yuko,ゆうこ,趣味はティラノスクリプトの説明,_EOF[改行]  
