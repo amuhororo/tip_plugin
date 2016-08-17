@@ -1,6 +1,6 @@
 #TIPプラグイン  
   
-Ver.1.02　2016/8/14  
+Ver.2　2016/8/17
 by hororo http://hororo.wp.xdomain.jp/  
   
 ##機能  
@@ -49,3 +49,9 @@ storage　：　画像ファイルを指定します。
   
 　　例：1行目　key,title,tip,_EOF[改行]  
 　　　　2行目　yuko,ゆうこ,趣味はティラノスクリプトの説明,_EOF[改行]  
+  
+##Ver  
+Ver2.00　ラグが酷いのでmacroから[linl]タグ改造へ変更。storage パラメータでの画像挿入は廃止。(2016/8/17)  
+Ver1.02　storageパラメータが使えなかった件修正。endtip は [resetfont] だけで良かったので修正。(2016/8/14)  
+Ver1.01　ksファイル以外は others フォルダへ移動。csvファイル名変更。DL場所変更。(2016/7/18)  
+Ver1.00　公開。(2016/4/14)
