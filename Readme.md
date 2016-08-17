@@ -21,14 +21,15 @@ TIP説明文のページ送りには対応していません。
 [call storage="tip/tip.ks"]  
   
 リンクにしたい言葉を[link][endlink]で囲みます。  
-例：[link key="hoge" color="0xff9999"]ほげ[endlink]  
+例：[link tip="hoge" color="0xff9999"]ほげ[endlink]  
   
 TIPタグ内には、[ruby]のみ入れられます。  
 TIP画面のデザインは、data/others/tip フォルダ内の tip.css にて変更可能です。  
   
 ##パラメータ  
-key　　　：　TIP呼び出しキー（必須）  
+tip　　　：　TIP呼び出しキー（必須）  
 　　　　　　　※tip_data.csv 1列目が呼び出しキーとなります。  
+　　　　　　　※key → tip へ変更になっています。
 color　　：　fontカラーを指定します。  
 　　　　　　　※ tip自体のデフォルトカラーを変更したい場合は、iscript内のデフォルトカラーを変更してください。  
 
