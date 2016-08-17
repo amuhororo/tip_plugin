@@ -29,7 +29,7 @@ TIP画面のデザインは、data/others/tip フォルダ内の tip.css にて�
 ##パラメータ  
 tip　　　：　TIP呼び出しキー（必須）  
 　　　　　　　※tip_data.csv 1列目が呼び出しキーとなります。  
-　　　　　　　※key → tip へ変更になっています。
+　　　　　　　※key → tip へ変更になっています。  
 color　　：　fontカラーを指定します。  
 　　　　　　　※ tip自体のデフォルトカラーを変更したい場合は、iscript内のデフォルトカラーを変更してください。  
 
