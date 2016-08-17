@@ -1,4 +1,4 @@
-;【TIPプラグイン Ver.1.02】 2016/8/14
+;【TIPプラグイン Ver.2】 2016/8/17
 ; by hororo http://hororo.wp.xdomain.jp/
 ;
 ; ＜機能＞
@@ -20,8 +20,8 @@
 ;  　最初に、tip.ksを読み込んでください。
 ;  　[call storage="tip/tip.ks"]
 ;　　
-;　　リンクにしたい言葉を[tip][endtip]で囲みます。
-;　　例：[tip key="hoge" storage="hoge.png" color="0xff9999"]ほげ[endtip]
+;　　リンクにしたい言葉を[link][endlink]で囲みます。
+;　　例：[link tip="hoge" color="0xff9999"]ほげ[endlink]
 ;
 ;　　TIPタグ内には、[ruby]のみ入れられます。
 ;　　TIP画面のデザインは、data/others/tip フォルダ内のtip.cssにて変更可能です。
@@ -30,13 +30,11 @@
 ; ＜パラメーター＞
 ;  　key　 　:　TIP呼び出しキー（必須）*1
 ; 　　　　　　　　※tip_data.csv 1列目が呼び出しキーとなります。
+;　　　　　　　　 ※※key → tip へ変更になっています。
 ;　　color　 :　fontカラーを指定します。*2
-; 　　　　　　　　※ tip自体のデフォルトカラーを変更したい場合は、iscript内のデフォルトカラーを変更してください。
-; 　　　　　　　　　 例：TG.config.defaultChColor → 0xff9999
-;　　storage  :　画像ファイルを指定します。
-;　　　　　　　 　※ 画像は data/fgimage/ に保存してください。
-;　　　　　　　 　※ キャラクター画像表示を想定していますので、画像はbackground表示になります。
-;　　　　　　　　　　表示サイズ、位置はCSSで調整してください。同梱のtip.cssを参考にしてください。
+; 　　　　　　　　※tip自体のデフォルトカラーを変更したい場合は、iscript内のデフォルトカラーを変更してください。
+;
+;　　※画像パラメータは廃止しました。csvに直接記述してください。
 ;
 ;
 ; ＜CSVデータの作り方＞
@@ -50,83 +48,23 @@
 ;　　例：1行目　key,title,tip,_EOF[改行]
 ;　　　　2行目　yuko,ゆうこ,趣味はティラノスクリプトの説明,_EOF[改行]
 ;
-;
-[macro name="tip"]
 [iscript]
-
-// ◆ デフォルトカラー
-if (mp.color == null)mp.color = TG.config.defaultChColor;
-
-mp.color = mp.color.replace("0x","#");
-var j_span = TG.setMessageCurrentSpan();
-$(j_span).addClass("tip").addClass(mp.key);
-TG.stat.font.color=mp.color;
-
-//クリックイベント
-$("."+mp.key).click(function(){
-
-	//mp.key行のデータを抽出
-	var tip = $.grep(tips,function(e, i) {
-		return (e.key == mp.key);
-	});
-	
-	TG.stat.is_skip=false;
-	TG.stat.is_auto=false;
-	TG.stat.is_auto_wait=false;
-	
-	//メッセージレイヤーを取得して空にする。
-	var layer_menu=TG.layer.getMenuLayer();
-	layer_menu.empty();
-	
-	//TIP用htmlを設定
-	//何故dlを使っているかというと、いちいちclass名指定したくないからです…。
-	var tip_html = '<div class="tip_area '+ mp.key +'"><div class="menu_close"><img src="tyrano/images/kag/menu_button_close.png" /></div><dl><dt></dt><dd></dd></dl></div>';
-	var j_tip = $(tip_html);
-
-	//メニューレイヤーにTIP用htmlを追加
-	layer_menu.append(j_tip);
-		
-	//TIPデータを取得
-	var tip_dt = tip[0]['title'];
-	var tip_dd = '<span class="tip_com">' + tip[0]['tip'] + '</span>';
-		
-	//もしstorageが設定されていたらimage表示用タグを設定。
-	if(mp.storage != null){
-		var tip_img = '<span class="tip_img"></span>';
-		var tip_dd = tip_img + tip_dd;
-		var img_data = mp.storage;
-	}
-	
-	//TIPデータをhtmlへ追加
-	$(".tip_area dt").html(tip_dt);
-	$(".tip_area dd").html(tip_dd);
-	if(mp.storage != null)$(".tip_img").css('background-image','url("./data/fgimage/'+img_data+'")');
-	
-	//レイヤーメニューを表示
-	layer_menu.show();
-	//メニューボタン非表示
-	$(".button_menu").hide();
-	
-	//クローズボタンクリック
-	layer_menu.find(".menu_close").click(function(e){
-		layer_menu.hide();
-		if(TG.stat.visible_menu_button==true)$(".button_menu").show()
-	});
-});
-[endscript]
-[endmacro]
+var tip_conf = {
 
 
-[macro name="endtip"]
-[resetfont]
-[endmacro]
+//■設定■
+//◆TIPのデフォルトカラー。デフォルトの場合は空欄でOKです。 例：0xffff00
+"color" : "0x99ffff"
+,
+//◆TIPの指定カラーをログに反映させる場合は true、しない場合は false
+//　※バックログからTIP表示はできません。
+"log_color" : false
 
 
-[iscript]
-var style = '<link rel="stylesheet" href="./data/others/tip/tip.css">';
-$('head link:last').after(style);
+}
+sf.tip_conf = tip_conf;
+$('head link:last').after('<link rel="stylesheet" href="./data/others/tip/tip.css">');
 $(".message_inner").css('z-index','');
 [endscript]
-
 [loadjs storage="tip/tip.js"]
 [return]
