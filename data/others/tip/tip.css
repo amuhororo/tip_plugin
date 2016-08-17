@@ -55,33 +55,8 @@
 	overflow:auto;
 }
 
-/* パラメータで設定した画像エリア */
-.tip_area dd .tip_img {
-	float:right;
-	margin: 10px;
-	width: 250px;
-	height: 250px;
-	background-position:center -20px;
-	border-radius:10px;
-	box-sizing:border-box;
-	border: 2px solid rgba(255,255,255,0);
-}
 
-/* パラメータで設定した画像エリアにつけてみた枠 */
-.tip_area dd .tip_img:before {
-	content:'';
-	width: 250px;
-	height: 250px;
-	background: rgba(255,165,150,0.5);
-	position: relative;
-	display:block;
-	z-index:-1;
-	border-radius:10px;
-	border:2px solid rgba(0,0,0,0.5);
-	box-sizing:border-box;
-}
-
-/* TIPコメント部分のに直接入れた画像 */
+/* TIPコメント部分の直接入れた画像 */
 .tip_area dd img {
 	margin:10px;
 }
