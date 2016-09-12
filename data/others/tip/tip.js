@@ -114,13 +114,13 @@ tyrano.plugin.kag.tag.link.setEvent = function(j_span,pm){
 
 tyrano.plugin.kag.tag.endlink.start = function() {
         var j_span = this.kag.setMessageCurrentSpan();
-		if(this.kag.variable.tf.tip){
-			//◆設定呼び出し
-			var tip_conf = this.kag.variable.sf.tip_conf;
-			if(tip_conf.log_color)this.kag.pushBackLog('</span>');
+	if(this.kag.variable.tf.tip){
+		//◆設定呼び出し
+		var tip_conf = this.kag.variable.sf.tip_conf;
+		if(tip_conf.log_color)this.kag.pushBackLog('</span>');
         	this.kag.stat.font = $.extend(true, {}, this.kag.stat.default_font);
-			this.kag.variable.tf.tip = null;
-		}
+		this.kag.variable.tf.tip = null;
+	}
         this.kag.ftag.nextOrder();
 };
 
