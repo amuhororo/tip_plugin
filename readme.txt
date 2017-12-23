@@ -53,9 +53,9 @@ http://hororo.wp.xdomain.jp/22/
     flag           true/false    true            リスト表示をフラグ管理するか
     mark           true/false    false           TIPにマークを付ける
     log            true/false    true            バックログからもTIP表示させるか
-	  log_color      true/false    false           バックログのTIP color を入れるか（※log=true時）
-	  log_mark       true/false    false           バックログのTIP mark を入れるか
-	  log_se         true/false    false           バックログのTIP に SE を入れるか
+    log_color      true/false    false           バックログのTIP color を入れるか（※log=true時）
+    log_mark       true/false    false           バックログのTIP mark を入れるか
+    log_se         true/false    false           バックログのTIP に SE を入れるか
     pagefeed       true/false    true            TIPリストをページ分けするか
     pagenum        数値          auto            リスト1ページあたりの件数
     tip_clickse    oggファイル   none            TIPのクリック音
@@ -91,37 +91,37 @@ http://hororo.wp.xdomain.jp/22/
 　　　　scene1.ks  :  [tip key="hoge"]ほげ[endtip]
 　　　　
 
-	◆ csvファイル作成の注意
-	　・ファイル名を変更する場合は、[plugin name="tip" file="***.txt"] 等ファイル名を指定してください。
-	　・csvファイルは「tip」フォルダ内に保存してください。 
-	　・「カンマ区切りテキスト」であれば、拡張子はcsv以外でも構いません。
-	　・文字コードは、「UTF-8」にしてください。
-	　・1行目の見出しは必須です。
-	　・見出しの「key」は変更不可です。
-	　・見出しには「id」「flag」は使用できません。※自動で追加します。
-	　・改行で1件分となります。
-	　・必ず行の最後は「_EOF」を付けてください。
-	　・項目数は自由に追加可能です。※tip.html にも追記してください。
-	　・htmlタグも記入できますが、「"」を使う場合は書出し後のデータチェックしてください。「'」推奨。
-	　・ファイルが上手く読込めない場合は、一度テキストエディタで開き上書き保存してみてください。
+  ◆ csvファイル作成の注意
+    ・ファイル名を変更する場合は、[plugin name="tip" file="***.txt"] 等ファイル名を指定してください。
+    ・csvファイルは「tip」フォルダ内に保存してください。 
+    ・「カンマ区切りテキスト」であれば、拡張子はcsv以外でも構いません。
+    ・文字コードは、「UTF-8」にしてください。
+    ・1行目の見出しは必須です。
+    ・見出しの「key」は変更不可です。
+    ・見出しには「id」「flag」は使用できません。※自動で追加します。
+    ・改行で1件分となります。
+    ・必ず行の最後は「_EOF」を付けてください。
+    ・項目数は自由に追加可能です。※tip.html にも追記してください。
+    ・htmlタグも記入できますが、「"」を使う場合は書出し後のデータチェックしてください。「'」推奨。
+    ・ファイルが上手く読込めない場合は、一度テキストエディタで開き上書き保存してみてください。
 
-		◇データ例（※詳しくは添付の tip_data.csv を参照してください）
-		　1行目　key,title,tip,tip2,_EOF
-　	　2行目　tyrano,ティラノスクリプト,マルチプラットフォーム対応のゲーム作成用スクリプトです。,2ページ目,_EOF
-　	　3行目　akane,あかね,<img src='./data/fgimage/chara/akane/normal.png'>ティラノスクリプト公式キャラクター。,,_EOF
+    ◇データ例（※詳しくは添付の tip_data.csv を参照してください）
+      1行目　key,title,tip,tip2,_EOF
+      2行目　tyrano,ティラノスクリプト,マルチプラットフォーム対応のゲーム作成用スクリプトです。,2ページ目,_EOF
+      3行目　akane,あかね,<img src='./data/fgimage/chara/akane/normal.png'>ティラノスクリプト公式キャラクター。,,_EOF
 
 
-	◆ TIP詳細のページ分けについて
-	　TIP詳細表示でページ分けをする場合は、csvでページ毎に項目を分けてください。※項目名は何でもOK。
-	　tip.html の tip_body の数でページ分けをします。
+  ◆ TIP詳細のページ分けについて
+     TIP詳細表示でページ分けをする場合は、csvでページ毎に項目を分けてください。※項目名は何でもOK。
+     tip.html の tip_body の数でページ分けをします。
 　
-	　◇csvファイル
-	　	key,title,tip,tip2,_EOF
-	　	tyrano,ティラノ,1ページ目テキスト,2ページ目テキスト,_EOF
-　	
-	　◇tip.html　※同梱のtip.htmlを参照してください。
-	　	<span class="tip_body">{{:tip}}</span>
-	　	<span class="tip_body">{{:tip2}}</span>
+    ◇csvファイル
+      key,title,tip,tip2,_EOF
+      tyrano,ティラノ,1ページ目テキスト,2ページ目テキスト,_EOF
+
+    ◇tip.html　※同梱のtip.htmlを参照してください。
+      <span class="tip_body">{{:tip}}</span>
+      <span class="tip_body">{{:tip2}}</span>
 
 
 　◆ その他
