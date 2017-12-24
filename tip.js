@@ -32,7 +32,6 @@ function csv2json(csvArray){
 			TYRANO.kag.variable.sf.tip_flag[i] = true ;
 		}
 	}
-	console.log(TYRANO.kag.tmp.tip.data);
 };
 
 
