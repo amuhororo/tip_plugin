@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver.3.00】2017/12/23                                       */
+/* 【TIPプラグイン ver.3.01】2018/3/23                                     */
 /*  by hororo http://hororo.wp.xdomain.jp/22/                                */
 
 
@@ -17,7 +17,7 @@ function csv2json(csvArray){
 	var flag = TYRANO.kag.variable.sf.tip_flag;
 	for (var i = 1; i < csvNew.length; i++) {
 		var a_line = new Object();
-		var csvArrayD = csvNew[i].split(",");	
+		var csvArrayD = csvNew[i].split(",");
 		for (var j = 0; j < items.length; j++) {
 			a_line["id"] = i-1;
 			a_line["flag"] = flag[i-1];
@@ -36,12 +36,10 @@ function csv2json(csvArray){
 
 
 /** TIP一覧 ******************************************************************/
-
 tyrano.plugin.kag.menu.displayTiplist = function() {
-
 	var that = this;
 	this.kag.stat.is_skip = false;
-	
+
 	var data = {};
 	data.tips = this.kag.tmp.tip.data;
 	data.maxnum = this.kag.tmp.tip.data.length;
@@ -52,12 +50,12 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 		if(data.tips[i]["flag"] == true) tip_true++;
 	}
 	data.truenum = tip_true;
-	
+
 	var layer_menu = that.kag.layer.getMenuLayer();
 
 	//テンプレートhtml読込み
 	layer_menu.load("./data/others/plugin/tip/html/tip_list.html",data,function(html_str){
-		$("#tip_list_wrap").css("font-family", that.kag.config.userFace);//デフォルトフォント指定		
+		$("#tip_list_wrap").css("font-family", that.kag.config.userFace);//デフォルトフォント指定
 		$("#tip_list_container").html($("#tiplist_tmp").render(data));   //テンプレート指定
 
 		//クリック
@@ -107,7 +105,7 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 			} else {
 				var list = that.kag.tmp.tip.pagenum;
 			};
-			
+
 			do {
 				$("#tip_list_container").children("li:lt("+list+")").wrapAll("<ul class='tip_list_area'></ul>");
 			}while($("#tip_list_container").children("li").length)
@@ -115,7 +113,7 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 			var pages = $(".tip_list_area");
 			pages.hide();
 			pages.eq(0).show();
-			
+
 			//ナビ
 			if($(".tip_list_area").length > 1){
 				pages.parent().prepend("<ul class='tips_nav'></ul>");
@@ -166,16 +164,16 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 	var that = this;
 	var data = that.kag.tmp.tip.data;
 	var tip = $.grep(data,function(e, i) { return (e.key == key) });
-	
+
 	var layer_menu = that.kag.layer.getMenuLayer();
 	if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0) layer_menu.empty();
-	
+
 	if($("#tip_wrap").length == 0)layer_menu.append("<div id='tip_wrap'></div>");
-	
+
 	$("#tip_wrap").load("./data/others/plugin/tip/html/tip.html",tip,function(html_str){
 		$("#tip_container").css("font-family", that.kag.config.userFace);
-		$("#tip_container").html($("#tip_tmp").render(tip));			
-		
+		$("#tip_container").html($("#tip_tmp").render(tip));
+
 		//閉じるボタン
 		var click_on = false;
 		$(".tip_close_button").on({
@@ -198,7 +196,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 				if(that.kag.tmp.tip.close_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_leavese,stop:"true"});
 			}
 		});
-		
+
 		//ページ分け
 		if($(".tip_body").length > 1){
 			var tip_pages = $(".tip_body");
@@ -210,7 +208,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 				$(this).attr("id", "d"+(i+1));
 				$(".tip_nav a").eq(0).addClass("now");
 			});
-			
+
 			$(".tip_nav a").on({
 				"click touchstart": function(event){
 					if($(this).hasClass("now")){
@@ -261,19 +259,19 @@ tyrano.plugin.kag.tag.tip = {
 	start : function(pm) {
 		var that = this;
 		var j_span = this.kag.setMessageCurrentSpan();
-		
+
 		(function() {
 			var data = that.kag.tmp.tip.data;
 			var tip = $.grep(that.kag.tmp.tip.data,function(e, i) {
 				return (e.key == pm.key);
 			});
-			
+
 			//pm.keyが存在しない場合は中止
 			if(tip == ""){
 				alert("tip の key 「 "+pm.key+" 」 は存在しません。");
 				return false;
 			};
-			
+
 			//カラー
 			if(pm.color) that.kag.tmp.tip.color_conf = "true";
 			else {
@@ -286,23 +284,23 @@ tyrano.plugin.kag.tag.tip = {
 				if(that.kag.tmp.tip.log_color=="true") var color = " style='color:" + $.convertColor(pm.color) + "'";
 			};
 			if(!pm.entercolor && that.kag.tmp.tip.entercolor) pm.entercolor = $.convertColor(that.kag.tmp.tip.entercolor);
-			
+
 			//idというか配列順をタグに入れる
 			var tip_id = tip[0]["id"];
 			j_span.attr("data-num",tip_id);
-			
+
 			//フラグ
 			if(that.kag.tmp.tip.flag=="true"){
 				that.kag.evalScript("sf.tip_flag[" + tip_id + "] = true");
 				that.kag.tmp.tip.data[tip_id]["flag"] = true ;
 			};
-			
+
 			//マーク
 			if(pm.mark=="true") that.kag.variable.tf.tip_mark = pm.key ;
-			
+
 			j_span.addClass("tip").addClass(pm.key); //class追加
 			j_span.attr("data-key",pm.key);          //data-key追加
-			
+
 			//バックログ
 			if(that.kag.tmp.tip.log=="true"){
 				var chara_name = $.isNull($(".chara_name_area").html());
@@ -327,7 +325,7 @@ tyrano.plugin.kag.tag.tip = {
 				backlog += "}})</script>";
 				that.kag.pushBackLog(backlog,"join");
 			};
-			
+
 			that.setEvent(j_span,pm);
 		})();
 		this.kag.ftag.nextOrder();
@@ -367,7 +365,6 @@ tyrano.plugin.kag.tag.endtip = {
 		this.kag.ftag.nextOrder();
 	}
 };
-
 
 /*****************************************************************************/
 TYRANO.kag.ftag.master_tag.tip = object(tyrano.plugin.kag.tag.tip);

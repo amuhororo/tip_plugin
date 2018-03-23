@@ -1,5 +1,9 @@
+<!--
+【TIPプラグイン ver.3.01】2018/3/23
+ by hororo http://hororo.wp.xdomain.jp/22/
+-->
 <div id="tip_list_wrap">
-<div class="button_close"></div>
+<div class="button_close menu_close"></div>
 
 
 <div id="tip_list_container"></div>
@@ -8,7 +12,7 @@
 <script id="tiplist_tmp" type="text/x-jsrender">
 
 	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> / <span class="maxnum">{{:maxnum}}</span></div>
-	
+
 	{{for tips}}
 		<li class="tips_item tip_list{{if flag==null}}_none{{/if}}" data-num={{:id}}>
 		  	<p class="tips_body">

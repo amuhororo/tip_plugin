@@ -1,27 +1,31 @@
-<a class="tip_close_button">✖</a>
+<!--
+【TIPプラグイン ver.3.01】2018/3/23
+ by hororo http://hororo.wp.xdomain.jp/22/
+-->
+<a class="tip_close_button menu_close">✖</a>
 
 <div id="tip_container"></div>
 
 <script id="tip_tmp" type="text/x-jsrender">
 	<ul class="tip_area">
 		<li class="tip_{{:id}} tip_item" data-num={{:id}}>
-		
+
 			<!--タイトル-->
 			<span class="tip_head">
 				<span class="tip_id">Tip {{if id<9}}0{{/if}}{{:id +1}}</span>
 				<span class="tip_title">{{:title}}</span>
 			</span>
-			
+
 			<!--１ページ目-->
 			<span class="tip_body tip1">
 				<span class="tip_text">{{:tip}}</span>
 			</span>
-			
+
 			<!--2ページ目-->
 			{{if tip2!=""}}<span class="tip_body tip2">
 				<span class="tip_text">{{:tip2}}</span>
 			</span>{{/if}}
-			
+
 		</li>
 	</ul>
 </script>
