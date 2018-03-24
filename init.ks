@@ -1,4 +1,4 @@
-;【TIPプラグイン ver.3.01】2018/3/23
+;【TIPプラグイン ver.3.02】2018/3/24
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -12,6 +12,7 @@ TG.kag.tmp.tip = {
 	"log_color"     : mp.log_color     || "false",                   //バックログのTIP color を入れるか（※log=true時）
 	"log_mark"      : mp.log_mark      || "false",                   //バックログのTIP mark を入れるか
 	"log_se"        : mp.log_se        || "false",                   //バックログのTIP に SE を入れるか
+	"log_plugin"    : mp.log_plugin    || "false",                   //バックログプラグインと併用するか
 	"pagefeed"      : mp.pagefeed      || "true",                    //TIPリストをページ分けするか
 	"pagenum"       : mp.pagenum       || "auto",                    //リスト1ページあたりの件数
 	"tip_clickse"   : mp.tip_clickse   || "none",                    //TIPのクリック音

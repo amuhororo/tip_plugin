@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver.3.01】2018/3/23                                     */
+/* 【TIPプラグイン ver.3.02】2018/3/24                                     */
 /*  by hororo http://hororo.wp.xdomain.jp/22/                                */
 
 
@@ -304,14 +304,16 @@ tyrano.plugin.kag.tag.tip = {
 			//バックログ
 			if(that.kag.tmp.tip.log=="true"){
 				var chara_name = $.isNull($(".chara_name_area").html());
-				if(chara_name!="" && that.kag.stat.f_chara_ptext=="true"){
-					that.kag.pushBackLog("<b class='backlog_chara_name "+chara_name+"'>"+chara_name+"</b>：","add");
-					that.kag.stat.f_chara_ptext="false";
+				if(that.kag.tmp.tip.log_plugin=="false"){
+					if(chara_name!="" && that.kag.stat.f_chara_ptext=="true"){
+						that.kag.pushBackLog("<b class='backlog_chara_name "+chara_name+"'>"+chara_name+"</b>：","add");
+						that.kag.stat.f_chara_ptext="false";
+					};
 				};
 				var mark = (pm.mark=="true" && that.kag.tmp.tip.log_mark == "true") ? " mark" : "" ;
 				var entercolor = (that.kag.tmp.tip.color_conf=="true") ? $.convertColor(pm.color) : "";
 				var backlog = "<span class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' data-key='" + pm.key + "'" + color +">";
-				backlog += "<script>$('[data-key="+pm.key+"]').on({";
+				backlog += "<script>if($('.save_list').length==0){$('[data-key="+pm.key+"]').on({";
 				backlog += "'click touchstart': function(e) {";
 				if(pm.clickse!="none") backlog += "TYRANO.kag.ftag.startTag('playse',{storage:'"+pm.clickse+"',clear:'true',stop:'true'});";
 				backlog += "TYRANO.kag.menu.displayTip('"+pm.key+"');";
@@ -322,10 +324,9 @@ tyrano.plugin.kag.tag.tip = {
 				backlog += "},";
 				backlog += "'mouseleave': function() {";
 				if(that.kag.tmp.tip.log_color=="true" && pm.entercolor) backlog += "$(this).css('color','"+entercolor+"');";
-				backlog += "}})</script>";
+				backlog += "}})}</script>";
 				that.kag.pushBackLog(backlog,"join");
 			};
-
 			that.setEvent(j_span,pm);
 		})();
 		this.kag.ftag.nextOrder();
