@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver.3.02】2018/3/24                                     */
+/* 【TIPプラグイン ver.3.03】2018/8/22                                     */
 /*  by hororo http://hororo.wp.xdomain.jp/22/                                */
 
 
@@ -40,101 +40,199 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 	var that = this;
 	this.kag.stat.is_skip = false;
 
-	var data = {};
-	data.tips = this.kag.tmp.tip.data;
-	data.maxnum = this.kag.tmp.tip.data.length;
+	var tipdata = {};
+	tipdata.tips = this.kag.tmp.tip.data;
+	tipdata.maxnum = this.kag.tmp.tip.data.length;
 
 	//解放数
 	var tip_true = 0;
-	for (var i = 0;  i < data.tips.length; i++) {
-		if(data.tips[i]["flag"] == true) tip_true++;
+	for (var i = 0;  i < tipdata.tips.length; i++) {
+		if(tipdata.tips[i]["flag"] == true) tip_true++;
 	}
-	data.truenum = tip_true;
+	tipdata.truenum = tip_true;
 
 	var layer_menu = that.kag.layer.getMenuLayer();
 
 	//テンプレートhtml読込み
-	layer_menu.load("./data/others/plugin/tip/html/tip_list.html",data,function(html_str){
-		$("#tip_list_wrap").css("font-family", that.kag.config.userFace);//デフォルトフォント指定
-		$("#tip_list_container").html($("#tiplist_tmp").render(data));   //テンプレート指定
+	$.ajax({
+		url:"./data/others/plugin/tip/html/tip_list.html",
+		type:"GET",
+		dataType: 'html',
+		success: function(data) {
+			layer_menu.html($(data));
+			$("#tip_list_wrap").css("font-family", that.kag.config.userFace);//デフォルトフォント指定
+			$("#tip_list_container").html($("#tiplist_tmp").render(tipdata));   //テンプレート指定
 
-		//クリック
-		var click_on = false;
-		$(".tip_list").on({
-			"click touchstart":function(e) {
-				click_on = true;
-				var num = $(this).attr("data-num");
-				var key = data.tips[num]["key"];
-				if(that.kag.tmp.tip.list_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_clickse,stop:"true"});
-				that.displayTip(key);
-			},
-			"mouseenter": function() {
-				if(that.kag.tmp.tip.list_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_enterse,stop:"true"});
-				click_on = false;
-			},
-			"mouseleave": function() {
-				if(that.kag.tmp.tip.list_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_leavese,stop:"true"});
-			}
-		});
+			//クリック
+			var click_on = false;
+			$(".tip_list").on({
+				"click touchstart":function(e) {
+					click_on = true;
+					var num = $(this).attr("data-num");
+					var key = tipdata.tips[num]["key"];
+					if(that.kag.tmp.tip.list_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_clickse,stop:"true"});
+					that.displayTip(key);
+				},
+				"mouseenter": function() {
+					if(that.kag.tmp.tip.list_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_enterse,stop:"true"});
+					click_on = false;
+				},
+				"mouseleave": function() {
+					if(that.kag.tmp.tip.list_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_leavese,stop:"true"});
+				}
+			});
 
-		//閉じるボタン
-		$(".button_close").on({
-			"click touchstart":function(e) {
-				click_on = true;
-				if(that.kag.tmp.tip.close_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_clickse,stop:"true"});
-				layer_menu.hide();
-				layer_menu.empty();
-				if (that.kag.stat.visible_menu_button == true) $(".button_menu").show();
-			},
-			"mouseenter": function() {
-				if(that.kag.tmp.tip.close_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_enterse,stop:"true"});
-				click_on = false;
-			},
-			"mouseleave": function() {
-				if(that.kag.tmp.tip.close_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_leavese,stop:"true"});
-			}
-		});
+			//閉じるボタン
+			$(".button_close").on({
+				"click touchstart":function(e) {
+					click_on = true;
+					if(that.kag.tmp.tip.close_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_clickse,stop:"true"});
+					layer_menu.hide();
+					layer_menu.empty();
+					if (that.kag.stat.visible_menu_button == true) $(".button_menu").show();
+				},
+				"mouseenter": function() {
+					if(that.kag.tmp.tip.close_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_enterse,stop:"true"});
+					click_on = false;
+				},
+				"mouseleave": function() {
+					if(that.kag.tmp.tip.close_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_leavese,stop:"true"});
+				}
+			});
 
-		//リスト分け
-		if(that.kag.tmp.tip.pagefeed == "true"){
-			if(that.kag.tmp.tip.pagenum == "auto"){
-				var height_size = parseInt(that.kag.config.scHeight) - parseInt($("#tip_list_container").css("padding-top"));
-				var count_w = Math.floor(parseInt($("#tip_list_container").width()) / parseInt($("#tip_list_container").find("li").outerWidth(true)));
-				var count_h = Math.floor(height_size / parseInt($("#tip_list_container").find("li").outerHeight(true)));
-				var list = parseInt(count_w) * parseInt(count_h);
+			//リスト分け
+			if(that.kag.tmp.tip.pagefeed == "true"){
+				if(that.kag.tmp.tip.pagenum == "auto"){
+					var height_size = parseInt(that.kag.config.scHeight) - parseInt($("#tip_list_container").css("padding-top"));
+					var count_w = Math.floor(parseInt($("#tip_list_container").width()) / parseInt($("#tip_list_container").find("li").outerWidth(true)));
+					var count_h = Math.floor(height_size / parseInt($("#tip_list_container").find("li").outerHeight(true)));
+					var list = parseInt(count_w) * parseInt(count_h);
+				} else {
+					var list = that.kag.tmp.tip.pagenum;
+				};
+
+				do {
+					$("#tip_list_container").children("li:lt("+list+")").wrapAll("<ul class='tip_list_area'></ul>");
+				}while($("#tip_list_container").children("li").length)
+
+				var pages = $(".tip_list_area");
+				pages.hide();
+				pages.eq(0).show();
+
+				//ナビ
+				if($(".tip_list_area").length > 1){
+					pages.parent().prepend("<ul class='tips_nav'></ul>");
+					pages.each(function (i) {
+						$(".tips_nav").append("<li><a href='#c"+( i+1 )+"'>" + ( i+1 ) +"</a></li>");
+						$(this).attr("id", "c"+(i+1));
+						$(".tips_nav a").eq(0).addClass("now");
+					});
+					$(".tips_nav a").not("now").on({
+						"click touchstart": function(event){
+							if($(this).hasClass("now")){
+							} else {
+								click_on = true;
+								if(that.kag.tmp.tip.navi_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_clickse,stop:"true"});
+							};
+							$(".tips_nav a").removeClass("now");
+							$(this).addClass("now");
+							event.preventDefault();
+							var nextPage = this.hash;
+							pages.hide();
+							$(nextPage).show();
+						},
+						"mouseenter": function() {
+							if($(this).hasClass("now")){
+							} else {
+								if(that.kag.tmp.tip.navi_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_enterse,stop:"true"});
+								click_on = false;
+							}
+						},
+						"mouseleave": function() {
+							if($(this).hasClass("now")){
+							} else {
+								if(that.kag.tmp.tip.navi_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_leavese,stop:"true"});
+							}
+						}
+					});
+				}
 			} else {
-				var list = that.kag.tmp.tip.pagenum;
-			};
+				$("#tip_list_container").children("li").wrapAll("<ul class='tip_list_area'></ul>")
+			}
+		}
+	});
+	layer_menu.show();
+};
 
-			do {
-				$("#tip_list_container").children("li:lt("+list+")").wrapAll("<ul class='tip_list_area'></ul>");
-			}while($("#tip_list_container").children("li").length)
 
-			var pages = $(".tip_list_area");
-			pages.hide();
-			pages.eq(0).show();
+/** TIP詳細 ******************************************************************/
+tyrano.plugin.kag.menu.displayTip = function(key) {
+	var that = this;
+	var tipdata = that.kag.tmp.tip.data;
+	var tip = $.grep(tipdata,function(e, i) { return (e.key == key) });
 
-			//ナビ
-			if($(".tip_list_area").length > 1){
-				pages.parent().prepend("<ul class='tips_nav'></ul>");
-				pages.each(function (i) {
-					$(".tips_nav").append("<li><a href='#c"+( i+1 )+"'>" + ( i+1 ) +"</a></li>");
-					$(this).attr("id", "c"+(i+1));
-					$(".tips_nav a").eq(0).addClass("now");
+	var layer_menu = that.kag.layer.getMenuLayer();
+	if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0) layer_menu.empty();
+
+	if($("#tip_wrap").length == 0)layer_menu.append("<div id='tip_wrap'></div>");
+
+	$.ajax({
+		url:"./data/others/plugin/tip/html/tip.html",
+		type:"GET",
+		dataType: 'html',
+		success: function(data) {
+			$("#tip_wrap").html($(data));
+			$("#tip_container").css("font-family", that.kag.config.userFace);
+			$("#tip_container").html($("#tip_tmp").render(tip));
+
+			//閉じるボタン
+			var click_on = false;
+			$(".tip_close_button").on({
+				"click touchstart": function() {
+					click_on = true;
+					if(that.kag.tmp.tip.close_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_clickse,stop:"true"});
+					if($("#tip_list_wrap").length || $(".log_body").length){
+						$("#tip_wrap").remove();
+					} else {
+						layer_menu.hide();
+						layer_menu.empty();
+						if (that.kag.stat.visible_menu_button == true) $(".button_menu").show();
+					}
+				},
+				"mouseenter": function() {
+					if(that.kag.tmp.tip.close_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_enterse,stop:"true"});
+					click_on = false;
+				},
+				"mouseleave": function() {
+					if(that.kag.tmp.tip.close_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_leavese,stop:"true"});
+				}
+			});
+
+			//ページ分け
+			if($(".tip_body").length > 1){
+				var tip_pages = $(".tip_body");
+				tip_pages.hide();
+				tip_pages.eq(0).show();
+				tip_pages.parent().prepend("<ul class='tip_nav'></ul>");
+				tip_pages.each(function (i) {
+					$(".tip_nav").append("<li><a href='#d"+( i+1 )+"' class='button'>" + ( i+1 ) +"</a></li>");
+					$(this).attr("id", "d"+(i+1));
+					$(".tip_nav a").eq(0).addClass("now");
 				});
-				$(".tips_nav a").not("now").on({
+
+				$(".tip_nav a").on({
 					"click touchstart": function(event){
 						if($(this).hasClass("now")){
 						} else {
 							click_on = true;
 							if(that.kag.tmp.tip.navi_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_clickse,stop:"true"});
 						};
-						$(".tips_nav a").removeClass("now");
+						$(".tip_nav a").removeClass("now");
 						$(this).addClass("now");
 						event.preventDefault();
-						var nextPage = this.hash;
-						pages.hide();
-						$(nextPage).show();
+						var tip_nextPage = this.hash;
+						tip_pages.hide();
+						$(tip_nextPage).show();
 					},
 					"mouseenter": function() {
 						if($(this).hasClass("now")){
@@ -149,94 +247,8 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 							if(that.kag.tmp.tip.navi_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_leavese,stop:"true"});
 						}
 					}
-				});
+				})
 			}
-		} else {
-			$("#tip_list_container").children("li").wrapAll("<ul class='tip_list_area'></ul>")
-		}
-	});
-	layer_menu.show();
-};
-
-
-/** TIP詳細 ******************************************************************/
-tyrano.plugin.kag.menu.displayTip = function(key) {
-	var that = this;
-	var data = that.kag.tmp.tip.data;
-	var tip = $.grep(data,function(e, i) { return (e.key == key) });
-
-	var layer_menu = that.kag.layer.getMenuLayer();
-	if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0) layer_menu.empty();
-
-	if($("#tip_wrap").length == 0)layer_menu.append("<div id='tip_wrap'></div>");
-
-	$("#tip_wrap").load("./data/others/plugin/tip/html/tip.html",tip,function(html_str){
-		$("#tip_container").css("font-family", that.kag.config.userFace);
-		$("#tip_container").html($("#tip_tmp").render(tip));
-
-		//閉じるボタン
-		var click_on = false;
-		$(".tip_close_button").on({
-			"click touchstart": function() {
-				click_on = true;
-				if(that.kag.tmp.tip.close_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_clickse,stop:"true"});
-				if($("#tip_list_wrap").length || $(".log_body").length){
-					$("#tip_wrap").remove();
-				} else {
-					layer_menu.hide();
-					layer_menu.empty();
-					if (that.kag.stat.visible_menu_button == true) $(".button_menu").show();
-				}
-			},
-			"mouseenter": function() {
-				if(that.kag.tmp.tip.close_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_enterse,stop:"true"});
-				click_on = false;
-			},
-			"mouseleave": function() {
-				if(that.kag.tmp.tip.close_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_leavese,stop:"true"});
-			}
-		});
-
-		//ページ分け
-		if($(".tip_body").length > 1){
-			var tip_pages = $(".tip_body");
-			tip_pages.hide();
-			tip_pages.eq(0).show();
-			tip_pages.parent().prepend("<ul class='tip_nav'></ul>");
-			tip_pages.each(function (i) {
-				$(".tip_nav").append("<li><a href='#d"+( i+1 )+"' class='button'>" + ( i+1 ) +"</a></li>");
-				$(this).attr("id", "d"+(i+1));
-				$(".tip_nav a").eq(0).addClass("now");
-			});
-
-			$(".tip_nav a").on({
-				"click touchstart": function(event){
-					if($(this).hasClass("now")){
-					} else {
-						click_on = true;
-						if(that.kag.tmp.tip.navi_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_clickse,stop:"true"});
-					};
-					$(".tip_nav a").removeClass("now");
-					$(this).addClass("now");
-					event.preventDefault();
-					var tip_nextPage = this.hash;
-					tip_pages.hide();
-					$(tip_nextPage).show();
-				},
-				"mouseenter": function() {
-					if($(this).hasClass("now")){
-					} else {
-						if(that.kag.tmp.tip.navi_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_enterse,stop:"true"});
-						click_on = false;
-					}
-				},
-				"mouseleave": function() {
-					if($(this).hasClass("now")){
-					} else {
-						if(that.kag.tmp.tip.navi_leavese!="none" && click_on==false)that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.navi_leavese,stop:"true"});
-					}
-				}
-			})
 		}
 	});
 	layer_menu.show();
