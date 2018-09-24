@@ -1,6 +1,9 @@
 /* 【TIPプラグイン ver.3.03a】2018/9/24          */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
+* {
+	box-sizing: border-box;
+}
 /*******************************************
    TIPテキスト
 ********************************************/
@@ -116,6 +119,7 @@
 	color:rgba(0,0,90,1);
 	position: relative;
 	float:left;
+	/* ↓ 1列 96%　2列 46%　3列 29% */
 	width: 46%;
 	height:45px;
 	margin: 13px 2%;
@@ -127,6 +131,9 @@
 	/*
 	background-image: url(../../../image/title/hoge.png);
 	*/
+}
+@media (max-width: 768px) and (orientation:portrait) {
+	.tips_item {width: 96%;}
 }
 .tips_item:before { /* リストの背景2 黄色い部分 ※画像使う場合は不要 */
 	content: "";
@@ -175,9 +182,16 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 .tips_nav {
 	position: absolute;
 	top: 90px;
-	left: ⁰;
+	left: 0;
 	width:100%;
 	text-align:center;
+}
+@media (max-width: 768px) and (orientation:portrait) {
+	.tips_nav {
+		top: 100px;
+		margin-left: 80px;
+		text-align:left;
+	}
 }
 .tips_nav li {
 	display: inline-block;
@@ -219,13 +233,13 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	position:absolute;
 	width:45px;
 	height:45px;
-	right:90px;
+	right:9%;
 	top:17px;
 	cursor:pointer;
 	font-family:"ＭＳ ゴシック", "MS Gothic", "Osaka－等幅", Osaka-mono, monospace;
 	font-size:36px;
 	color:#fff;
-	line-height:48px;
+	line-height:40px;
 	text-align:center;
 	text-decoration: none;
 	background:#333;
@@ -239,19 +253,21 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	position:relative;
 	width:100%;
 	height:100%;
+	padding: 50px 0;
 	text-align:left;
 	position:absolute;
 	top:0;
 	left:0;
 	background: rgba(0,0,0,0.7);
 	z-index: 10000;
+	box-sizing: border-box;
 }
 
 /* 表示部分 */
 #tip_container {
 	width:75%;
-	height:85%;
-	margin: 5% auto;
+	height:100%;
+	margin: 0 auto;
 	padding: 15px;
 	background: #fff;
 	border:1px solid #fff;
@@ -262,6 +278,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 /* li */
 .tip_area {
 	position:relative;
+	height: 100%;
 }
 .tip_area:before { /* 見出しの背景1 グラデーション */
 	content: "";
@@ -273,7 +290,15 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	border-radius:6px;
 	background: linear-gradient(to bottom, #02afea, #0077c1);
 }
-.tip_item { /* 見出しの背景2 ストライプ */
+.tip_item {
+	position: absolute;
+	width:100%;
+	height:100%;
+	top:0px;
+	left:0px;
+}
+.tip_item:before {/* 見出しの背景2 ストライプ */
+	content: "";
 	position: absolute;
 	width:100%;
 	height:44px;
@@ -285,6 +310,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	background-size: 4px 4px;
 	border-radius:6px;
 }
+
 /* 見出し */
 .tip_head {
 	position:relative;
@@ -297,19 +323,27 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 }
 /* 本文 */
 .tip_body {
+	position: absolute;
 	display:block;
 	font-size: 18px;
-	margin-top:10px;
-	padding:10px 10px 0 10px;
-	max-height: 445px;
+	margin:2% 0;
+	padding:0 10px;
 	overflow:auto;
+	height: 80%;
 }
-
+@media (max-width: 768px) and (orientation:portrait) {
+	.tip_body {
+		margin:5% 0;
+		padding:0 10px;
+		overflow:auto;
+		height: 85%;
+	}
+}
 /* ナビ */
 .tip_nav {
 	position: absolute;
-	top: 475px;
-	left: 5px;
+	bottom: 0;
+	left: 0;
 	font-size:18px;
 }
 .tip_nav li {
@@ -345,10 +379,32 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 
 
 
+/* サンプルシナリオ用 */
+.tiplist_button {
+	left: auto !important;
+	top: auto !important;
+	bottom: 250px !important;
+	right: 30px !important;
+}
+.tipsumple .message_outer {
+	top: auto !important;
+	bottom: 30px !important;
+	width: 95% !important;
+}
+.tipsumple .message_inner {
+	top: auto !important;
+	bottom: 90px !important;
+	width: 80% !important;
+}
+.tipsumple .chara_name_area {
+	top: auto !important;
+	bottom: 180px !important;
+}
 
-/*******************************************
+/*****************************************************
    以下削除・変更禁止
-********************************************/
+	 ※メッセージ上でクリックさせたくない場合は以下を削除
+******************************************************/
 .message_inner {
 	z-index:auto !important
 }
