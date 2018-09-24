@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver.3.03】2018/8/22          */
+/* 【TIPプラグイン ver.3.03a】2018/9/24          */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
 /*******************************************
@@ -118,29 +118,31 @@
 	float:left;
 	width: 46%;
 	height:45px;
-	margin: 13px 15px;
+	margin: 13px 2%;
 	border: 1px outset #02afea;
 	box-sizing:border-box;
 	border-radius:6px;
-	/*background: -moz-linear-gradient(top, #02afea, #0077c1);
-	background: -webkit-gradient(linear, center top, center bottom, from(#02afea), to(#0077c1));*/
-	background: linear-gradient(to bottom, #02afea, #0077c1);
+	background: linear-gradient(to bottom, #02afea, #0077c1); /* 画像を使う場合は不要 */
+	/* 画像を使う場合の例 */
+	/*
+	background-image: url(../../../image/title/hoge.png);
+	*/
 }
-.tips_item:before { /* リストの背景2 */
+.tips_item:before { /* リストの背景2 黄色い部分 ※画像使う場合は不要 */
 	content: "";
 	position: absolute;
 	background-color:#fff001;
 	border-radius:6px;
 	transform:rotate(-2deg);
 	height:50px;
-	width:395px;
+	width:101%;
 	z-index:-1;
-	top:0;
-	left:0;
+	top:-2px;
+	left:3px;
 }
-.tips_item p { /* リストの背景3 ストライプ */
+.tips_item p { /* リストの背景3 ストライプ ※画像使う場合は不要 */
 	position: absolute;
-	width:385px;
+	width:100%;
 	height:44px;
 	top:0;
 	left:0;
@@ -173,8 +175,8 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 .tips_nav {
 	position: absolute;
 	top: 90px;
-	left: 80px;
-	width:800px;
+	left: ⁰;
+	width:100%;
 	text-align:center;
 }
 .tips_nav li {
@@ -261,7 +263,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 .tip_area {
 	position:relative;
 }
-.tip_area:before { /* 見出しの背景1 */
+.tip_area:before { /* 見出しの背景1 グラデーション */
 	content: "";
 	position: absolute;
 	width:100%;
@@ -271,7 +273,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	border-radius:6px;
 	background: linear-gradient(to bottom, #02afea, #0077c1);
 }
-.tip_item { /* 見出しの背景2 */
+.tip_item { /* 見出しの背景2 ストライプ */
 	position: absolute;
 	width:100%;
 	height:44px;
