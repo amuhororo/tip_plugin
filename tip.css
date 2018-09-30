@@ -1,9 +1,11 @@
-/* 【TIPプラグイン ver.3.03a】2018/9/24          */
+/* 【TIPプラグイン ver.3.04】2018/9/30          */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
 * {
 	box-sizing: border-box;
 }
+
+
 /*******************************************
    TIPテキスト
 ********************************************/
@@ -17,16 +19,30 @@
 
 /* マーク */
 .tip.mark {
-	margin-right:15px;
+	position: relative;
+	margin-right: 15px;
 }
-.tip.mark:before {
+.tip.mark:after {
 	content:"";
-	position:absolute;
+	position: absolute;
 	right:-15px;
 	top:-5px;
 	width:14px;
 	height:14px;
+	display: inline-block;
 	background:url(image/tip_mark.png);
+	background-size:14px;
+}
+/* 縦書き */
+.vertical_text .tip.mark {
+	margin-right: 0;
+}
+.vertical_text .tip.mark:after {
+	position: relative;
+	top: 1px;
+  right: -12px;
+	margin-bottom: 3px;
+	background:url(image/tip_mark_vertical.png);
 	background-size:14px;
 }
 
@@ -55,6 +71,7 @@
   border-radius: 10px;
   box-shadow:0 0 0 1px rgba(255, 255, 255, .3);
 }
+
 /* Tip ID */
 .tip_id{
 	font-size:75%;
@@ -132,10 +149,13 @@
 	background-image: url(../../../image/title/hoge.png);
 	*/
 }
+/* 縦画面用 */
 @media (max-width: 768px) and (orientation:portrait) {
 	.tips_item {width: 96%;}
 }
-.tips_item:before { /* リストの背景2 黄色い部分 ※画像使う場合は不要 */
+
+/* リストの背景2 黄色い部分 ※画像使う場合は不要 */
+.tips_item:before {
 	content: "";
 	position: absolute;
 	background-color:#fff001;
@@ -147,7 +167,9 @@
 	top:-2px;
 	left:3px;
 }
-.tips_item p { /* リストの背景3 ストライプ ※画像使う場合は不要 */
+
+/* リストの背景3 ストライプ ※画像使う場合は不要 */
+.tips_item p {
 	position: absolute;
 	width:100%;
 	height:44px;
@@ -178,7 +200,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 .tip_list_none{
 }
 
-/* ナビ */
+/* ページナビ全体 */
 .tips_nav {
 	position: absolute;
 	top: 90px;
@@ -186,6 +208,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	width:100%;
 	text-align:center;
 }
+/* 縦画面用 */
 @media (max-width: 768px) and (orientation:portrait) {
 	.tips_nav {
 		top: 100px;
@@ -193,10 +216,12 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 		text-align:left;
 	}
 }
+/* ページナビボタン */
 .tips_nav li {
 	display: inline-block;
 	margin-right: 5px;
 }
+/* ページナビボタン クリック部分 */
 .tips_nav a {
 	display: inline-block;
 	width:45px;
@@ -246,6 +271,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	border-radius:50%;
 	border:3px solid #fff;
 	box-shadow: 0 0 8px #000;
+	z-index: 1;
 }
 
 /* 全体 */
@@ -273,6 +299,16 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	border:1px solid #fff;
 	border-radius: 6px;
 	box-sizing:border-box;
+	position: relative;
+}
+/* 縦画面用 */
+@media (max-width: 768px) and (orientation:portrait) {
+	#tip_container {
+    width: 90%;
+	}
+	.tip_close_button {
+		right:1%;
+	}
 }
 
 /* li */
@@ -280,7 +316,8 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	position:relative;
 	height: 100%;
 }
-.tip_area:before { /* 見出しの背景1 グラデーション */
+/* 見出しの背景1 グラデーション */
+.tip_area:before {
 	content: "";
 	position: absolute;
 	width:100%;
@@ -290,6 +327,8 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	border-radius:6px;
 	background: linear-gradient(to bottom, #02afea, #0077c1);
 }
+
+/* 詳細表示部分 */
 .tip_item {
 	position: absolute;
 	width:100%;
@@ -297,7 +336,8 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	top:0px;
 	left:0px;
 }
-.tip_item:before {/* 見出しの背景2 ストライプ */
+/* 見出しの背景2 ストライプ */
+.tip_item:before {
 	content: "";
 	position: absolute;
 	width:100%;
@@ -331,6 +371,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	overflow:auto;
 	height: 80%;
 }
+/* 縦画面用 */
 @media (max-width: 768px) and (orientation:portrait) {
 	.tip_body {
 		margin:5% 0;
@@ -339,17 +380,22 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 		height: 85%;
 	}
 }
-/* ナビ */
+
+/* ページナビ全体 */
 .tip_nav {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	font-size:18px;
 }
+
+/* ページナビボタン */
 .tip_nav li {
 	display: inline-block;
 	margin-right: 5px;
 }
+
+/* ページナビクリック部分 */
 .tip_nav a {
 	color:#0077c1;
 	display: inline-block;
@@ -378,8 +424,138 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 }
 
 
+/*****************************************************
+   縦書き
+******************************************************/
+/* リスト */
+.vertical .tip_list_area {
+	height:100%;
+	writing-mode: vertical-rl;
+	-webkit-writing-mode: vertical-rl;
+	-ms-writing-mode: tb-rl;
+	margin: 0 auto;
+}
+.vertical .tips_item {
+	width: 45px;
+	height:95%;
+	margin: 2% 13px;
+	background: linear-gradient(to left, #02afea, #0077c1); /* 画像を使う場合は background-image で画像指定 */
+}
+/* 縦画面用 */
+@media (max-width: 768px) and (orientation:portrait) {
+	.vertical .tips_item {height: 46%;}
+}
+/* リストの背景2 黄色い部分 ※画像使う場合は不要 */
+.vertical .tips_item:before {
+	transform:rotate(-2deg);
+	height:101%;
+	width:50px;
+	top:3px;
+	left:-2px;
+}
 
-/* サンプルシナリオ用 */
+/* リストの背景3 ストライプ部分 ※画像使う場合は不要 */
+.vertical .tips_item p {
+	width:44px;
+	height:100%;
+	padding: 15px 8px;
+}
+.vertical .tip_id {
+    height: 3.7em;
+}
+/* 影方向調整 */
+.vertical .tips_body .tip_list:hover {
+	text-shadow: -2px 2px 0px rgba(0,0,0,0.7);
+}
+
+
+/* 詳細 */
+.vertical .tip_area {
+	writing-mode: vertical-rl;
+	-webkit-writing-mode: vertical-rl;
+	-ms-writing-mode: tb-rl;
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+/* 見出しの背景1 グラデーション部分 ※画像を使う場合は不要 */
+.vertical .tip_area:before {
+	width:44px;
+	height:100%;
+	right:0;
+	left:auto;
+	background: linear-gradient(right left, #02afea, #0077c1);
+}
+
+.vertical .tip_item {
+	left:auto;
+	right:0;
+}
+/* 見出しの背景2 ストライプ部分 ※画像を使う場合は不要 */
+.vertical .tip_item:before {
+	width:44px;
+	height:100%;
+	left:auto;
+	right: 0;
+}
+
+/* 見出し */
+.vertical .tip_head {
+	padding: 15px 7px;
+	height:100%;
+	width: 44px;
+	/* 画像を使う場合は background-image で画像指定 */
+}
+.vertical .tip_head .tip_id {
+}
+.vertical .tip_head .tip_title {
+	text-shadow: -2px 2px 0px rgba(0,0,0,0.7); /* 影方向調整 */
+}
+
+/* 本文 */
+.vertical .tip_body {
+	margin: 0 2%;
+	padding: 10px 0;
+	height: 100%;
+	width: 85%;
+}
+/* 縦画面用 */
+@media (max-width: 768px) and (orientation:portrait) {
+	.vertical .tip_body {
+		padding:10px 0;
+		width: 80%;
+	}
+}
+
+/* ナビ */
+.vertical .tip_nav {
+	bottom: 0;
+	left: 0;
+}
+.vertical .tip_nav li {
+	margin-right: auto;
+	margin-bottom: 5px;
+}
+.vertical .tip_nav a {
+	width:40px;
+	height:36px;
+	line-height:36px;
+	padding-top: 9px;
+	-webkit-text-combine: horizontal;
+	-ms-text-combine-horizontal: all;
+	text-combine-upright: all;
+}
+
+
+/* 縦中横 */
+.vertical .tcy {
+	-webkit-text-combine: horizontal;
+	-ms-text-combine-horizontal: all;
+	text-combine-upright: all;
+}
+
+
+/* サンプルシナリオ用 ※不要になったら削除してください */
 .tiplist_button {
 	left: auto !important;
 	top: auto !important;
@@ -393,17 +569,22 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 }
 .tipsumple .message_inner {
 	top: auto !important;
-	bottom: 140px !important;
+	bottom: 40px !important;
 	width: 90% !important;
+	height: 190px !important;
 }
 .tipsumple .chara_name_area {
 	top: auto !important;
 	bottom: 180px !important;
 }
+/* サンプルシナリオ用ここまで */
+
+
+
 
 /*****************************************************
    以下削除・変更禁止
-   ※メッセージ上でクリックさせたくない場合は以下を削除
+   ※メッセージ上でクリックさせたくない場合のみ削除
 ******************************************************/
 .message_inner {
 	z-index:auto !important

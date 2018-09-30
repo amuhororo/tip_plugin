@@ -1,4 +1,4 @@
-;【TIPプラグイン ver.3.03】2018/8/22
+;【TIPプラグイン ver.3.04】2018/9/30
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -14,7 +14,7 @@ TG.kag.tmp.tip = {
 	"log_se"        : mp.log_se        || "false",                   //バックログのTIP に SE を入れるか
 	"log_plugin"    : mp.log_plugin    || "false",                   //バックログプラグインと併用するか
 	"pagefeed"      : mp.pagefeed      || "true",                    //TIPリストをページ分けするか
-	"pagenum"       : mp.pagenum       || "auto",                    //リスト1ページあたりの件数
+	"pagenum"       : mp.pagenum       || "auto",                    //リスト1ページあたりの表示数 "auto"で自動
 	"tip_clickse"   : mp.tip_clickse   || "none",                    //TIPのクリック音
 	"tip_enterse"   : mp.tip_enterse   || "none",                    //TIPにマウスカーソルが乗った時
 	"tip_leavese"   : mp.tip_leavese   || "none",                    //TIPからマウスカーソルが外れた時
@@ -27,6 +27,7 @@ TG.kag.tmp.tip = {
 	"navi_clickse"  : mp.navi_clickse  || "none",                    //ナビのクリック音
 	"navi_enterse"  : mp.navi_enterse  || "none",                    //ナビにマウスカーソルが乗った時
 	"navi_leavese"  : mp.navi_leavese  || "none",                    //ナビからマウスカーソルが外れた時
+	"vertical"      : mp.vertical      || TG.config.vertical,        //縦書き表示にするか
 	"data"          : []                                             //data定義
 };
 

@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver.3.03】2018/8/22                                     */
+/* 【TIPプラグイン ver.3.04】2018/9/30                                       */
 /*  by hororo http://hororo.wp.xdomain.jp/22/                                */
 
 
@@ -62,6 +62,7 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 			layer_menu.html($(data));
 			$("#tip_list_wrap").css("font-family", that.kag.config.userFace);//デフォルトフォント指定
 			$("#tip_list_container").html($("#tiplist_tmp").render(tipdata));   //テンプレート指定
+			if(that.kag.tmp.tip.vertical=="true") $("#tip_list_wrap").addClass("vertical"); //縦書き
 
 			//クリック
 			var click_on = false;
@@ -184,6 +185,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 			$("#tip_wrap").html($(data));
 			$("#tip_container").css("font-family", that.kag.config.userFace);
 			$("#tip_container").html($("#tip_tmp").render(tip));
+			if(that.kag.tmp.tip.vertical=="true") $("#tip_wrap").addClass("vertical"); //縦書き
 
 			//閉じるボタン
 			var click_on = false;
