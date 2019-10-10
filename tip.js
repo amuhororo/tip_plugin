@@ -1,6 +1,5 @@
-/* 【TIPプラグイン ver.3.04】2018/9/30                                       */
+/* 【TIPプラグイン ver.3.04a】2019/10/10                                     */
 /*  by hororo http://hororo.wp.xdomain.jp/22/                                */
-
 
 /** CSV読み込み **************************************************************/
 var xhr = new XMLHttpRequest();
@@ -11,6 +10,7 @@ function createArray(csvData) {
 	var d = csvData.split("\n");
 	var tips = csv2json(d);
 };
+// csvデータを連想配列にする
 function csv2json(csvArray){
 	var csvNew = $.grep(csvArray, function(e){return e;});
 	var items = csvNew[0].split(",");
@@ -25,6 +25,7 @@ function csv2json(csvArray){
 		}
 		TYRANO.kag.tmp.tip.data.push(a_line);
 	};
+	//フラグ管理用sf変数を用意
 	if(TYRANO.kag.tmp.tip.flag=="false"){
 		var data = TYRANO.kag.tmp.tip.data;
 		for (var i = 0; i < TYRANO.kag.tmp.tip.data.length; i++) {
@@ -32,6 +33,7 @@ function csv2json(csvArray){
 			TYRANO.kag.variable.sf.tip_flag[i] = true ;
 		}
 	}
+
 };
 
 
@@ -64,15 +66,16 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 			$("#tip_list_container").html($("#tiplist_tmp").render(tipdata));   //テンプレート指定
 			if(that.kag.tmp.tip.vertical=="true") $("#tip_list_wrap").addClass("vertical"); //縦書き
 
-			//クリック
+			//クリックイベント
 			var click_on = false;
 			$(".tip_list").on({
-				"click touchstart":function(e) {
+				"touchstart mousedown":function(e) {
 					click_on = true;
 					var num = $(this).attr("data-num");
 					var key = tipdata.tips[num]["key"];
 					if(that.kag.tmp.tip.list_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_clickse,stop:"true"});
 					that.displayTip(key);
+					e.preventDefault();
 				},
 				"mouseenter": function() {
 					if(that.kag.tmp.tip.list_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.list_enterse,stop:"true"});
@@ -85,12 +88,13 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 
 			//閉じるボタン
 			$(".button_close").on({
-				"click touchstart":function(e) {
+				"touchstart mousedown":function(e) {
 					click_on = true;
 					if(that.kag.tmp.tip.close_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_clickse,stop:"true"});
 					layer_menu.hide();
 					layer_menu.empty();
 					if (that.kag.stat.visible_menu_button == true) $(".button_menu").show();
+					e.preventDefault();
 				},
 				"mouseenter": function() {
 					if(that.kag.tmp.tip.close_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_enterse,stop:"true"});
@@ -129,7 +133,7 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 						$(".tips_nav a").eq(0).addClass("now");
 					});
 					$(".tips_nav a").not("now").on({
-						"click touchstart": function(event){
+						"touchstart mousedown": function(e){
 							if($(this).hasClass("now")){
 							} else {
 								click_on = true;
@@ -141,6 +145,7 @@ tyrano.plugin.kag.menu.displayTiplist = function() {
 							var nextPage = this.hash;
 							pages.hide();
 							$(nextPage).show();
+							e.preventDefault();
 						},
 						"mouseenter": function() {
 							if($(this).hasClass("now")){
@@ -190,7 +195,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 			//閉じるボタン
 			var click_on = false;
 			$(".tip_close_button").on({
-				"click touchstart": function() {
+				"touchstart mousedown": function(e) {
 					click_on = true;
 					if(that.kag.tmp.tip.close_clickse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_clickse,stop:"true"});
 					if($("#tip_list_wrap").length || $(".log_body").length){
@@ -200,6 +205,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 						layer_menu.empty();
 						if (that.kag.stat.visible_menu_button == true) $(".button_menu").show();
 					}
+					e.preventDefault();
 				},
 				"mouseenter": function() {
 					if(that.kag.tmp.tip.close_enterse!="none")that.kag.ftag.startTag("playse",{storage:that.kag.tmp.tip.close_enterse,stop:"true"});
@@ -223,7 +229,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 				});
 
 				$(".tip_nav a").on({
-					"click touchstart": function(event){
+					"touchstart mousedown": function(e){
 						if($(this).hasClass("now")){
 						} else {
 							click_on = true;
@@ -235,6 +241,7 @@ tyrano.plugin.kag.menu.displayTip = function(key) {
 						var tip_nextPage = this.hash;
 						tip_pages.hide();
 						$(tip_nextPage).show();
+						e.preventDefault();
 					},
 					"mouseenter": function() {
 						if($(this).hasClass("now")){
@@ -269,6 +276,7 @@ tyrano.plugin.kag.tag.tip = {
 		enterse: TYRANO.kag.tmp.tip.tip_enterse,
 		leavese: TYRANO.kag.tmp.tip.tip_leavese
 	},
+
 	log_join:"true",
 	start : function(pm) {
 		var that = this;
@@ -290,7 +298,7 @@ tyrano.plugin.kag.tag.tip = {
 			if(pm.color) that.kag.tmp.tip.color_conf = "true";
 			else {
 				pm.color = that.kag.tmp.tip.color;
-				that.kag.tmp.tip.color_conf = "false";
+				//that.kag.tmp.tip.color_conf = "false";
 			};
 			var color = "";
 			if(that.kag.tmp.tip.color_conf=="true"){
@@ -325,19 +333,19 @@ tyrano.plugin.kag.tag.tip = {
 					};
 				};
 				var mark = (pm.mark=="true" && that.kag.tmp.tip.log_mark == "true") ? " mark" : "" ;
-				var entercolor = (that.kag.tmp.tip.color_conf=="true") ? $.convertColor(pm.color) : "";
+				var color = (that.kag.tmp.tip.color_conf=="true") ? $.convertColor(pm.color) : "";
 				var backlog = "<span class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' data-key='" + pm.key + "'" + color +">";
 				backlog += "<script>if($('.save_list').length==0){$('[data-key="+pm.key+"]').on({";
-				backlog += "'click touchstart': function(e) {";
-				if(pm.clickse!="none") backlog += "TYRANO.kag.ftag.startTag('playse',{storage:'"+pm.clickse+"',clear:'true',stop:'true'});";
-				backlog += "TYRANO.kag.menu.displayTip('"+pm.key+"');";
+				backlog += "'touchstart mousedown': function(e) {";
+				if(pm.clickse!="none" && that.kag.tmp.tip.log_mark.log_se == "true") backlog += "TYRANO.kag.ftag.startTag('playse',{storage:'"+pm.clickse+"',clear:'true',stop:'true'});";
+				backlog += "TYRANO.kag.menu.displayTip('"+pm.key+"');e.preventDefault();";
 				backlog += "},";
 				backlog += "'mouseenter': function() {"
-				if(pm.enterse!="none") backlog += "TYRANO.kag.ftag.startTag('playse',{storage:'"+pm.enterse+"',stop:'true'});";
+				if(pm.enterse!="none" && that.kag.tmp.tip.log_mark.log_se == "true") backlog += "TYRANO.kag.ftag.startTag('playse',{storage:'"+pm.enterse+"',stop:'true'});";
 				if(that.kag.tmp.tip.log_color=="true" && pm.entercolor) backlog += "$(this).css('color','"+$.convertColor(pm.entercolor)+"');";
 				backlog += "},";
 				backlog += "'mouseleave': function() {";
-				if(that.kag.tmp.tip.log_color=="true" && pm.entercolor) backlog += "$(this).css('color','"+entercolor+"');";
+				if(that.kag.tmp.tip.log_color=="true" && pm.entercolor) backlog += "$(this).css('color','"+color+"');";
 				backlog += "}})}</script>";
 				that.kag.pushBackLog(backlog,"join");
 			};
@@ -349,11 +357,12 @@ tyrano.plugin.kag.tag.tip = {
 		var that = this;
 		var click_on = false;
 		$("[data-key='"+pm.key+"']").on({
-			"mousedown touchstart": function(e) {
+			"touchstart mousedown": function(e) {
 				var key = $(this).attr("data-key");
 				click_on = true;
-				if(pm.clickse!="none")that.kag.ftag.startTag("playse",{storage:pm.clickse,stop:"true"});
 				that.kag.menu.displayTip(key);
+				if(pm.clickse!="none")that.kag.ftag.startTag("playse",{storage:pm.clickse,stop:"true"});
+				e.preventDefault();
 			},
 			"mouseenter": function() {
 				if(pm.enterse!="none")that.kag.ftag.startTag("playse",{storage:pm.enterse,stop:"true"});

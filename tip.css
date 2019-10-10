@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver.3.04】2018/9/30          */
+/* 【TIPプラグイン ver.3.04a】2019/10/10       */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
 * {
@@ -33,7 +33,7 @@
 	background:url(image/tip_mark.png);
 	background-size:14px;
 }
-/* 縦書き */
+/* 縦書き用マーク */
 .vertical_text .tip.mark {
 	margin-right: 0;
 }
@@ -316,7 +316,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	position:relative;
 	height: 100%;
 }
-/* 見出しの背景1 グラデーション */
+/* 見出しの背景1 グラデーション部分 */
 .tip_area:before {
 	content: "";
 	position: absolute;
@@ -336,7 +336,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	top:0px;
 	left:0px;
 }
-/* 見出しの背景2 ストライプ */
+/* 見出しの背景2 ストライプ部分 */
 .tip_item:before {
 	content: "";
 	position: absolute;
@@ -354,7 +354,7 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 /* 見出し */
 .tip_head {
 	position:relative;
-	padding: 7px 15px;
+	padding: 4px 15px;
 	display:block;
 	box-sizing:border-box;
 	width:100%;
@@ -562,18 +562,18 @@ rgba(255,255,255,0) 25%, rgba(0,120,190,0.7) 25%, rgba(0,120,190,0.7) 50%, rgba(
 	bottom: 250px !important;
 	right: 30px !important;
 }
-.tipsumple .message_outer {
+.tipsample .message_outer {
 	top: auto !important;
 	bottom: 30px !important;
 	width: 95% !important;
 }
-.tipsumple .message_inner {
+.tipsample .message_inner {
 	top: auto !important;
 	bottom: 40px !important;
 	width: 90% !important;
 	height: 190px !important;
 }
-.tipsumple .chara_name_area {
+.tipsample .chara_name_area {
 	top: auto !important;
 	bottom: 180px !important;
 }
