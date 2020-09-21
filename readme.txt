@@ -36,20 +36,20 @@ http://hororo.wp.xdomain.jp/22/
 -------------------------------------------------------------------------------------------------
   ①data/others/plugin に 「tip」を入れてください。
 
-  ②csvファイルを作成し、data/others/plugin/tip/ に保存します。※作り方は後述
+  ②csvファイルを作成し、data/others/plugin/tip/csv/ に保存します。※作り方は後述
     デフォルトのファイル名は「 tip_data.csv 」
 
   ③first.ks からプラグインを呼び出してください。
-    [plugin name="tip"]
+    [plugin name=tip]
 
   ④csvファイルを読み込みます。
   　[tip_loadcsv]
 
-  ⑤TIP呼出しにしたいテキストを [tip key="hoge"][endtip] で囲みます。
-    例：[tip key="hoge" color="0xff9999"]ほげ[endtip]
+  ⑤TIP呼出しにしたいテキストを [tip key=hoge][endtip] で囲みます。
+    例：[tip key=hoge]ほげ[endtip]
 
   ⑥TIP一覧表示は [tiplistshow] タグを使います。
-    [button] タグに割り当てる場合は sreepgame が必要です。
+    [button] タグに割り当てる場合は role=sleepgame を指定してください。
     target 先に[tiplist_show]を書きます。
     例：[button x=0 y=0 fix=true role=sleepgame graphic=tiplist.gif target=*tiplist]
         *tiplist
@@ -91,14 +91,13 @@ http://hororo.wp.xdomain.jp/22/
     color          0x000000形式  defaultChColor   TIPの色
     entercolor     0x000000形式  ""               TIPマウスカーソルが乗った時の色。
     flag           true/false    true             リスト表示をフラグ管理するか
+    flag_var       sf/f          sf               フラグ保存用変数の種類
     mark           true/false    false            TIPにマークを付ける
     log            true/false    true             バックログからもTIP表示させるか
     log_color      true/false    false            バックログのTIP color を入れるか（※log=true時）
     log_mark       true/false    false            バックログのTIP mark を入れるか
     log_se         true/false    false            バックログのTIP に SE を入れるか
     log_plugin     true/false    false            バックログプラグインを併用するか
-    pagefeed       true/false    true             TIPリストをページ分けするか
-    pagenum        数値          auto             リスト1ページあたりの件数
     all_clickse    oggファイル    none             クリック音
     all_enterse    oggファイル    none             マウスカーソルが乗った時の音
     all_leavese    oggファイル    none             マウスカーソルが外れた時の音
@@ -114,11 +113,12 @@ http://hororo.wp.xdomain.jp/22/
     navi_clickse   oggファイル    none             ナビのクリック音
     navi_enterse   oggファイル    none             ナビにマウスカーソルが乗った時の音
     navi_leavese   oggファイル    none             ナビからマウスカーソルが外れた時の音
-    vertical       true/false    config.vertical  縦書きにするか
-    flag_var       sf/f          sf               フラグ保存用変数の種類
     tip_html       htmlファイル   tip.html         TIP表示用html
     tiplist_html   htmlファイル   tip_list.html    TIPリスト表示用html
-    fade_speed     数値           300              TIP表示のフェード時間
+    pagefeed       true/false    true             TIPリストをページ分けするか
+    pagenum        数値          auto             リスト1ページあたりの件数
+    fade_speed     数値           300             TIP表示のフェード時間
+    vertical       true/false    config.vertical  縦書きにするか
 
 
   ◆ [tip_loadcsv] タグ用パラメーター
@@ -170,8 +170,10 @@ http://hororo.wp.xdomain.jp/22/
 
 
   ◆ csvファイル作成の注意
-    ・ファイル名を変更する場合は、[plugin name="tip" file="***.txt"] 等ファイル名を指定してください。
-    ・csvファイルは「tip」フォルダ内に保存してください。
+    ・ファイル名を変更する場合は、ファイル名を指定してください。
+      [plugin name=tip file=***.txt]
+      [tip_loadcsv file=***.txt]
+    ・csvファイルは「tip/csv」フォルダ内に保存してください。
     ・「カンマ区切りテキスト」であれば、拡張子はcsv以外でも構いません。
     ・文字コードは、「UTF-8」にしてください。
     ・1行目の見出しは必須です。
@@ -183,9 +185,9 @@ http://hororo.wp.xdomain.jp/22/
     ・ファイルが上手く読込めない場合は、一度テキストエディタで開き上書き保存してみてください。
 
     ◇データ例（※詳しくは添付の tip_data.csv を参照してください）
-      1行目　key,title,tip,tip2,_EOF
-      2行目　tyrano,ティラノスクリプト,マルチプラットフォーム対応のゲーム作成用スクリプトです。,2ページ目,_EOF
-      3行目　akane,あかね,<img src='./data/fgimage/chara/akane/normal.png'>ティラノスクリプト公式キャラクター。,,_EOF
+      1行目　key,title,tip,tip2
+      2行目　tyrano,ティラノスクリプト,マルチプラットフォーム対応のゲーム作成用スクリプトです。,2ページ目
+      3行目　akane,あかね,<img src='./data/fgimage/chara/akane/normal.png'>ティラノスクリプト公式キャラクター。,
 
 
   ◆ TIP詳細のページ分けについて
@@ -204,8 +206,8 @@ http://hororo.wp.xdomain.jp/22/
   ◆ その他
     ・マーク画像は、tip/image/tip_mark.png を差し替える事で変更可能です。
       ※正方形で作成してください。
-    ・マーク画像の表示は、tip/tip.css にて変更可能です。
-    ・フラグは、[tip] タグを表示した時点で true になります。TIPをクリックしたかは判断されません。
+    ・マーク画像の表示は、tip/js/tip.css にて変更可能です。
+    ・自動でのフラグ立ては、[tip] タグを表示した時点で true になります。TIPをクリックしたかは判断されません。
     ・リスト表示で pagenum="auto"（初期値）を使う場合は、
       #tip_list_container の width() height() 値を正確に設定してください。
       上手く動かない場合は、1ページの表示件数を数値で入力してください。
