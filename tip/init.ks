@@ -1,5 +1,5 @@
-;【TIPプラグイン ver4.00】
-; 2020/9/21更新  v504対応版
+;【TIPプラグイン ver4.01】
+; 2020/10/19更新  v504対応版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -71,9 +71,7 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [macro name="tip_loadcsv"]
 [iscript]
 	var tip_conf = tf.system.tip_conf;
-
-	//file名を取得
-	var file_name = (mp.file) ? mp.file.split('.',1) : tip_conf.data_name;
+	var file_name = (mp.file) ? mp.file.split('.',1) : tip_conf.data_name;//file名を取得
 
 	//初期値
 	mp.file          =  mp.file          ||  tip_conf.file;               //csvファイル。
@@ -81,22 +79,21 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 	mp.flag_var      =  mp.flag_var      ||  tip_conf.flag_var;           //フラグ用変数の種類
 	mp.tip_html      =  mp.tip_html      ||  tip_conf.tip_html;           //TIP表示用html
 	mp.tiplist_html  =  mp.tiplist_html  ||  tip_conf.tiplist_html;       //TIPリスト表示用html
-	mp.join          =  mp.join          ||  "false";                     //データを追加するか※使い方注意
+	//mp.nextend_close =  mp.nextend_close ||  "false";                     //nextの最後は閉じるイベントにする
+	//mp.join          =  mp.join          ||  "false";                     //データを追加するか※使い方注意
 	mp.data_name     =  file_name;
 	var pm = mp;
 
 	tipLoadcsv(pm);
 
 [endscript]
-;クリックしないとCSV反映されない対策。
-;tipLoadcsv()にもnextOrder入ってるので、この[l]はスキップされるっぽい。
-[l]
+[wait time=1]
 [endmacro]
 
 
 
 ;///◆[tiplist_show]タグ///////////////////////////////////////////////////////////////////
-[macro name="tiplist_show"]
+[macro name="tip_list"]
 [iscript]
 	var tip_conf = tf.system.tip_conf;
 
@@ -150,6 +147,7 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 	mp.enterse       =  mp.enterse        ||  tip_conf.tip_enterse;       //TIPにマウスカーソルが乗った時の音
 	mp.leavese       =  mp.leavese        ||  tip_conf.tip_leavese;       //TIPからマウスカーソルが外れた時の音
 	mp.data_name     =  mp.data_name      ||  tip_conf.data_name;         //データの名前
+	mp.page          =  mp.page           ||  "";                         //開くページ名
 	var pm = mp;
 
 	tip(pm);
@@ -168,4 +166,5 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
+[tip_loadcsv]
 [return]

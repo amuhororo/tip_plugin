@@ -1,7 +1,7 @@
-【TIPプラグイン ver4.00】
+【TIPプラグイン ver4.01】
 http://hororo.wp.xdomain.jp/22/
 
-2020/09/21更新 v504a対応版
+2020/10/19更新 v504a対応版
 
 -------------------------------------------------------------------------------------------------
 ■ 概要
@@ -29,6 +29,7 @@ http://hororo.wp.xdomain.jp/22/
   ・TIP詳細・TIP一覧はhtmlファイルで編集可能です。
   ・TIP詳細・TIP一覧のhtmlファイルをcsv別に変更できます。※4.00以降
   ・TIP詳細のテキストから別のTIP詳細を表示できます。※4.00以降
+  ・ページを指定してTIP詳細を表示できます。※4.01以降
   ・縦書き対応。※3.04以降
 
 -------------------------------------------------------------------------------------------------
@@ -48,12 +49,12 @@ http://hororo.wp.xdomain.jp/22/
   ⑤TIP呼出しにしたいテキストを [tip key=hoge][endtip] で囲みます。
     例：[tip key=hoge]ほげ[endtip]
 
-  ⑥TIP一覧表示は [tiplistshow] タグを使います。
+  ⑥TIP一覧表示は [tip_list] タグを使います。
     [button] タグに割り当てる場合は role=sleepgame を指定してください。
-    target 先に[tiplist_show]を書きます。
+    target 先に[tip_list]を書きます。
     例：[button x=0 y=0 fix=true role=sleepgame graphic=tiplist.gif target=*tiplist]
         *tiplist
-        [tiplist_show][s]
+        [tip_list][s]
 
 
   ◆記述例
@@ -72,8 +73,8 @@ http://hororo.wp.xdomain.jp/22/
     ●別のcsvのTIPを表示する … [tip] に、data_name でファイル名（拡張子無し）を指定する。
       [tip key=hoge data_name=sample] ※keyは必須です
 
-    ●別のcsvのリストを表示する … [tiplist_show] に、data_name でファイル名（拡張子無し）を指定する。
-      [tiplist_show data_name=sample]
+    ●別のcsvのリストを表示する … [tip_list] に、data_name でファイル名（拡張子無し）を指定する。
+      [tip_list data_name=sample]
 
     ●フラグを追加する … [tip_flag] タグを使います。※flag_name は何でもOK
       [tip_flag key=hoge flag_name=flag2]
@@ -82,6 +83,13 @@ http://hororo.wp.xdomain.jp/22/
     ●TIP詳細から直接別TIP詳細を表示する … csv のtip項目にhtmlを記述する。
       <span class='tip' data-key='hoge'>ほげ</span>
       <span class='tip' data-key='hoge' data-name='sample'>ほげ</span>
+
+    ●ページを指定してTIPを開く … tipタグに page パラメータを指定する。
+      [tip key=hoge page=2] ※2ページ目を開く場合
+
+      ※非表示ページ等で、ページ名を指定したい場合は、テンプレートにdata-pageを記述する。
+      テンプレート：<div class="tip_body" data-page="testpage">
+      tipタグ　　 :[tip key=hoge page=testpage]
 
 
   ◆ [pulugin] 用パラメーター（※初期の場合は省略可）
@@ -146,7 +154,7 @@ http://hororo.wp.xdomain.jp/22/
     data_name     文字列          ×      csvデータ名（※拡張子は無し）
 
 
-  ◆ [tiplist_show] タグ用パラメーター
+  ◆ [tip_list] タグ用パラメーター
     ※省略した場合は [pluguin] で指定したデータを反映します。
 
     パラメータ名   値             必須    説明
@@ -261,6 +269,8 @@ http://hororo.wp.xdomain.jp/22/
 -------------------------------------------------------------------------------------------------
 ■ 更新履歴
 -------------------------------------------------------------------------------------------------
+  2020/10/19  ver4.01   リスト表示用タグを[tip_list]に変更。ナビにprev/nextを追加。tipのページ指定追加。
+                        tip内tip表示、f変数を指定した時の挙動等、不具合修正。他CSSなど修正。
   2020/09/21  ver4.00   CSV複数読み込み、テンプレート指定等機能追加。ティラノv504aで動作確認。
   2019/10/10  ver3.04a  一部パラメータが効かない不具合修正。他微調整。ティラノv475で動作確認。
   2018/09/30  ver3.04   縦書き対応。

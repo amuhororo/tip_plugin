@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.00】 2020/09/21
+// 【TIPプラグイン ver4.01】 2020/10/18
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 
@@ -10,6 +10,7 @@ $(function(){
 	//$(".message_inner .tip[data-obj]").on({
 		"touchstart click": function(e) {
 			var obj = $(this).data('obj');
+			obj.key = $(this).data('key');
 			click_on = true;
 			if(obj.clickse!="none") {
 				if($(".log_body").length > 0 && tip_conf.log_se=="false"){

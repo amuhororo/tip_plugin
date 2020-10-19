@@ -34,10 +34,10 @@
 	background-size:14px;
 }
 /* 縦書き用マーク */
-.vertical_text .tip.mark {
+.vertical .tip.mark {
 	margin-right: 0;
 }
-.vertical_text .tip.mark:after {
+.vertical .tip.mark:after {
 	position: relative;
 	top: 1px;
   right: -12px;
@@ -129,13 +129,19 @@
 	font-size:18px;
 }
 
-
+.tip_list_area {
+	height:100%;
+	display: flex;
+	flex-wrap: wrap;
+	/*flex-direction: column;*/
+	align-content: flex-start;
+}
 /* リスト */
 .tips_item {
 	font-size:20px;
 	color:rgba(0,0,90,1);
 	position: relative;
-	float:left;
+	/*float:left;*/
 	/* ↓ 1列 96%　2列 46%　3列 29% */
 	width: 46%;
 	height:45px;
@@ -217,6 +223,11 @@
 }
 .tips_nav a.now:hover {
 	text-shadow: none;
+}
+/* ページナビボタン prevボタン */
+.tips_nav a .prev,
+.tips_nav a .next {
+	/*display: none;*/
 }
 
 
@@ -378,6 +389,11 @@
 .tip_nav a.now:hover {
 	text-shadow: none;
 }
+/* ページナビ next・prevボタン */
+.tip_nav a .prev,
+.tip_nav a .next {
+	/*display: none;*/
+}
 
 
 /*****************************************************
@@ -385,39 +401,28 @@
 ******************************************************/
 /* リスト */
 .vertical .tip_list_area {
-	height:100%;
 	writing-mode: vertical-rl;
 	-webkit-writing-mode: vertical-rl;
 	-ms-writing-mode: tb-rl;
-	margin: 0 auto;
+	text-orientation: upright;
+	-webkit-text-orientation: upright;
+	margin: 0 auto; /*中央寄せ*/
 }
 .vertical .tips_item {
 	width: 45px;
 	height:95%;
-	margin: 2% 13px;
+	height:calc(100% - 30px);
+	margin: 15px 13px;
+	padding: 15px 7px;
 	background: linear-gradient(to left, #02afea, #0077c1); /* 画像を使う場合は background-image で画像指定 */
 }
 /* 縦画面用 */
 @media (max-width: 768px) and (orientation:portrait) {
 	.vertical .tips_item {height: 46%;}
 }
-/* リストの背景2 黄色い部分 ※画像使う場合は不要 */
-.vertical .tips_item:before {
-	transform:rotate(-2deg);
-	height:101%;
-	width:50px;
-	top:3px;
-	left:-2px;
-}
 
-/* リストの背景3 ストライプ部分 ※画像使う場合は不要 */
-.vertical .tips_item p {
-	width:44px;
-	height:100%;
-	padding: 15px 8px;
-}
 .vertical .tip_id {
-    height: 3.7em;
+    /*height: 3.7em;*/
 }
 /* 影方向調整 */
 .vertical .tips_body .tip_list:hover {
@@ -430,6 +435,8 @@
 	writing-mode: vertical-rl;
 	-webkit-writing-mode: vertical-rl;
 	-ms-writing-mode: tb-rl;
+	text-orientation: upright;
+	-webkit-text-orientation: upright;
 	position: relative;
 	height: 100%;
 	width: 100%;
@@ -480,10 +487,12 @@
 	width:40px;
 	height:36px;
 	line-height:36px;
-	padding-top: 9px;
-	-webkit-text-combine: horizontal;
-	-ms-text-combine-horizontal: all;
-	text-combine-upright: all;
+	writing-mode: lr;
+}
+.vertical .tip_nav a.prev,
+.vertical .tip_nav a.next {
+	writing-mode: vertical-lr;
+	text-orientation: mixed;
 }
 
 

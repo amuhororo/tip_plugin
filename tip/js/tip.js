@@ -1,6 +1,5 @@
-// 【TIPプラグイン ver4.00】 2020/09/21
+// 【TIPプラグイン ver4.01】 2020/10/18
 //  by hororo http://hororo.wp.xdomain.jp/22/
-
 
 //--- ◆ csv読み込み -----------------------------------------------------------------------
 function tipLoadcsv(pm) {
@@ -8,7 +7,7 @@ function tipLoadcsv(pm) {
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 
 	//データ保存用変数
-	if(pm.join=="false") tip_conf["data_"+pm.data_name] = [];
+	if(!pm.join) tip_conf["data_"+pm.data_name] = [];
 
 	//csv読み込み
 	$.get({
@@ -48,7 +47,7 @@ function tipLoadcsv(pm) {
 					TYRANO.kag.stat.f.tip_flag[pm.data_name][i]["flag"] = flag_val;
 				}
 			}
-			tip_flag = f.tip_flag[pm.data_name];
+			tip_flag = TYRANO.kag.stat.f.tip_flag[pm.data_name];
 		} else {
 			if(TYRANO.kag.variable.sf.tip_flag[pm.data_name]===undefined) {
 				TYRANO.kag.variable.sf.tip_flag[pm.data_name] = [];
@@ -76,6 +75,7 @@ function tipLoadcsv(pm) {
 				a_line["flag_var"]      =  pm.flag_var;             //フラグ用変数の種類を追加
 				a_line["tip_html"]      =  pm.tip_html;             //tip用htmlを追加
 				a_line["tiplist_html"]  =  pm.tiplist_html;         //tiplist用htmlを追加
+				a_line["nextend_close"]  =  pm.nextend_close;       //nextの最後は閉じるイベント
 				a_line[items[j]]        =  csvArrayD[j];            //各データに項目名を追加
 			}
 
@@ -94,6 +94,12 @@ function displayTiplist(pm) {
   TYRANO.kag.stat.is_auto_wait = false;
 
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+
+	//データが見つからない場合
+	if(!tip_conf["data_"+pm.data_name]){
+		alert( "「" + pm.data_name + ".csv」を読み込んでいません。");
+	};
+
 	var layer_menu = TYRANO.kag.layer.getMenuLayer();
 	var speed = parseInt(tip_conf.fade_speed);
 
@@ -134,7 +140,7 @@ function displayTiplist(pm) {
 						_pm.key = key;
 						if(pm.list_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:pm.list_clickse,stop:"true"});
 						displayTip(_pm);
-							e.preventDefault();
+						e.preventDefault();
 					},
 					"mouseenter": function() {
 						if(pm.list_enterse!="none")TYRANO.kag.ftag.startTag("playse",{storage:pm.list_enterse,stop:"true"});
@@ -151,10 +157,15 @@ function displayTiplist(pm) {
 						click_on = true;
 						if(tip_conf.close_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_clickse,stop:"true"});
 
-						layer_menu.fadeOut(speed, function(){ $(this).empty();});
+						layer_menu.fadeOut(speed, function(){
+							$(this).empty();
+						});
 
 						if (TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
-						TYRANO.kag.ftag.startTag("awakegame");
+						if (TYRANO.kag.tmp.sleep_game == null){
+						}else{
+							TYRANO.kag.ftag.startTag("awakegame");
+						};
 						e.preventDefault();
 					},
 					"mouseenter": function() {
@@ -165,7 +176,7 @@ function displayTiplist(pm) {
 						if(tip_conf.close_leavese!="none" && click_on==false)TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_leavese,stop:"true"});
 					}
 				});
-			},speed);
+			},100);
 
 			//リスト分け
 			if(tip_conf.pagefeed == "true"){
@@ -173,6 +184,7 @@ function displayTiplist(pm) {
 					var height_size = parseInt($("#tip_list_container").height());
 					var count_w = Math.floor(parseInt($("#tip_list_container").width()) / parseInt($("#tip_list_container").find("li").outerWidth(true)));
 					var count_h = Math.floor(height_size / parseInt($("#tip_list_container").find("li").outerHeight(true)));
+					if(count_h < 1) count_h = 1;
 					var list = parseInt(count_w) * parseInt(count_h);
 				} else {
 					var list = tip_conf.pagenum;
@@ -183,39 +195,77 @@ function displayTiplist(pm) {
 				}while($("#tip_list_container").children("li").length)
 
 				var pages = $(".tip_list_area");
+				var pages_max = $(".tip_list_area").length;
 				pages.hide();
 				pages.eq(0).show();
 
 				//ナビ
 				if($(".tip_list_area").length > 1){
 					pages.parent().prepend("<ul class='tips_nav'></ul>");
+
+					$(".tips_nav").append("<li><a href='' class='prev'>≪</a></li>");
+
+					var nav_index = 0;
+					if($(".tips_nav a").eq(0).hasClass("prev")) nav_index++;
+					if($(".tips_nav a").eq(0).hasClass("prev")==false) pages_max = pages_max-1;
+					if(TYRANO.kag.variable.tf.tiplist_nav){
+						nav_index = TYRANO.kag.variable.tf.tiplist_nav;
+					}
+
 					pages.each(function (i) {
 						$(".tips_nav").append("<li><a href='#nav"+( i+1 )+"'>" + ( i+1 ) +"</a></li>");
 						$(this).attr("id", "nav"+(i+1));
-						var nav_index = 0;
-						if(TYRANO.kag.variable.tf.tiplist_nav) nav_index = TYRANO.kag.variable.tf.tiplist_nav;
 						if(nav_index != 0){
 							pages.hide();
-							$("#nav"+(parseInt(nav_index, 10)+1)).show();
+							if($(".tips_nav a").eq(0).hasClass("prev")) $("#nav"+(nav_index)).show();
+							else $("#nav"+(nav_index+1)).show(); //prev無い時一個ずれる
 							$(".tips_nav a").eq(nav_index).addClass("now");
 						}else{
 							$(".tips_nav a").eq(0).addClass("now");
 						}
 					});
 
+					$(".tips_nav").append("<li><a href='' class='next'>≫</a></li>");
+
 					setTimeout(function(){//※開いてすぐmouseenter反応するの防止
 						$(".tips_nav a").not("now").on({
 							"touchstart click": function(e){
-								var index = $(".tips_nav a").index(this);
-								TYRANO.kag.variable.tf.tiplist_nav = index;
+								$(".tips_nav a").removeClass("now");
+								//var index = 1;
+								//if(TYRANO.kag.variable.tf.tiplist_nav) index = TYRANO.kag.variable.tf.tiplist_nav;
+								//var index = $(".tips_nav a").index(this);
+								//TYRANO.kag.variable.tf.tiplist_nav = index;
+
 								if($(this).hasClass("now")){
 								} else {
 									click_on = true;
 									if(tip_conf.navi_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_clickse,stop:"true"});
+									if($(this).hasClass("prev") || $(this).hasClass("next")){
+										e.preventDefault();
+										if($(".tips_nav a").eq(0).hasClass("prev") && nav_index==0) nav_index++;
+										if($(this).hasClass("prev")) {
+											nav_index--;
+											if(nav_index < 1) nav_index = 1;
+										}else if($(this).hasClass("next")){
+											nav_index++;
+											if(nav_index > pages_max){
+												nav_index = pages_max;
+											}
+										}
+										$(".tips_nav a").eq(nav_index).addClass("now");
+										if($(".tips_nav a").eq(0).hasClass("prev")) var nextPage = "#nav"+nav_index;
+										else var nextPage = "#nav"+(nav_index+1);
+									} else {
+										nav_index = $(".tips_nav a").index(this);
+										$(this).addClass("now");
+										var nextPage = this.hash;
+									}
 								};
-								$(".tips_nav a").removeClass("now");
-								$(this).addClass("now");
-								var nextPage = this.hash;
+								//if($(".tips_nav a").eq(0).hasClass('prev')) nav_index--;
+								TYRANO.kag.variable.tf.tiplist_nav = nav_index;
+								//$(".tips_nav a").removeClass("now");
+								//$(this).addClass("now");
+								//var nextPage = this.hash;
 								pages.hide();
 								$(nextPage).show();
 								e.preventDefault();
@@ -234,7 +284,7 @@ function displayTiplist(pm) {
 								}
 							}
 						});
-					},speed);
+					},100);
 					//
 				}
 			} else {
@@ -251,13 +301,24 @@ function displayTiplist(pm) {
 //--- ◆ TIP詳細 --------------------------------------------------------------------------
 function displayTip(pm) {
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	var tipdata = tip_conf["data_"+pm.data_name];
+
+	if(tipdata === undefined){
+		alert("data 「" + pm.data_name +" 」 は存在しません。");
+	};
+
 	var tip = $.grep(tipdata,function(n, i) { return (n.key == pm.key) });
 	var tip_html = tip[0]["tip_html"];
+	var nextend_close = tip[0]["nextend_close"];
 	var speed = parseInt(tip_conf.fade_speed);
 
 	var layer_menu = TYRANO.kag.layer.getMenuLayer();
-	if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0) layer_menu.empty();
+	if(pm.intip != true){
+		if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0){
+			layer_menu.empty();
+		}
+	};
 	if($("#tip_wrap").length == 0 && pm.intip != true) {
 		layer_menu.append("<div id='tip_wrap' style='display:none;'></div>");
 	};
@@ -272,26 +333,33 @@ function displayTip(pm) {
 			$("#tip_container").html($("#tip_tmp").render(tip));
 			if(tip_conf.vertical=="true") $("#tip_wrap").addClass("vertical"); //縦書き
 
+			//閉じるイベント
+			var close_ev = function(){
+				if($("#tip_list_wrap").length){
+					$("#tip_wrap").fadeOut(speed, function(){
+						displayTiplist(pm);
+						$(this).remove();
+					});
+				}else if($(".log_body").length){
+					$("#tip_wrap").fadeOut(speed, function(){
+						$(this).remove();
+					});
+				} else {
+					layer_menu.fadeOut(speed, function(){
+						$(this).empty();
+					});
+					if (TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
+				}
+			};//閉じるイベントend
+
 			//閉じるボタン
 			var click_on = false;
 			$(".tip_close_button").on({
 				"touchstart click": function(e) {
-					var obj = $(this).data('obj');
+					//var obj = $(this).data('obj');
 					click_on = true;
 					if(tip_conf.close_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_clickse,stop:"true"});
-					if($("#tip_list_wrap").length){
-						$("#tip_wrap").fadeOut(speed, function(){
-							displayTiplist(pm);
-							$(this).remove();
-						});
-					}else if($(".log_body").length){
-						$("#tip_wrap").fadeOut(speed, function(){
-							$(this).remove();
-						});
-					} else {
-						layer_menu.fadeOut(speed, function(){ $(this).empty();});
-						if (TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
-					}
+					close_ev();
 					e.preventDefault();
 				},
 				"mouseenter": function() {
@@ -306,26 +374,65 @@ function displayTip(pm) {
 			//ページ分け
 			if($(".tip_body").length > 1){
 				var tip_pages = $(".tip_body");
+				var tip_pages_max = $(".tip_body").length;
+				var page_index = 0;
+				//ページ指定があったら直接開く
+				if(pm.page && pm.page != ""){
+					if($.isNumeric(pm.page)){
+						page_index = pm.page-1;
+					}else if($(".tip_body[data-page]").length){
+						page_index = $(".tip_body").index($(".tip_body[data-page='"+pm.page+"']"));
+						if(page_index < 0 ) page_index = 0;
+					}
+				};
+
 				tip_pages.hide();
-				tip_pages.eq(0).show();
+				tip_pages.eq(page_index).show();
+
+				//ナビ
 				tip_pages.parent().prepend("<ul class='tip_nav'></ul>");
 				tip_pages.each(function (i) {
 					$(".tip_nav").append("<li><a href='#d"+( i+1 )+"' class='button'>" + ( i+1 ) +"</a></li>");
 					$(this).attr("id", "d"+(i+1));
-					$(".tip_nav a").eq(0).addClass("now");
 				});
+				$(".tip_nav a").eq(page_index).addClass("now");
+
+				$(".tip_nav").prepend("<li><a href='' class='button prev'>≪</a></li>");
+				$(".tip_nav").append("<li><a href='' class='button next'>≫</a></li>");
+
+				if($(".tip_nav a").eq(0).hasClass("prev")) page_index++;
+				if($(".tip_nav a").eq(0).hasClass("prev")==false) tip_pages_max = tip_pages_max-1;
 
 				$(".tip_nav a").on({
 					"touchstart click": function(e){
+						$(".tip_nav a").removeClass("now");
 						if($(this).hasClass("now")){
 						} else {
 							click_on = true;
 							if(tip_conf.navi_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_clickse,stop:"true"});
+
+							if($(this).hasClass("prev") || $(this).hasClass("next")){
+								if($(this).hasClass("prev")) {
+									page_index--;
+									if(page_index < 1) page_index = 1;
+								}else if($(this).hasClass("next")){
+									page_index++;
+									if(page_index > tip_pages_max){
+										if(nextend_close) close_ev();
+										else page_index = tip_pages_max;
+									}
+								}
+								$(".tip_nav a").eq(page_index).addClass("now");
+								var tip_nextPage = "#d"+page_index;
+							}else{
+								$(this).addClass("now");
+								var tip_nextPage = this.hash;
+							}
 						};
-						$(".tip_nav a").removeClass("now");
-						$(this).addClass("now");
-						event.preventDefault();
-						var tip_nextPage = this.hash;
+						//$(".tip_nav a").removeClass("now");
+						//$(this).addClass("now");
+						//event.preventDefault();
+						//var tip_nextPage = this.hash;
 						tip_pages.hide();
 						$(tip_nextPage).show();
 						e.preventDefault();
@@ -346,32 +453,38 @@ function displayTip(pm) {
 				});//$(".tip_nav a").on() end
 			};//ページ分け end
 
-
 			//TIP内TIP
 			$('.tip_body .tip').on({
 				'touchstart click': function(e) {
-					var s_key = $('.tip').data('key');
-					var s_data_name = pm.data_name;
-					if($('.tip').data('name')) s_data_name = $('.tip').data('name');
-					var s_data = tip_conf["data_"+s_data_name];
-					var s_tip = $.grep(s_data,function(ev, i) { return (ev.key == s_key) });
-					var s_tip_id = tip[0]["id"];
-					var flag_var = tip[0]["flag_var"];
 					var _pm = pm;
+					var s_key = $(this).attr('data-key');
+					var s_data_name = pm.data_name;
+					if($(this).attr('data-name')) s_data_name = $(this).attr('data-name');
+					var s_data = tip_conf["data_"+s_data_name];
+					if(s_data === undefined){
+						alert("data 「 " + s_data_name +" 」 は存在しません。");
+					}
+					var s_tip = $.grep(s_data,function(ev, i) { return (ev.key == s_key) });
+					if(s_tip == ""){
+						alert( "data " + s_data_name + "に、key 「 "+s_key+" 」 は存在しません。");
+					}
+					var s_tip_id = s_tip[0]["id"];
+					var flag_var = s_tip[0]["flag_var"];
 					_pm.key = s_key;
+					_pm.data_name = s_data_name;
 					_pm.intip = true;
 
 					//フラグ
 					if(tip_conf.flag=="true"){
-						tip_conf["data_"+pm.data_name][s_tip_id]["flag"] = true ;
+						tip_conf["data_"+_pm.data_name][s_tip_id]["flag"] = true ;
 						if(flag_var == "f") {
 							TYRANO.kag.ftag.startTag("eval",{
-								exp:TYRANO.kag.stat.f.tip_flag[pm.data_name][s_tip_id]["flag"] = true,
+								exp:TYRANO.kag.stat.f.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
 								next:"false"
 							});
 						}else{
 							TYRANO.kag.ftag.startTag("eval",{
-								exp:TYRANO.kag.variable.sf.tip_flag[pm.data_name][s_tip_id]["flag"] = true,
+								exp:TYRANO.kag.variable.sf.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
 								next:"false"
 							});
 						}
@@ -385,7 +498,10 @@ function displayTip(pm) {
 						}
 					};
 
-					$("#tip_container").fadeOut(speed/2, function(){ $(this).remove();displayTip(_pm);});
+					$("#tip_container").fadeOut(speed/2, function(){
+						$(this).remove();
+						displayTip(_pm);
+					});
 					e.preventDefault();
 				},
 				"mouseenter": function() {
@@ -408,15 +524,14 @@ function displayTip(pm) {
 					if(tip_conf.entercolor) $(this).css("color",$.convertColor(tip_conf.color));
 				}
 			});//TIP内TIP end
-		}
+		}//success: function(data) end
 	});//$.ajax() end
-
 	if(pm.intip==true){
 		$("#tip_container").fadeIn(speed);
 		pm.intip = false;
 	} else {
 		$("#tip_wrap").fadeIn(speed);
-	}
+	};
 	if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0) layer_menu.fadeIn(speed);
 };
 //--- ◆ end -----------------------------------------------------------------------------
@@ -458,7 +573,8 @@ function tip(pm) {
 		data_obj += '"entercolor":"' + pm.entercolor + '",';
 		data_obj += '"clickse":"' + pm.clickse + '",';
 		data_obj += '"enterse":"' + pm.enterse + '",';
-		data_obj += '"leavese":"' + pm.leavese + '"';
+		data_obj += '"leavese":"' + pm.leavese + '",';
+		data_obj += '"page":"' + pm.page + '"';
 		data_obj += '}';
 
 		//カラー
@@ -519,6 +635,7 @@ function tip(pm) {
 	};
 	//keyがある時終わり
 
+	//クリックイベント呼び出し※innerに入れないと、sleepgameから戻った後クリック出来ない。
 	$('.message_inner').prepend("<script>$.getScript('./data/others/plugin/tip/js/tip_click.js');</script>");
 };
 //--- ◆ end -----------------------------------------------------------------------------
@@ -546,6 +663,10 @@ function tipflag(pm) {
 
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	var data = tip_conf["data_"+pm.data_name];
+
+	if(data === undefined){
+		alert("data 「" + pm.data_name +" 」 は存在しません。");
+	}
 
 	//データにkeyが存在するかチェック
 	var tip = $.grep(data,function(e, i) {
