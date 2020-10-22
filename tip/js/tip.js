@@ -1,25 +1,18 @@
-// 【TIPプラグイン ver4.01】 2020/10/19
+// 【TIPプラグイン ver4.01a】 2020/10/22
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 //--- ◆ csv読み込み -----------------------------------------------------------------------
 function tipLoadcsv(pm) {
-
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
-
 	//データ保存用変数
 	if(!pm.join) tip_conf["data_"+pm.data_name] = [];
 
-	//csv読み込み
-	$.get({
-  	url: "./data/others/plugin/tip/csv/"+pm.file,
-  	method: "GET"
-	})
-	.done(function(data) {
-		var n = "\n";
-		if(data.indexOf("\r\n")>-1) n = "\r\n";
-		else if(data.indexOf("\r\n")>-1) n = "\r";
-		var d = data.split(n);
-		csvjson(d);
+	$.ajax({
+		type: "GET",
+		url: "./data/others/plugin/tip/csv/"+pm.file,
+		dataType: "text"
+	}).done(function(data) {
+		csvjson(data);
 	})
 	.fail(function(data) {
 		alert("ファイル 「 "+pm.file+" 」 がありません。");
@@ -27,7 +20,11 @@ function tipLoadcsv(pm) {
 
 
 	//連想配列にする
-	function csvjson(csvArray){
+	function csvjson(data){
+		var n = "\n";
+		if(data.indexOf("\r\n")>-1) n = "\r\n";
+		else if(data.indexOf("\r\n")>-1) n = "\r";                //改行コード
+		var csvArray = data.split(n);                             //改行で配列
 		var csvNew = $.grep(csvArray, function(e){return e;});    //空行削除
 		var items = csvNew[0].split(",");                         //「項目名」の配列を作る
 
@@ -35,10 +32,11 @@ function tipLoadcsv(pm) {
 		var num = 0;
 		if(pm.join=="true") num = tip_conf["data_"+pm.data_name].length;
 
-		//フラグ管理用変数を用意（※フラグのみセーブする）
+		//フラグ管理用変数を用意（※フラグのみ保存する）
 		var tip_flag = [];
 		var flag_val = false;
 		if(pm.flag=="false") flag_val = true;
+
 		if ( pm.flag_var == "f" ) {
 			if (TYRANO.kag.stat.f.tip_flag[pm.data_name]===undefined) {
 				TYRANO.kag.stat.f.tip_flag[pm.data_name] = [];
@@ -75,14 +73,14 @@ function tipLoadcsv(pm) {
 				a_line["flag_var"]      =  pm.flag_var;             //フラグ用変数の種類を追加
 				a_line["tip_html"]      =  pm.tip_html;             //tip用htmlを追加
 				a_line["tiplist_html"]  =  pm.tiplist_html;         //tiplist用htmlを追加
-				a_line["nextend_close"]  =  pm.nextend_close;       //nextの最後は閉じるイベント
+				a_line["nextend"]       =  pm.nextend;              //nextの最後のイベント
 				a_line[items[j]]        =  csvArrayD[j];            //各データに項目名を追加
 			}
 
 			tip_conf["data_"+pm.data_name].push(a_line);
 		}
-		TYRANO.kag.ftag.nextOrder();
-	}
+		//TYRANO.kag.ftag.nextOrder();
+	}; //csvjson() end
 };
 //--- ◆ end ------------------------------------------------------------------------------
 
@@ -121,8 +119,9 @@ function displayTiplist(pm) {
 	$.ajax({
 		url:"./data/others/plugin/tip/html/"+tiplist_html,
 		type:"GET",
-		dataType: 'html',
-		success: function(data) {
+		dataType: 'html'
+	})
+	.done(function(data) {
 			layer_menu.html($(data));
 			$("#tip_list_wrap").css("font-family", TYRANO.kag.config.userFace);//デフォルトフォント指定
 			$("#tip_list_container").html($("#tiplist_tmp").render(tipdata));   //テンプレート指定
@@ -203,10 +202,10 @@ function displayTiplist(pm) {
 				if($(".tip_list_area").length > 1){
 					pages.parent().prepend("<ul class='tips_nav'></ul>");
 
-					$(".tips_nav").append("<li><a href='' class='prev'>≪</a></li>");
+					$(".tips_nav").append("<li><a class='prev'>≪</a></li>");
 
 					var nav_index = 0;
-					if($(".tips_nav a").eq(0).hasClass("prev")) nav_index++;
+					if($(".tips_nav a").eq(0).hasClass("prev")) nav_index=+1;
 					if($(".tips_nav a").eq(0).hasClass("prev")==false) pages_max = pages_max-1;
 					if(TYRANO.kag.variable.tf.tiplist_nav){
 						nav_index = TYRANO.kag.variable.tf.tiplist_nav;
@@ -225,7 +224,7 @@ function displayTiplist(pm) {
 						}
 					});
 
-					$(".tips_nav").append("<li><a href='' class='next'>≫</a></li>");
+					$(".tips_nav").append("<li><a class='next'>≫</a></li>");
 
 					setTimeout(function(){//※開いてすぐmouseenter反応するの防止
 						$(".tips_nav a").not("now").on({
@@ -289,9 +288,9 @@ function displayTiplist(pm) {
 				}
 			} else {
 				$("#tip_list_container").children("li").wrapAll("<ul class='tip_list_area'></ul>")
-			}
-		}
-	});
+			} //リスト分け end
+
+	}); //$.ajax.done end
 
 	layer_menu.fadeIn(speed);
 };
@@ -310,7 +309,7 @@ function displayTip(pm) {
 
 	var tip = $.grep(tipdata,function(n, i) { return (n.key == pm.key) });
 	var tip_html = tip[0]["tip_html"];
-	var nextend_close = tip[0]["nextend_close"];
+	var nextend = tip[0]["nextend"];
 	var speed = parseInt(tip_conf.fade_speed);
 
 	var layer_menu = TYRANO.kag.layer.getMenuLayer();
@@ -326,206 +325,204 @@ function displayTip(pm) {
 	$.ajax({
 		url:"./data/others/plugin/tip/html/" + tip_html,
 		type:"GET",
-		dataType: 'html',
-		success: function(data) {
-			$("#tip_wrap").html($(data));
-			$("#tip_container").css("font-family", TYRANO.kag.config.userFace);
-			$("#tip_container").html($("#tip_tmp").render(tip));
-			if(tip_conf.vertical=="true") $("#tip_wrap").addClass("vertical"); //縦書き
+		dataType: 'html'
+	})
+	.done(function(data) {
+		$("#tip_wrap").html($(data));
+		$("#tip_container").css("font-family", TYRANO.kag.config.userFace);
+		$("#tip_container").html($("#tip_tmp").render(tip));
+		if(tip_conf.vertical=="true") $("#tip_wrap").addClass("vertical"); //縦書き
 
-			//閉じるイベント
-			var close_ev = function(){
-				if($("#tip_list_wrap").length){
-					$("#tip_wrap").fadeOut(speed, function(){
-						displayTiplist(pm);
-						$(this).remove();
-					});
-				}else if($(".log_body").length){
-					$("#tip_wrap").fadeOut(speed, function(){
-						$(this).remove();
-					});
-				} else {
-					layer_menu.fadeOut(speed, function(){
-						$(this).empty();
-					});
-					if (TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
+		//閉じるイベント
+		function close_ev(){
+		//var close_ev = function(){
+			if($("#tip_list_wrap").length){
+				$("#tip_wrap").fadeOut(speed, function(){
+					displayTiplist(pm);
+					$(this).remove();
+				});
+			}else if($(".log_body").length){
+				$("#tip_wrap").fadeOut(speed, function(){
+					$(this).remove();
+				});
+			} else {
+				layer_menu.fadeOut(speed, function(){
+					$(this).empty();
+				});
+				if (TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
+			}
+		};//閉じるイベントend
+
+		//閉じるボタン
+		var click_on = false;
+		$(".tip_close_button").on({
+			"touchstart click": function(e) {
+				//var obj = $(this).data('obj');
+				click_on = true;
+				if(tip_conf.close_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_clickse,stop:"true"});
+				close_ev();
+				e.preventDefault();
+			},
+			"mouseenter": function() {
+				if(tip_conf.close_enterse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_enterse,stop:"true"});
+				click_on = false;
+			},
+			"mouseleave": function() {
+				if(tip_conf.close_leavese!="none" && click_on==false)TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_leavese,stop:"true"});
+			}
+		}); //$(".tip_close_button").on() end
+
+		//ページ分け
+		if($(".tip_body").length > 1){
+			var tip_pages = $(".tip_body");
+			var tip_pages_max = $(".tip_body").length;
+			var page_index = 0;
+			//ページ指定があったら直接開く
+			if(pm.page && pm.page != ""){
+				if($.isNumeric(pm.page)){
+					page_index = pm.page-1;
+				}else if($(".tip_body[data-page]").length){
+					page_index = $(".tip_body").index($(".tip_body[data-page='"+pm.page+"']"));
+					if(page_index < 0 ) page_index = 0;
 				}
-			};//閉じるイベントend
+			};
 
-			//閉じるボタン
-			var click_on = false;
-			$(".tip_close_button").on({
-				"touchstart click": function(e) {
-					//var obj = $(this).data('obj');
-					click_on = true;
-					if(tip_conf.close_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_clickse,stop:"true"});
-					close_ev();
+			tip_pages.hide();
+			tip_pages.eq(page_index).show();
+
+			//ナビ
+			tip_pages.parent().prepend("<ul class='tip_nav'></ul>");
+			tip_pages.each(function (i) {
+				$(".tip_nav").append("<li><a href='#d"+( i+1 )+"' class='button'>" + ( i+1 ) +"</a></li>");
+				$(this).attr("id", "d"+(i+1));
+			});
+			$(".tip_nav a").eq(page_index).addClass("now");
+
+			$(".tip_nav").prepend("<li><a class='button prev'>≪</a></li>");
+			$(".tip_nav").append("<li><a class='button next'>≫</a></li>");
+
+			if($(".tip_nav a").eq(0).hasClass("prev")) page_index++;
+			if($(".tip_nav a").eq(0).hasClass("prev")==false) tip_pages_max = tip_pages_max--;
+
+			$(".tip_nav a").on({
+				"touchstart click": function(e){
+					$(".tip_nav a").removeClass("now");
+					if($(this).hasClass("now")){
+					} else {
+						click_on = true;
+						if(tip_conf.navi_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_clickse,stop:"true"});
+
+						if($(this).hasClass("prev") || $(this).hasClass("next")){
+							if($(this).hasClass("prev")) {
+								page_index--;
+								if(page_index < 1) page_index = 1;
+							}else if($(this).hasClass("next")){
+								page_index++;
+								if(page_index > tip_pages_max){
+									if(nextend=="close") close_ev();
+									else page_index = tip_pages_max;
+								}
+							}
+							$(".tip_nav a").eq(page_index).addClass("now");
+							var tip_nextPage = "#d"+page_index;
+						}else{
+							$(this).addClass("now");
+							var tip_nextPage = this.hash;
+						}
+					};
+					tip_pages.hide();
+					$(tip_nextPage).show();
 					e.preventDefault();
 				},
 				"mouseenter": function() {
-					if(tip_conf.close_enterse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_enterse,stop:"true"});
-					click_on = false;
+					if($(this).hasClass("now")){
+					} else {
+						if(tip_conf.navi_enterse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_enterse,stop:"true"});
+						click_on = false;
+					}
 				},
 				"mouseleave": function() {
-					if(tip_conf.close_leavese!="none" && click_on==false)TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_leavese,stop:"true"});
+					if($(this).hasClass("now")){
+					} else {
+						if(tip_conf.navi_leavese!="none" && click_on==false)TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_leavese,stop:"true"});
+					}
 				}
-			}); //$(".tip_close_button").on() end
+			});//$(".tip_nav a").on() end
+		};//ページ分け end
 
-			//ページ分け
-			if($(".tip_body").length > 1){
-				var tip_pages = $(".tip_body");
-				var tip_pages_max = $(".tip_body").length;
-				var page_index = 0;
-				//ページ指定があったら直接開く
-				if(pm.page && pm.page != ""){
-					if($.isNumeric(pm.page)){
-						page_index = pm.page-1;
-					}else if($(".tip_body[data-page]").length){
-						page_index = $(".tip_body").index($(".tip_body[data-page='"+pm.page+"']"));
-						if(page_index < 0 ) page_index = 0;
+		//TIP内TIP
+		$('.tip_body .tip').on({
+			'touchstart click': function(e) {
+				var _pm = pm;
+				var s_key = $(this).attr('data-key');
+				var s_data_name = pm.data_name;
+				if($(this).attr('data-name')) s_data_name = $(this).attr('data-name');
+				var s_data = tip_conf["data_"+s_data_name];
+				if(s_data === undefined){
+					alert("data 「 " + s_data_name +" 」 は存在しません。");
+				}
+				var s_tip = $.grep(s_data,function(ev, i) { return (ev.key == s_key) });
+				if(s_tip == ""){
+					alert( "data " + s_data_name + "に、key 「 "+s_key+" 」 は存在しません。");
+				}
+				var s_tip_id = s_tip[0]["id"];
+				var flag_var = s_tip[0]["flag_var"];
+				_pm.key = s_key;
+				_pm.data_name = s_data_name;
+				_pm.intip = true;
+
+				//フラグ
+				if(tip_conf.flag=="true"){
+					tip_conf["data_"+_pm.data_name][s_tip_id]["flag"] = true ;
+					if(flag_var == "f") {
+						TYRANO.kag.ftag.startTag("eval",{
+							exp:TYRANO.kag.stat.f.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
+							next:"false"
+						});
+					}else{
+						TYRANO.kag.ftag.startTag("eval",{
+							exp:TYRANO.kag.variable.sf.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
+							next:"false"
+						});
 					}
 				};
 
-				tip_pages.hide();
-				tip_pages.eq(page_index).show();
+				//クリック音
+				if(tip_conf.tip_clickse!="none") {
+					if($(".log_body").length > 0 && tip_conf.log_se=="false"){
+					}else{
+						TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.tip_clickse,stop:"true"});
+					}
+				};
 
-				//ナビ
-				tip_pages.parent().prepend("<ul class='tip_nav'></ul>");
-				tip_pages.each(function (i) {
-					$(".tip_nav").append("<li><a href='#d"+( i+1 )+"' class='button'>" + ( i+1 ) +"</a></li>");
-					$(this).attr("id", "d"+(i+1));
+				$("#tip_container").fadeOut(speed/2, function(){
+					$(this).remove();
+					displayTip(_pm);
 				});
-				$(".tip_nav a").eq(page_index).addClass("now");
-
-				$(".tip_nav").prepend("<li><a href='' class='button prev'>≪</a></li>");
-				$(".tip_nav").append("<li><a href='' class='button next'>≫</a></li>");
-
-				if($(".tip_nav a").eq(0).hasClass("prev")) page_index++;
-				if($(".tip_nav a").eq(0).hasClass("prev")==false) tip_pages_max = tip_pages_max-1;
-
-				$(".tip_nav a").on({
-					"touchstart click": function(e){
-						$(".tip_nav a").removeClass("now");
-						if($(this).hasClass("now")){
-						} else {
-							click_on = true;
-							if(tip_conf.navi_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_clickse,stop:"true"});
-
-							if($(this).hasClass("prev") || $(this).hasClass("next")){
-								if($(this).hasClass("prev")) {
-									page_index--;
-									if(page_index < 1) page_index = 1;
-								}else if($(this).hasClass("next")){
-									page_index++;
-									if(page_index > tip_pages_max){
-										if(nextend_close) close_ev();
-										else page_index = tip_pages_max;
-									}
-								}
-								$(".tip_nav a").eq(page_index).addClass("now");
-								var tip_nextPage = "#d"+page_index;
-							}else{
-								$(this).addClass("now");
-								var tip_nextPage = this.hash;
-							}
-						};
-						//$(".tip_nav a").removeClass("now");
-						//$(this).addClass("now");
-						//event.preventDefault();
-						//var tip_nextPage = this.hash;
-						tip_pages.hide();
-						$(tip_nextPage).show();
-						e.preventDefault();
-					},
-					"mouseenter": function() {
-						if($(this).hasClass("now")){
-						} else {
-							if(tip_conf.navi_enterse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_enterse,stop:"true"});
-							click_on = false;
-						}
-					},
-					"mouseleave": function() {
-						if($(this).hasClass("now")){
-						} else {
-							if(tip_conf.navi_leavese!="none" && click_on==false)TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.navi_leavese,stop:"true"});
-						}
+				e.preventDefault();
+			},
+			"mouseenter": function() {
+				if(tip_conf.tip_enterse!="none") {
+					if($(".log_body").length > 0 && tip_conf.log_se=="false"){
+					}else{
+						TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.tip_enterse,stop:"true"});
 					}
-				});//$(".tip_nav a").on() end
-			};//ページ分け end
-
-			//TIP内TIP
-			$('.tip_body .tip').on({
-				'touchstart click': function(e) {
-					var _pm = pm;
-					var s_key = $(this).attr('data-key');
-					var s_data_name = pm.data_name;
-					if($(this).attr('data-name')) s_data_name = $(this).attr('data-name');
-					var s_data = tip_conf["data_"+s_data_name];
-					if(s_data === undefined){
-						alert("data 「 " + s_data_name +" 」 は存在しません。");
+				};
+				if(tip_conf.entercolor) $(this).css("color",$.convertColor(tip_conf.entercolor));
+				click_on = false;
+			},
+			"mouseleave": function() {
+				if(tip_conf.tip_leavese!="none" && click_on==false) {
+					if($(".log_body").length > 0 && tip_conf.log_se=="false"){
+					}else{
+						TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.tip_leavese,stop:"true"});
 					}
-					var s_tip = $.grep(s_data,function(ev, i) { return (ev.key == s_key) });
-					if(s_tip == ""){
-						alert( "data " + s_data_name + "に、key 「 "+s_key+" 」 は存在しません。");
-					}
-					var s_tip_id = s_tip[0]["id"];
-					var flag_var = s_tip[0]["flag_var"];
-					_pm.key = s_key;
-					_pm.data_name = s_data_name;
-					_pm.intip = true;
+				};
+				if(tip_conf.entercolor) $(this).css("color",$.convertColor(tip_conf.color));
+			}
+		});//TIP内TIP end
+	});//$.ajax.done end
 
-					//フラグ
-					if(tip_conf.flag=="true"){
-						tip_conf["data_"+_pm.data_name][s_tip_id]["flag"] = true ;
-						if(flag_var == "f") {
-							TYRANO.kag.ftag.startTag("eval",{
-								exp:TYRANO.kag.stat.f.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
-								next:"false"
-							});
-						}else{
-							TYRANO.kag.ftag.startTag("eval",{
-								exp:TYRANO.kag.variable.sf.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
-								next:"false"
-							});
-						}
-					};
-
-					//クリック音
-					if(tip_conf.tip_clickse!="none") {
-						if($(".log_body").length > 0 && tip_conf.log_se=="false"){
-						}else{
-							TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.tip_clickse,stop:"true"});
-						}
-					};
-
-					$("#tip_container").fadeOut(speed/2, function(){
-						$(this).remove();
-						displayTip(_pm);
-					});
-					e.preventDefault();
-				},
-				"mouseenter": function() {
-					if(tip_conf.tip_enterse!="none") {
-						if($(".log_body").length > 0 && tip_conf.log_se=="false"){
-						}else{
-							TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.tip_enterse,stop:"true"});
-						}
-					};
-					if(tip_conf.entercolor) $(this).css("color",$.convertColor(tip_conf.entercolor));
-					click_on = false;
-				},
-				"mouseleave": function() {
-					if(tip_conf.tip_leavese!="none" && click_on==false) {
-						if($(".log_body").length > 0 && tip_conf.log_se=="false"){
-						}else{
-							TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.tip_leavese,stop:"true"});
-						}
-					};
-					if(tip_conf.entercolor) $(this).css("color",$.convertColor(tip_conf.color));
-				}
-			});//TIP内TIP end
-		}//success: function(data) end
-	});//$.ajax() end
 	if(pm.intip==true){
 		$("#tip_container").fadeIn(speed);
 		pm.intip = false;
@@ -556,9 +553,9 @@ function tip(pm) {
 
 	//keyが無い時アラート
 	if(pm.key === null){
-		alert("tip に key を指定してください。");
+		alert("[tip]タグ に key を指定してください。");
 	}else if(tip == ""){
-		alert("tip の key 「 "+pm.key+" 」 は存在しません。");
+		alert("[tip]タグ に指定した key 「 "+pm.key+" 」 は存在しません。");
 
 	//keyがある時
 	} else {

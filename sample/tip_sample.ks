@@ -39,11 +39,10 @@
 
 ;◆◆tipプラグイン呼出し◆◆
 ;とりあえずマークは表示
-;first.ks で呼び出してる場合は削除してください。
+;first.ks で呼び出してる場合は削除してください。;
 @plugin name=tip mark=true log_color=true log_mark=true
 ;csv呼び出し※ｖ4.01で不要に
 ;@tip_loadcsv
-
 
 ;メッセージウィンドウの設定
 [position layer="message0" width="1280" height="210" top="510" left="0"]
@@ -65,7 +64,7 @@
 ;名前枠の設定
 [ptext name="chara_name_area" layer="message0" color="0xFAFAFA" size="30" bold="true" x="100" y="508" bold=bold]
 ;キャラ設定
-[chara_config ptext="chara_name_area" talk_focus=brightness brightness_value=60 time=100]
+[chara_config ptext="chara_name_area" talk_focus=brightness brightness_value=60 time=100 pos_change_time=300]
 [chara_new  name="akane" storage="chara/akane/normal.png" jname="あかね"  ]
 [chara_face name="akane" face="angry" storage="chara/akane/angry.png"]
 [chara_face name="akane" face="doki" storage="chara/akane/doki.png"]
@@ -79,7 +78,6 @@
 
 
 [chara_show  name="akane" time=300]
-@wait time=330
 [chara_show  name="yamato" time=300]
 
 
@@ -102,9 +100,9 @@ else if( h < 11) tf.aisatu = "おはよう！！";
 
 #akane
 @chara_mod name=akane face=happy
-[emb exp="tf.aisatu"]
-[r]
-[tip key=tip]TIP[endtip][tip key=plugin color=0xff9999]プラグイン[endtip]をDLしてくれてありがとう！[p]
+[emb exp="tf.aisatu"][r]
+[tip key=tip]TIP[endtip][tip key=plugin color=0xff9999]プラグイン[endtip]をDLしてくれてありがとう！
+[p]
 TIPプラグインは、[tip key="machi"]「街」[endtip][tip key="428"]「428」[endtip]のTIP機能のように、[r]
 メッセージのテキストをクリックして別窓で解説を表示できるプラグインです。[p]
 
@@ -260,11 +258,6 @@ init.ksの最後に [code text="[tip_loadcsv]"] 追記しただけなんだけ�
 @glink color=btn_04_red width=500 x=650 y=&30+(95*1) text=7．tipから別のtipを表示する target=*index07
 @glink color=btn_04_red width=500 x=650 y=&30+(95*2) text=8．ページを指定してTIPを開く target=*index08
 @glink color=btn_04_red width=500 x=650 y=&30+(95*3) text=9．その他注意点など target=*index09
-;[skipstop]
-[iscript]
-  console.log(TG.stat.stack); //スタックチェック
-[endscript]
-[clearstack]
 @s
 
 *ex_start

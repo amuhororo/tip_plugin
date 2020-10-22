@@ -1,5 +1,5 @@
-;【TIPプラグイン ver4.01】
-; 2020/10/19更新  v504対応版
+;【TIPプラグイン ver4.01a】
+; 2020/10/22更新  v504対応版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -79,11 +79,10 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 	mp.flag_var      =  mp.flag_var      ||  tip_conf.flag_var;           //フラグ用変数の種類
 	mp.tip_html      =  mp.tip_html      ||  tip_conf.tip_html;           //TIP表示用html
 	mp.tiplist_html  =  mp.tiplist_html  ||  tip_conf.tiplist_html;       //TIPリスト表示用html
-	//mp.nextend_close =  mp.nextend_close ||  "false";                     //nextの最後は閉じるイベントにする
+	//mp.nextend       =  mp.nextend       ||  "close";                     //nextの最後のイベント
 	//mp.join          =  mp.join          ||  "false";                     //データを追加するか※使い方注意
 	mp.data_name     =  file_name;
 	var pm = mp;
-
 	tipLoadcsv(pm);
 
 [endscript]
