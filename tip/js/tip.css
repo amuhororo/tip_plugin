@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver4.01a】 2020/10/22        */
+/* 【TIPプラグイン ver4.01b】 2020/11/23        */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
 * {
@@ -40,12 +40,18 @@
 .vertical .tip.mark:after {
 	position: relative;
 	top: 1px;
-  right: -12px;
+	right: -12px;
 	margin-bottom: 3px;
 	background:url(../image/tip_mark_vertical.png);
 	background-size:14px;
 }
-
+/* バックログのマーク */
+.log_body .tip.mark{
+	/*margin: 0px;*/
+}
+.log_body .tip.mark:after{
+	/*background:none;*/
+}
 
 
 /*******************************************
@@ -109,7 +115,6 @@
 #tip_list_container {
 	padding: 150px 60px 60px 60px;
 	height:100%;
-	box-sizing:border-box;
 }
 
 /* TIP解放数 */
@@ -148,7 +153,6 @@
 	margin: 13px 2%;
 	padding:7px 15px;
 	border: 1px outset #02afea;
-	box-sizing:border-box;
 	border-radius:6px;
 	background: linear-gradient(to bottom, #02afea, #0077c1); /* 画像を使う場合は不要 */
 }
@@ -237,10 +241,9 @@
 ********************************************/
 /* 閉じるボタン */
 .tip_close_area {
-	width: 75%;
-	margin: 0 auto;
-	box-sizing: border-box;
-	position: relative;
+	top: 50px;
+	right: 12.5%;
+	position:absolute;
 }
 .tip_close_button {
 	position:absolute;
@@ -264,55 +267,48 @@
 
 /* 全体 */
 #tip_wrap {
-	position:relative;
+	position:absolute;
 	width:100%;
 	height:100%;
-	padding: 50px 0;
-	text-align:left;
-	position:absolute;
 	top:0;
 	left:0;
+	text-align:left;
 	background: rgba(0,0,0,0.7);
 	z-index: 10000;
-	box-sizing: border-box;
 }
 /* 表示部分 */
 #tip_container {
-	width:75%;
+	width:100%;
 	height:100%;
-	margin: 0 auto;
-	padding: 15px;
-	background: #fff;
-	border:1px solid #fff;
-	border-radius: 6px;
-	box-sizing:border-box;
-	position: relative;
-}
-#tip_main {
-	position:relative;
-}
-
-/* 縦画面用 */
-@media (max-width: 768px) and (orientation:portrait) {
-	#tip_container,
-	.tip_close_area {
-    width: 90%;
-	}
+	padding: 50px 12.5%;
 }
 
 /* li */
 .tip_area {
-	position:relative;
 	height: 100%;
+	width:100%;
+	padding: 15px;
+	background: #fff;
+	border:1px solid #fff;
+	border-radius: 6px;
 }
+
+/* 縦画面用 */
+@media (max-width: 768px) and (orientation:portrait) {
+	.tip_area {
+		padding: 50px 5%;
+	}
+	.tip_close_area {
+    right: 5%;
+	}
+}
+
 
 /* 詳細表示部分 */
 .tip_item {
-	position: absolute;
+	position: relative;
 	width:100%;
 	height:100%;
-	top:0px;
-	left:0px;
 }
 
 /* 見出し */
@@ -320,7 +316,6 @@
 	position:relative;
 	padding: 4px 15px;
 	display:block;
-	box-sizing:border-box;
 	width:100%;
 	color:#fff;
 	text-shadow: 1px 1px 0px rgba(0,0,0,0.7);
@@ -331,7 +326,7 @@
 }
 /* 本文 */
 .tip_body {
-	position: absolute;
+	position:relative;
 	display:block;
 	font-size: 24px;
 	margin:2% 0;
@@ -343,8 +338,6 @@
 @media (max-width: 768px) and (orientation:portrait) {
 	.tip_body {
 		margin:1em 0;
-		padding:0 10px;
-		overflow:auto;
 		height: 85%;
 	}
 }
@@ -375,7 +368,6 @@
 	background:rgba(255,255,255,0.8);
 	border-radius:6px;
 	border:2px solid #0077c1;
-	box-sizing:border-box;
 }
 .tip_nav a:hover {
 	color:rgba(0,0,80,1);
@@ -513,7 +505,7 @@
    ※メッセージ上でクリックさせたくない場合のみ削除
 ******************************************************/
 .message_inner {
-	z-index:auto !important
+	z-index:auto !important;
 }
 .message_inner p span,
 .img_next {

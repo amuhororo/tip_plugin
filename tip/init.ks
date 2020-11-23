@@ -1,5 +1,5 @@
-;【TIPプラグイン ver4.01a】
-; 2020/10/22更新  v504対応版
+;【TIPプラグイン ver4.01b】
+; 2020/11/23更新  v504対応版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -18,10 +18,7 @@ if(tf.system.tip_conf===undefined){
 		flag_var      : mp.flag_var      || "sf",                      //フラグ用変数の種類
 		mark          : mp.mark          || "false",                   //TIPにマークを付ける
 		log           : mp.log           || "true",                    //バックログからもTIP表示させるか
-		log_color     : mp.log_color     || "false",                   //バックログのTIP color を入れるか（※log=true時）
-		log_mark      : mp.log_mark      || "false",                   //バックログのTIP mark を入れるか
 		log_se        : mp.log_se        || "false",                   //バックログのTIP に SE を入れるか
-		log_plugin    : mp.log_plugin    || "false",                   //バックログプラグインと併用するか
 		tip_clickse   : mp.tip_clickse   || mp.all_clickse,            //TIPのクリック音
 		tip_enterse   : mp.tip_enterse   || mp.all_enterse,            //TIPにマウスカーソルが乗った時
 		tip_leavese   : mp.tip_leavese   || mp.all_leavese,            //TIPからマウスカーソルが外れた時
@@ -36,8 +33,7 @@ if(tf.system.tip_conf===undefined){
 		navi_leavese  : mp.navi_leavese  || mp.all_leavese,            //ナビからマウスカーソルが外れた時
 		tip_html      : mp.tip_html      || "tip.html",                //TIP表示用html
 		tiplist_html  : mp.tiplist_html  || "tip_list.html",           //TIPリスト表示用html
-		pagefeed      : mp.pagefeed      || "true",                    //TIPリストをページ分けするか
-		pagenum       : mp.pagenum       || "auto",                    //リスト1ページあたりの表示数 "auto"で自動
+		pagefeed      : mp.pagefeed      || "auto",                    //TIPリストをページ分けするか
 		fade_speed    : mp.fade_speed    || 300,                       //TIP表示のフェード時間
 		vertical      : mp.vertical      || "false",                   //縦書き表示にするか
 
@@ -48,8 +44,7 @@ if(tf.system.tip_conf===undefined){
 		//バックログプラグイン用
 		tiplog_name   : "",
 		tiplog_key    : "",
-		tiplog_obj    : "",
-		tiplog_color  : ""
+		tiplog_obj    : ""
 	};
 };
 //フラグ保存用変数を定義

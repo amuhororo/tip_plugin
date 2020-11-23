@@ -1,8 +1,7 @@
 
-<div class="tip_close_area"><a class="tip_close_button menu_close">✖</a></div>
-<div id="tip_container"></div>
+<div id="tip_container">
+	<div class="tip_close_area"><a class="tip_close_button menu_close">✖</a></div>
 
-<script id="tip_tmp" type="text/x-jsrender">
 	<div class="tip_area">
 		<section class="tip_{{:id}} tip_item" data-num={{:id}}>
 
@@ -14,7 +13,7 @@
 
 			<!--１ページ目-->
 			<div class="tip_body">
-				<div class="tip_text">{{:tip}}</div>
+				<div class="tip_text">{{:level}}{{:tip}}</div>
 			</div>
 
 			<!--2ページ目-->
@@ -26,4 +25,4 @@
 
 		</section>
 	</div>
-</script>
+</div>

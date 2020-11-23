@@ -1,7 +1,7 @@
-【TIPプラグイン ver4.01a】
+【TIPプラグイン ver4.01b】
 http://hororo.wp.xdomain.jp/22/
 
-2020/10/22更新 v504a対応版
+2020/11/23更新 v504b対応版
 
 -------------------------------------------------------------------------------------------------
 ■ 概要
@@ -25,7 +25,8 @@ http://hororo.wp.xdomain.jp/22/
   ・TIP表示フラグを保存します（TIPテキストを表示したかどうか）※3.00以降
   ・フラグは手動で変更もできます。※4.00以降
   ・バックログからもTIP表示するかを指定できます。※3.00以降
-  ・バックログにTIPで指定した。カラー・マーク・SEを反映するか指定できます。※3.00以降
+  ・バックログにTIPで指定したSEを反映するか指定できます。※3.00以降
+    (※4.01b以降、マークはCSS、カラーはバックログプラグインで対応お願いします）
   ・TIP詳細・TIP一覧はhtmlファイルで編集可能です。
   ・TIP詳細・TIP一覧のhtmlファイルをcsv別に変更できます。※4.00以降
   ・TIP詳細のテキストから別のTIP詳細を表示できます。※4.00以降
@@ -35,21 +36,18 @@ http://hororo.wp.xdomain.jp/22/
 -------------------------------------------------------------------------------------------------
 ■ 使い方
 -------------------------------------------------------------------------------------------------
-  ①data/others/plugin に 「tip」を入れてください。
+  ①data/others/plugin に 「tip」フォルダを入れてください。
 
   ②csvファイルを作成し、data/others/plugin/tip/csv/ に保存します。※作り方は後述
     デフォルトのファイル名は「 tip_data.csv 」
 
-  ③first.ks からプラグインを呼び出してください。
+  ③first.ks （ビルダーは scenario/system/plugin.ks ）からプラグインを呼び出してください。
     [plugin name=tip]
 
-  ④csvファイルを読み込みます。
-  　[tip_loadcsv]
-
-  ⑤TIP呼出しにしたいテキストを [tip key=hoge][endtip] で囲みます。
+  ④TIP呼出しにしたいテキストを [tip key=hoge][endtip] で囲みます。
     例：[tip key=hoge]ほげ[endtip]
 
-  ⑥TIP一覧表示は [tip_list] タグを使います。
+  ⑤TIP一覧表示は [tip_list] タグを使います。
     [button] タグに割り当てる場合は role=sleepgame を指定してください。
     target 先に[tip_list]を書きます。
     例：[button x=0 y=0 fix=true role=sleepgame graphic=tiplist.gif target=*tiplist]
@@ -60,10 +58,9 @@ http://hororo.wp.xdomain.jp/22/
   ◆記述例
     ●全てのTIPに色指定、マークを付ける場合。
       [plugin name=tip color=0xffff55 mark=true]
-      [tip_loadcsv]
       [tip key="hoge"]ほげ[endtip]
       　　　　
-    ●別のcsvを読み込む … [tip_loadcsv] に、file でファイル名を指定する。
+    ●もう一つ別のcsvを読み込む … [tip_loadcsv] に、file でファイル名を指定する。
       [tip_loadcsv file=sample.csv]
 
     ●テンプレートのhtmlファイルを指定する … [tip_loadcsv] に、tip_html、tiplist_html でファイル名を指定する。
@@ -102,10 +99,7 @@ http://hororo.wp.xdomain.jp/22/
     flag_var       sf/f          sf               フラグ保存用変数の種類
     mark           true/false    false            TIPにマークを付ける
     log            true/false    true             バックログからもTIP表示させるか
-    log_color      true/false    false            バックログのTIP color を入れるか（※log=true時）
-    log_mark       true/false    false            バックログのTIP mark を入れるか
     log_se         true/false    false            バックログのTIP に SE を入れるか
-    log_plugin     true/false    false            バックログプラグインを併用するか
     all_clickse    oggファイル    none             クリック音
     all_enterse    oggファイル    none             マウスカーソルが乗った時の音
     all_leavese    oggファイル    none             マウスカーソルが外れた時の音
@@ -123,10 +117,9 @@ http://hororo.wp.xdomain.jp/22/
     navi_leavese   oggファイル    none             ナビからマウスカーソルが外れた時の音
     tip_html       htmlファイル   tip.html         TIP表示用html
     tiplist_html   htmlファイル   tip_list.html    TIPリスト表示用html
-    pagefeed       true/false    true             TIPリストをページ分けするか
-    pagenum        数値          auto             リスト1ページあたりの件数
-    fade_speed     数値           300             TIP表示のフェード時間
-    vertical       true/false    config.vertical  縦書きにするか
+    pagefeed       auto/none/数値 auto             TIPリストをページ分けするか。しない場合は none
+    fade_speed     数値           300              TIP表示のフェード時間
+    vertical       true/false     config.vertical  縦書きにするか
 
 
   ◆ [tip_loadcsv] タグ用パラメーター
@@ -180,6 +173,7 @@ http://hororo.wp.xdomain.jp/22/
   ◆ csvファイル作成の注意
     ・ファイル名を変更する場合は、ファイル名を指定してください。
       [plugin name=tip file=***.txt]
+			または、
       [tip_loadcsv file=***.txt]
     ・csvファイルは「tip/csv」フォルダ内に保存してください。
     ・「カンマ区切りテキスト」であれば、拡張子はcsv以外でも構いません。
@@ -221,16 +215,17 @@ http://hororo.wp.xdomain.jp/22/
       上手く動かない場合は、1ページの表示件数を数値で入力してください。
     ・バックログのSEは「TIPからマウスカーソルが外れた時の音」には非対応です。
     ・htmlの変更禁止id・class
-      ・tip.html      … #tip_container #tip_container #tip_tmp .tip_body
-      ・tip_list.html … #tip_list_wrap #tip_list_container #tiplist_tmp .tip_list
+      ・tip.html      … #tip_container .tip_body
+      ・tip_list.html … #tip_list_container .tip_list
 
     ・sampleフォルダのtip_sample.ks がサンプルゲームとなっていますので参照してください。
+      ※サンプルゲームは、ティラノビルダーには対応していません（画像が無いのでエラーが出ます）
       ※ゲーム公開時は、sampleフォルダは削除してください。
 
 -------------------------------------------------------------------------------------------------
 ■ 動作確認
 -------------------------------------------------------------------------------------------------
-  ティラノスクリプトv504a
+  ティラノスクリプトv504b
 
 -------------------------------------------------------------------------------------------------
 ■ 注意点
@@ -269,6 +264,8 @@ http://hororo.wp.xdomain.jp/22/
 -------------------------------------------------------------------------------------------------
 ■ 更新履歴
 -------------------------------------------------------------------------------------------------
+  2020/11/23  ver4.01b  パラメータの log_color、log_mark、log_plugin、pagenum を削除。
+                        テンプレートを簡略化、CSSを微調整等。
   2020/10/22  ver4.01a  csv読み込み、CSS間違い等不具合修正。ajax表記修正。
   2020/10/19  ver4.01   リスト表示用タグを[tip_list]に変更。ナビにprev/nextを追加。tipのページ指定追加。
                         tip内tip表示、f変数を指定した時の挙動等不具合修正。他CSSなど修正。
