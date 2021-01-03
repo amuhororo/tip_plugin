@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.01b】 2020/11/23
+// 【TIPプラグイン ver4.02】 2021/01/03
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 //--- ◆ csv読み込み -----------------------------------------------------------------------
@@ -35,9 +35,20 @@ function tipLoadcsv(pm) {
 
 		//フラグ管理用変数を用意（※フラグのみ保存する）
 		var tip_flag = [];
-		var flag_val = false;
-		if(pm.flag=="false") flag_val = true;
+		var flag_val = -1;
+		if(pm.flag=="false") flag_val = 0;
 
+		if(pm.flag_var == "f") var vn = TYRANO.kag.stat.f;
+		else var vn = TYRANO.kag.variable.sf;
+		if (vn.tip_flag[pm.data_name]===undefined) {
+			vn.tip_flag[pm.data_name] = [];
+			for (var i = 0; i < csvNew.length; i++) {
+				vn.tip_flag[pm.data_name][i] = {};
+				vn.tip_flag[pm.data_name][i]["flag"] = flag_val;
+			}
+		}
+		tip_flag = vn.tip_flag[pm.data_name];
+		/*
 		if ( pm.flag_var == "f" ) {
 			if (TYRANO.kag.stat.f.tip_flag[pm.data_name]===undefined) {
 				TYRANO.kag.stat.f.tip_flag[pm.data_name] = [];
@@ -57,6 +68,7 @@ function tipLoadcsv(pm) {
 			}
 			tip_flag = TYRANO.kag.variable.sf.tip_flag[pm.data_name];
 		};
+		*/
 
 		//CSVデータの配列の各行をループ処理する
 		for (var i = 1; i < csvNew.length; i++) {
@@ -110,10 +122,13 @@ function displayTiplist(pm) {
 
 	//解放数
 	var tip_true = 0;
+	var tip_unread = 0;
 	for (var i = 0;  i < tipdata.tips.length; i++) {
-		if(tipdata.tips[i]["flag"] == true) tip_true++;
+		if(tipdata.tips[i]["flag"] >= 0) tip_true++;
+		if(tipdata.tips[i]["flag"] == 0) tip_unread++;
 	}
 	tipdata.truenum = tip_true;
+	tipdata.unread= tip_unread;
 
 	if($("#tip_list_wrap").length == 0) {
 		layer_menu.append("<div id='tip_list_wrap'></div>");
@@ -161,6 +176,7 @@ function displayTiplist(pm) {
 						if(tip_conf.close_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_clickse,stop:"true"});
 
 						layer_menu.fadeOut(speed, function(){
+							tipBtn(pm);
 							$(this).empty();
 						});
 
@@ -307,6 +323,19 @@ function displayTip(pm) {
 	var nextend = tip[0]["nextend"];
 	var speed = parseInt(tip_conf.fade_speed);
 
+	//フラグ
+	if(tip[0]["flag_var"] == "f") var vn = TYRANO.kag.stat.f;
+	else var vn = TYRANO.kag.variable.sf;
+	var flagval = 1;
+	if(tip_conf["data_"+pm.data_name][tip[0]["id"]]["flag"] == -1){
+		flagval = 2;
+	}
+	tip_conf["data_"+pm.data_name][tip[0]["id"]]["flag"] += flagval;
+	TYRANO.kag.ftag.startTag("eval",{
+		exp:vn.tip_flag[pm.data_name][tip[0]["id"]]["flag"] += flagval,
+		next:"false"
+	});
+
 	var layer_menu = TYRANO.kag.layer.getMenuLayer();
 	if(pm.intip != true){
 		if($("#tip_list_wrap").length == 0 && $(".log_body").length == 0){
@@ -353,6 +382,8 @@ function displayTip(pm) {
 			"touchstart click": function(e) {
 				click_on = true;
 				if(tip_conf.close_clickse!="none")TYRANO.kag.ftag.startTag("playse",{storage:tip_conf.close_clickse,stop:"true"});
+				TYRANO.kag.variable.tf.tip_open=false;
+				tipBtn(pm);
 				close_ev();
 				e.preventDefault();
 			},
@@ -465,8 +496,14 @@ function displayTip(pm) {
 				_pm.intip = true;
 
 				//フラグ
-				if(tip_conf.flag=="true"){
-					tip_conf["data_"+_pm.data_name][s_tip_id]["flag"] = true ;
+				if(tip_conf["data_"+_pm.data_name][s_tip_id]["flag"] == -1){
+					tip_conf["data_"+_pm.data_name][s_tip_id]["flag"] += 1;
+					TYRANO.kag.ftag.startTag("eval",{
+						exp:vn.tip_flag[_pm.data_name][s_tip_id]["flag"] += 1,
+						next:"false"
+					});
+
+					/*
 					if(flag_var == "f") {
 						TYRANO.kag.ftag.startTag("eval",{
 							exp:TYRANO.kag.stat.f.tip_flag[_pm.data_name][s_tip_id]["flag"] = true,
@@ -478,6 +515,7 @@ function displayTip(pm) {
 							next:"false"
 						});
 					}
+					*/
 				};
 
 				//クリック音
@@ -557,8 +595,8 @@ function tip(pm) {
 		var data_obj = '{';
 		data_obj += '"key":"' + pm.key + '",';
 		data_obj += '"data_name":"' + pm.data_name + '",';
-		data_obj += '"tip_html":"' + pm.tip_html + '",';
-		data_obj += '"tiplist_html":"' + pm.tiplist_html + '",';
+		//data_obj += '"tip_html":"' + pm.tip_html + '",';
+		//data_obj += '"tiplist_html":"' + pm.tiplist_html + '",';
 		data_obj += '"color":"' + pm.color + '",';
 		data_obj += '"entercolor":"' + pm.entercolor + '",';
 		data_obj += '"clickse":"' + pm.clickse + '",';
@@ -583,6 +621,7 @@ function tip(pm) {
 		//class・data追加
 		j_span.addClass("tip").addClass(pm.key);             //class追加
 		j_span.attr("data-key",pm.key);                      //data-key追加
+		j_span.attr("data-name",pm.data_name);                      //data-key追加
 		j_span.attr("data-obj",data_obj);                    //data-key追加
 		var tip_id = tip[0]["id"];                           //idというか配列順取得
 
@@ -590,11 +629,11 @@ function tip(pm) {
 		if(pm.mark=="true") TYRANO.kag.variable.tf.tip_mark = pm.key ;
 
 		//フラグ
-		if(tip_conf.flag=="true"){
+		if(tip_conf["data_"+pm.data_name][tip_id]["flag"] == -1){
 			var flag_var = tip[0]["flag_var"];
-			tip_conf["data_"+pm.data_name][tip_id]["flag"] = true ;
-			if(flag_var == "f" ) TYRANO.kag.stat.f.tip_flag[pm.data_name][tip_id]["flag"] = true ;
-			else TYRANO.kag.variable.sf.tip_flag[pm.data_name][tip_id]["flag"] = true ;
+			tip_conf["data_"+pm.data_name][tip_id]["flag"] += 1;
+			if(flag_var == "f") TYRANO.kag.stat.f.tip_flag[pm.data_name][tip_id]["flag"] += 1;
+			else TYRANO.kag.variable.sf.tip_flag[pm.data_name][tip_id]["flag"] += 1;
 		};
 
 		//バックログ
@@ -625,6 +664,7 @@ function tip(pm) {
 
 	//クリックイベント呼び出し※innerに入れないと、sleepgameから戻った後クリック出来ない。
 	$('.message_inner').prepend("<script>$.getScript('./data/others/plugin/tip/js/tip_click.js');</script>");
+	tipBtn(pm)
 };
 //--- ◆ end -----------------------------------------------------------------------------
 
@@ -682,5 +722,35 @@ function tipflag(pm) {
 		else TYRANO.kag.variable.sf.tip_flag[pm.data_name][id][pm.flag_name] = pm.flag_val;
 	}
 
+};
+//--- ◆ end ------------------------------------------------------------------------------
+
+
+
+//--- ◆ tip_btnタグ ------------------------------------------------------------------------
+function tipBtn(pm) {
+	var unread = 0;
+	if(!pm.data_name) pm.data_name = TYRANO.kag.variable.tf.system.tip_conf.data_name;
+	var tipdata = TYRANO.kag.variable.tf.system.tip_conf["data_"+pm.data_name];
+	if(tipdata){
+		for (var i = 0;  i < tipdata.length; i++) {
+			if(tipdata[i]["flag"] == 0) unread++;
+		}
+		if($('img + .tipbtn.'+pm.data_name).length == 0){
+			var top = $('img.tip_btn.'+pm.data_name).css("top");
+			var left = $('img.tip_btn.'+pm.data_name).css("left");
+			var width = $('img.tip_btn.'+pm.data_name).width();
+			left = parseInt(left) + Number(width) - 20;
+			top = parseInt(top)-10;
+			$('img.tip_btn.'+pm.data_name).after('<div class="tipbtn fixlayer '+pm.data_name+'"></div>');
+			$('img + .tipbtn.'+pm.data_name).css("top",top+"px").css("left",left+"px");
+		};
+		if($('.glink_button.tip_btn.'+pm.data_name+' .tipbtn').length == 0){
+			$('.glink_button.tip_btn.'+pm.data_name).append('<div class="tipbtn '+pm.data_name+'"></div>');
+		}
+		$('.tipbtn.'+pm.data_name).text(unread);
+		if(unread > 0) $('.tipbtn.'+pm.data_name).addClass('tipnew');
+		if(unread <= 0) $('.tipbtn.'+pm.data_name).removeClass('tipnew');
+	}
 };
 //--- ◆ end ------------------------------------------------------------------------------

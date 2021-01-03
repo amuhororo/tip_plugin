@@ -10,11 +10,14 @@
 @showmenubutton
 
 
-;フラグ管理変数クリア用
-[iscript]
-//delete sf.tip_flag;
-[endscript]
+[dialog type="confirm" text="システム変数をクリアしますか？" target="clearsys" target_cancel="sample_start" label_ok=する label_cancel=しない cond='sf.tip_flag!=undefined']
 
+
+;フラグ管理変数クリア用
+*clearsys
+[clearsysvar]
+
+*sample_start
 ;コード文字色用マクロ
 [macro name="code"]
   [iscript]
@@ -40,7 +43,7 @@
 ;◆◆tipプラグイン呼出し◆◆
 ;とりあえずマークは表示
 ;first.ks で呼び出してる場合は削除してください。;
-@plugin name=tip mark=true log_color=true log_mark=true
+@plugin name=tip mark=true
 ;csv呼び出し※ｖ4.01で不要に
 ;@tip_loadcsv
 
@@ -51,13 +54,13 @@
 @layopt layer=1 visible=true
 
 ; ロールボタン配置
-;オートボタン
+;オート
 [button name="role_button" role="auto" graphic="button/auto.png" enterimg="button/auto2.png" x="750" y="690"]
-;スキップボタン
+;スキップ
 [button name="role_button" role="skip" graphic="button/skip.png" enterimg="button/skip2.png" x="850" y="690"]
-;バックログボタン
+;バックログ
 [button name="role_button" role="backlog" graphic="button/log.png" enterimg="button/log2.png" x="950" y="690"]
-;フルスクリーン切替ボタン
+;フルスクリーン
 [button name="role_button" role="fullscreen" graphic="button/screen.png" enterimg="button/screen2.png" x="1050" y="690"]
 
 
@@ -83,10 +86,14 @@
 
 
 ;リスト表示用ボタン
-[button x=1050 y=513 name="tiplist_btn" fix=true role="sleepgame" folder="others" graphic="plugin/sample/tip_list_button.gif" target=*tip_list]
-;[button x=890 y=513 name="tiplist_btn" fix=true role="sleepgame" folder="others" graphic="plugin/sample/tip_list_button_2.gif" target=*plugin_list]
+[button x=1050 y=513 name="tip_btn,tip_data" fix=true role="sleepgame" folder="others" graphic="plugin/sample/tip_list_button.gif" target=*tip_list]
+[tip_btn]
+;[button x=890 y=513 name="tip_btn,sample" fix=true role="sleepgame" folder="others" graphic="plugin/sample/tip_list_button_2.gif" target=*plugin_list]
+;[tip_btn data_name=sample]
+
 ;目次ボタン
 [button x=890 y=513 name="tipindex"  fix=true folder="others" graphic="plugin/sample/tip_index_button.gif" target=*index]
+
 
 
 [iscript]
@@ -106,23 +113,24 @@ else if( h < 11) tf.aisatu = "おはよう！！";
 TIPプラグインは、[tip key="machi"]「街」[endtip][tip key="428"]「428」[endtip]のTIP機能のように、[r]
 メッセージのテキストをクリックして別窓で解説を表示できるプラグインです。[p]
 
+
 #yamato
 @chara_mod name=yamato face=happy
 [tip key=ver4]Ver4.0[endtip]で、またちょびっと機能が増えてるぞ！[r]
-因みにこれは、ver4.01対応だぞ！[p]
+因みにこれは、ver4.02対応だぞ！[p]
 
 #akane
 @chara_mod name=akane face=default
 @chara_mod name=yamato face=default
-4.01の変更点だけ見ますか？
-@glink color=btn_04_red width=650 x=300 y=100 text=Ver4.01の分だけ見る target=*ver401
+4.02の変更点だけ見ますか？
+@glink color=btn_04_red width=650 x=300 y=100 text=Ver4.02の分だけ見る target=*ver402
 @glink color=btn_04_red width=650 x=300 y=&100+130 text=全部見る target=*ver400
 @glink color=btn_04_red width=650 x=300 y=&100+(130*2) text=いいから目次出して！ target=*index
 [s]
 
 *ver400
-[pushlog text=<b>---Ver4.00の新機能について---</b>]
-[見出し text=Ver4.00の新機能について]
+[pushlog text=<b>---Ver4.00以降の新機能について---</b>]
+[見出し text=Ver4.00以降の新機能について]
 #akane
 とりあえず、ざっくりと変更点と新機能を説明しますね。[l][r]
 @chara_mod name=akane face=happy
@@ -158,21 +166,21 @@ TIPの2ページ目以降を別フラグで管理したり、といった使い�
 CSVデータに直接「htmlタグ」を記述する必要があるので、[r]
 htmlの知識が必要だぞ！[p]
 
-#akane
-Ver4.0で変更になったのはこんなところです。[p]
+;#akane
+;Ver4.0で変更になったのはこんなところです。[p]
 
 *ver401
 [pushlog text=<b>---Ver4.01での変更点について---</b>]
 [見出し消去]
 [見出し text=Ver4.01での変更点について]
 #akane
-では、4.01での変更点を説明しますね！[r]
-@chara_mod name=akane face=sad
-ますます、ややこしい事になってますが！！！（汗）[p]
+次に、4.01での変更点を説明しますね！[r]
+;@chara_mod name=akane face=sad
+;ますます、ややこしい事になってますが！！！（汗）[p]
 
 @chara_mod name=akane face=doki
-まず、ごめんなさい！！！！[r]
-リスト表示用のタグを [code text="[tiplist_show]"] から [code text="[tip_list]"] に変更しました。[p]
+まず、4.00から4.01でリスト表示のタグ名を[r]
+[code text="[tiplist_show]"] から [code text="[tip_list]"] に変更していますのでご注意ください。[p]
 
 @chara_mod name=yamato face=sad
 最初からそうしとけばいいのにな・・・[r]
@@ -187,7 +195,7 @@ Ver4.0で変更になったのはこんなところです。[p]
 #akane
 @chara_mod name=akane face=sad
 不要な場合は、お手数ですがCSSで [code text=display:none] を指定してください。[r]
-domについてはtip.cssを「prev」で検索してみてください。[p]
+domについては tip.css を「prev」で検索してみてください。[p]
 
 #yamato
 @chara_mod name=akane face=default
@@ -198,8 +206,8 @@ CSSが書けるならデザインの幅が広がるぞ！[p]
 #akane
 @chara_mod name=akane face=happy
 次に、TIP詳細をページ指定で開く事ができるようになりました！[r]
-tipタグに「[code text=page]」パラメータが増えているので、
-[eval exp="tf.text='[tip\tkey=hoge\tpage=2]'"][code][r]
+[code text='[tip]']タグに「[code text=page]」パラメータが増えているので、
+[eval exp="tf.text='[tip\x20key=hoge\x20page=2]'"][code][r]
 のように指定します。[p]
 
 #yamato
@@ -209,16 +217,16 @@ tipタグに「[code text=page]」パラメータが増えているので、
 
 #akane
 あと、CSSで変えられる部分ではありますが、[r]
-リスト表示を「Flexbox（display:flex）」に変更しました。[p]
+リスト表示を「[code text="Flexbox（display:flex）"]」に変更しました。[p]
 
 #yamato
 @chara_mod name=yamato face=happy
-手軽に表示順を変えられるので、詳しくは「Flexbox（display:flex）」で検索！！[p]
+手軽に表示順を変えられるので、詳しくは「[code text="Flexbox（display:flex）"]」で検索！！[p]
 
 #akane
 @chara_mod name=yamato face=default
 あと、[code text="[tip_loadcsv]"] を省略できるようにしました。[r]
-デフォルトのcsvだけなら [code text="[plugin]"] タグのみでも大丈夫ですよ。[p]
+デフォルトのCSVだけなら [code text="[plugin]"] タグのみでも大丈夫ですよ。[p]
 
 #yamato
 @chara_mod name=yamato face=tohoho
@@ -227,6 +235,25 @@ init.ksの最後に [code text="[tip_loadcsv]"] 追記しただけなんだけ�
 #akane
 @chara_mod name=akane face=doki
 それを言っちゃダメ！！！（大汗）[p]
+
+*ver402
+@chara_mod name=akane face=default
+[pushlog text=<b>---Ver4.02での変更点について---</b>]
+[見出し消去]
+[見出し text=Ver4.02での変更点について]
+
+#akane
+では、4.02での変更点を説明しますね！[r]
+といっても、未読に「New!」を付けられるようになっただけですが[p]
+
+#yamato
+この変更に伴い、「[code text="flag"]」の値が[r]
+「[code text="true/false"]」から「[code text="数値"]」に変更になっているぞ！[p]
+
+#akane
+あ、そうだったね！！[r]
+因みに、リストと詳細でフラグ値が変わるので注意してね！[r]
+詳しくは後ほど説明します！[p]
 
 @chara_mod name=akane face=default
 @chara_mod name=yamato face=default
@@ -251,13 +278,14 @@ init.ksの最後に [code text="[tip_loadcsv]"] 追記しただけなんだけ�
 [eval exp="tf.tip_index=true"]
 @glink color=btn_04_red width=500 x=100 y=30 text=1．プラグインを読み込む target=*index01
 @glink color=btn_04_red width=500 x=100 y=&30+(95*1) text=2．CSVを読み込む target=*index02
-@glink color=btn_04_red width=500 x=100 y=&30+(95*2) text=3．tipタグを使う target=*index03
-@glink color=btn_04_red width=500 x=100 y=&30+(95*3) text=4．tipリストを表示する target=*index04
+@glink color=btn_04_red width=500 x=100 y=&30+(95*2) text='3．[tip]タグを使う' target=*index03
+@glink color=btn_04_red width=500 x=100 y=&30+(95*3) text=4．TIPリストを表示する target=*index04
 @glink color=btn_04_red width=500 x=100 y=&30+(95*4) text=5．フラグを追加する target=*index05
 @glink color=btn_04_red width=500 x=650 y=&30 text=6．テンプレートを指定する target=*index06
-@glink color=btn_04_red width=500 x=650 y=&30+(95*1) text=7．tipから別のtipを表示する target=*index07
+@glink color=btn_04_red width=500 x=650 y=&30+(95*1) text=7．TIPから別のTIPを表示する target=*index07
 @glink color=btn_04_red width=500 x=650 y=&30+(95*2) text=8．ページを指定してTIPを開く target=*index08
-@glink color=btn_04_red width=500 x=650 y=&30+(95*3) text=9．その他注意点など target=*index09
+@glink color=btn_04_red width=500 x=650 y=&30+(95*3) text=9．未読分に「New!」を付ける target=*index09
+@glink color=btn_04_red width=500 x=650 y=&30+(95*4) text=10．その他注意点など target=*index10
 @s
 
 *ex_start
@@ -271,7 +299,7 @@ init.ksの最後に [code text="[tip_loadcsv]"] 追記しただけなんだけ�
 #akane
 「tip」フォルダを、[code text="data/others/plugin"] の中に保存します。[p]
 first.ks など、ゲーム起動時に必ず読み込むファイルに、[r]
-[eval exp="tf.text='[plugin\tname=tip]'"][code] と記述し呼び出します。[p]
+[eval exp="tf.text='[plugin\x20name=tip]'"][code] と記述し呼び出します。[p]
 
 #yamato
 @chara_mod name=yamato face=happy
@@ -310,11 +338,11 @@ CSVデータ自体はセーブデータに含まれないので、[r]
 #akane
 試しに sample.csv を呼び出してみますね。[r]
 今回は、フラグは必要ないので [code text="flag=false"] も指定しておきます。[r]
-[eval exp="tf.text='[tip_loadcsv\tfile=sample.csv\tflag=false]'"][code][p]
+[eval exp="tf.text='[tip_loadcsv\x20file=sample.csv\x20flag=false]'"][code][p]
 
 #yamato
 あ、今回はテンプレートを使いまわすから [code text="flag=false"] にしたけど[r]
-実際に使う場合は、csv別にテンプレートを用意した方がいいぞ！[p]
+実際に使う場合は、CSV別にテンプレートを用意した方がいいぞ！[p]
 
 #akane
 [tip_loadcsv file=sample.csv flag=false]
@@ -336,12 +364,12 @@ CSV読み込みは以上です。[p]
 次は [code text="[tip]"] タグについて説明します。[p]
 *index03
 [見出し消去]
-[見出し text=3．tipタグを使う]
-[pushlog text=<b>---3．tipタグを使う---</b>]
+[見出し text='3．[tip]タグを使う']
+[pushlog text='<b>---3．[tip]タグを使う---</b>']
 
 #akane
 [tip_loadcsv file=sample.csv flag=false]
-テキストをクリックさせるには、[eval exp="tf.text='[tip\tkey=nanka]'"][code]なんか[code text="[endtip]"][r]
+テキストをクリックさせるには、[eval exp="tf.text='[tip\x20key=nanka]'"][code]なんか[code text="[endtip]"][r]
 のように [code text="[tip]"] タグを使います。 [code text="key"] パラメータは必須です。[p]
 
 #yamato
@@ -354,8 +382,8 @@ CSV読み込みは以上です。[p]
 [code text="data_name"] でCSVファイル名を指定します。[p]
 [code text="data_name"] を省略できるのは、デフォルト値のCSVファイルのみです。[p]
 違うTIP詳細が表示されるのでクリックしてみてください。[r]
-[eval exp="tf.text='[tip\tkey=tip]'"][code][tip key=tip]TIP[endtip][code text="[endtip]"][r]
-[eval exp="tf.text='[tip\tkey=tip\tdata_name=sample]'"][code]
+[eval exp="tf.text='[tip\x20key=tip]'"][code][tip key=tip]TIP[endtip][code text="[endtip]"][r]
+[eval exp="tf.text='[tip\x20key=tip\x20data_name=sample]'"][code]
 [tip key=tip data_name=sample]TIP[endtip][code text="[endtip]"][p]
 [code text="[tip]"] タグについては以上です。[p]
 @jump target=*index cond=tf.tip_index==true
@@ -366,14 +394,14 @@ CSV読み込みは以上です。[p]
 次は、リスト表示についてです。[p]
 *index04
 [見出し消去]
-[見出し text=4．tipリストを表示する]
-[pushlog text=<b>---4．tipリストを表示する---</b>]
+[見出し text=4．TIPリストを表示する]
+[pushlog text=<b>---4．TIPリストを表示する---</b>]
 
 #akane
 リスト表示は [code text="[tip_list]"] タグを使います。[r]
 CSVデータを指定するには、[code text="data_name"] でCSVファイル名を指定します。[p]
 例えば、sample.csv のリストを呼び出す場合は、[r]
-[eval exp="tf.text='[tip_list\tdata_name=sample]'"][code] となります。[p]
+[eval exp="tf.text='[tip_list\x20data_name=sample]'"][code] となります。[p]
 
 #yamato
 シナリオ中に書くと、自動でリストが開くぞ～～[l][r]
@@ -405,7 +433,7 @@ key は必須です。フラグ名を [code text="flag_name"] で追加します
 
 #yamato
 因みに、デフォルトのフラグ名は「flag」で、変更はできないぞ。[r]
-tipタグでの自動フラグ追加は「flag」のみ対象だ。[p]
+[code text="[tip]"]タグでの自動フラグ追加は「flag」のみ対象だ。[p]
 
 #akane:
 @chara_mod name=akane face=happy
@@ -414,7 +442,7 @@ tipタグでの自動フラグ追加は「flag」のみ対象だ。[p]
 まず、「[tip key="tyrano"]ティラノスクリプト[endtip]」をクリックしてみてください。[l][r]
 2ページ目はまだありませんね？。[p]
 二つ目のフラグを追加します。フラグの名前は「flag2」とか適当です。[r]
-[eval exp="tf.text='[tip_flag\tkey=tyrano\tflag_name=flag2]'"][code]
+[eval exp="tf.text='[tip_flag\x20key=tyrano\x20flag_name=flag2]'"][code]
 [tip_flag key=tyrano flag_name=flag2][p]
 では、もう一度「[tip key="tyrano"]ティラノスクリプト[endtip]」をクリックしてください。[l][r]
 @chara_mod name=akane face=happy
@@ -422,7 +450,7 @@ tipタグでの自動フラグ追加は「flag」のみ対象だ。[p]
 @chara_mod name=akane face=default
 あ、勿論フラグは削除も可能ですよ。[r]
 [code text="flag_val"] で値を変更できます。デフォルトは [code text="true"] が入ります。[p]
-[eval exp="tf.text='[tip_flag\tkey=tyrano\tflag_name=flag2\tflag_val=false]'"][code]
+[eval exp="tf.text='[tip_flag\x20key=tyrano\x20flag_name=flag2\x20flag_val=false]'"][code]
 [tip_flag key=tyrano flag_name=flag2 flag_val=false][r]
 これでフラグが削除されました。[p]
 もう一度「[tip key="tyrano"]ティラノスクリプト[endtip]」をクリックしてみましょうか。[l][r]
@@ -461,7 +489,7 @@ tipタグでの自動フラグ追加は「flag」のみ対象だ。[p]
 #akane
 テンプレートを指定するには、CSVを読み込むときに[r]
 [code text="[tip_loadcsv]"] で、[code text="tip_html"]、[code text="tiplist_html"] を指定します。[p]
-[eval exp="tf.text='[tip_loadcsv\tfile=sample.csv\ttip_html=sample_tip.html\ttiplist_html=sample_tiplist.html]'"][code][p]
+[eval exp="tf.text='[tip_loadcsv\x20file=sample.csv\x20tip_html=sample_tip.html\x20tiplist_html=sample_tiplist.html]'"][code][p]
 
 #yamato
 @chara_mod name=yamato face=happy
@@ -489,19 +517,19 @@ G○○gle頼み・・・（汗）[p]
 次は、TIP内からのTIP表示です。[p]
 *index07
 [見出し消去]
-[見出し text=7．tipから別のtipを表示する]
-[pushlog text=<b>---7．tipから別のtipを表示する---</b>]
+[見出し text=7．TIPから別のTIPを表示する]
+[pushlog text=<b>---7．TIPから別のTIPを表示する---</b>]
 
 #akane
 TIPから別のTIPを表示するには、CSV自体にHTMLタグを記述し、[r]
 [code text="class=tip"] と、[code text="data-key=key"] を追記します。[r]
-[eval exp="tf.text='<span\tclass=\'tip\'\tdata-key=\'html\'>'"][code][p]
+[eval exp="tf.text='<span\x20class=\'tip\'\x20data-key=\'html\'>'"][code][p]
 別のCSVデータを呼び出す時は [code text="data-name"] でファイル名を指定します。[r]
-[eval exp="tf.text='<span\tclass=\'tip\'\tdata-key=\'html\'\tdata-name=\'sample\'>'"][code][p]
+[eval exp="tf.text='<span\x20class=\'tip\'\x20data-key=\'html\'\x20data-name=\'sample\'>'"][code][p]
 
 #akane
 例えば、key が yamato のデータを表示させたい場合は、[r]
-[eval exp="tf.text='<span\tclass=\'tip\tmark\'\tdata-key=\'yamato\'>'"][code]やまと[code text="</span>"][r]
+[eval exp="tf.text='<span\x20class=\'tip\x20mark\'\x20data-key=\'yamato\'>'"][code]やまと[code text="</span>"][r]
 となります。[p]
 「[tip key="tyrano"]ティラノスクリプト[endtip]」の説明文の「html」部分がTIP表示になっているので試してみてください。[p]
 因みに、元のTIPに戻る事はできません。[p]
@@ -515,7 +543,7 @@ TIPから別のTIPを表示するには、CSV自体にHTMLタグを記述し、[
 そうかも！でも、直接書くしかないので頑張って！！（汗）[p]
 @chara_mod name=akane face=default
 @chara_mod name=yamato face=default
-tipから別のtip表示については以上です。[p]
+TIPから別のTIP表示については以上です。[p]
 @jump target=*index cond=tf.tip_index==true
 
 
@@ -527,9 +555,9 @@ tipから別のtip表示については以上です。[p]
 [pushlog text=<b>---8．ページを指定してTIP詳細を開く---</b>]
 
 #akane
-ページを指定するには、tip タグに page属性 を指定します。[p]
+ページを指定するには、[code text="[tip]"] タグに page属性 を指定します。[p]
 例えば、[code text="key=hoge"] の 2ページ目を開きたい場合は、[r]
-[eval exp="tf.text='[tip\tkey=hoge\tpage=2]'"][code]となります。[p]
+[eval exp="tf.text='[tip\x20key=hoge\x20page=2]'"][code]となります。[p]
 
 #yamato
 @chara_mod name=yamato face=angry
@@ -550,8 +578,8 @@ page=3 だと該当ページ無しになってしまうんだ。[p]
 テンプレートのhtmlタグに [code text="data-page"] を指定する事もできるぞ！[p]
 
 #yamato
-テンプレート：[eval exp='tf.text="<div\tclass=\"tip_body\"\tdata-page=\"page2\">"'][code][r]
-ksファイル：[eval exp="tf.text='[tip\tkey=hoge\tpage=page2]'"][code][r]
+テンプレート：[eval exp='tf.text="<div\x20class=\"tip_body\"\x20data-page=\"page2\">"'][code][r]
+ksファイル：[eval exp="tf.text='[tip\x20key=hoge\x20page=page2]'"][code][r]
 こんな感じ[p]
 [code text="data-page"] の値は何でもいいけど、「文字列」が入ってるのが望ましいかな。[p]
 
@@ -564,9 +592,9 @@ ksファイル：[eval exp="tf.text='[tip\tkey=hoge\tpage=page2]'"][code][r]
 #yamato
 [tip_flag key=tyrano flag_name=flag2]
 2種類で記述してみたのでクリックして確認だ！！！[r]
-「[eval exp="tf.text='[tip\tkey=tyrano\tpage=2]'"][code]
+「[eval exp="tf.text='[tip\x20key=tyrano\x20page=2]'"][code]
 [tip key=tyrano page=2]ティラノスクリプト[endtip][code text="[endtip]"]」[r]
-「[eval exp="tf.text='[tip\tkey=tyrano\tpage=testpage]'"][code]
+「[eval exp="tf.text='[tip\x20key=tyrano\x20page=testpage]'"][code]
 [tip key=tyrano page=testpage]ティラノスクリプト[endtip][code text="[endtip]"]」[p]
 
 #akane
@@ -578,11 +606,96 @@ ksファイル：[eval exp="tf.text='[tip\tkey=hoge\tpage=page2]'"][code][r]
 
 
 #akane
-最後に、注意点などを簡単に説明しますね。[p]
+では、未読分に「New!」を付ける方法を説明します。[p]
 *index09
 [見出し消去]
-[見出し text=9．その他注意点など]
-[pushlog text=<b>---9．その他注意点など---</b>]
+[見出し text=9．未読分に「New!」を付ける]
+[pushlog text=<b>---9．未読分に「New!」を付ける---</b>]
+未読のTIPに「New!」を付けられるようになっています！[r]
+テンプレートの [eval exp="tf.text='{{if\x20flag=0or1}}New!{{/if}}'"][code] のあたりだよ！[p]
+
+#yamato
+必要無い場合は、面倒だけどテンプレートから削除してくれ！[r]
+色やテキストなどはいつものようにCSSで変更可能だぞ！[p]
+
+#akane
+因みに、flag の値が [code text="true/false"] から [code text="数値"] に変わっています。[r]
+リストは、非公開が「-1」で、Newは「0」。[r]
+TIP詳細は「1」の時に New になります。[p]
+
+#yamato
+@chara_mod name=yamato face=angry
+リスト表示時は、まだ未読なので表示 0 回が New。[r]
+TIP詳細は、1 回目の表示時が New って事だぞ！！[p]
+
+#akane
+テンプレートで変更できるので、好きなように変えても大丈夫ですよ！！[p]
+
+#yamato
+@chara_mod name=yamato face=default
+「flag」が表示数にもなるので、[r]
+例えば、「同じTIPを10回開いたらコメントを追加する」[r]
+といった遊びも出来るかもだな？[p]
+
+#akane
+@chara_mod name=akane face=happy
+お！そうだね！！[p]
+
+@chara_mod name=akane face=default
+リスト表示ボタンにも「未読数」を表示出来るようになっていますが[r]
+これはちょっと準備が面倒です…。[p]
+
+まず、[code text="[button]"] タグの name に「[code text="tip_btn,tip_data"]」を指定します。[r]
+「[code text="tip_btn"]」は固定「[code text="tip_data"]」は表示するCSVファイル名です。[r]
+どちらも省略できません。[p]
+
+#yamato
+あと、[code text="[button]"] タグの下と make.ks に、更新用のタグ [code text="[tip_btn]"] を記述するぞ。[r]
+無くてもいいけど、記述しといた方がロード時などの挙動が不自然じゃないと思う。[p]
+
+#akane
+[eval exp="tf.text='[button\x20name=tip_btn,tip_data\x20role=sleepgame]'"][code][r]
+[code text="[tip_btn]"][r]
+こんな感じですね。[p]
+
+複数のCSV用のボタンを使う場合は、CSVファイル分のタグが必要です。[r]
+[code text="[tip_btn]"][r]
+[eval exp="tf.text='[tip_btn\x20data_name=sample]'"][code][p]
+
+#yamato
+glink の場合も基本的には同じだぞ！[r]
+[eval exp="tf.text='[glink\x20name=tip_btn,tip_data]'"][code][r]
+[code text="[tip_btn][s]"][p]
+
+#akane
+@chara_mod name=akane face=doki
+中の人の頭じゃこれ以上簡単に出来ないみたいなので頑張って！[r]
+ブログでも詳しい使い方を説明するみたいだよ！！[p]
+
+#yamato
+@chara_mod name=yamato face=tohoho
+ボタンの未読数表示を数字以外にしたい場合は、tip.js を変更する必要があるぞ。[r]
+このあたりはパラメータ化しても良かったんじゃないか？[p]
+
+#akane
+@chara_mod name=akane face=sad
+うーん、これ以上はパラメータ増やしたくないみたいだよ～。[r]
+要望があれば考えるかも…？？？[r]
+@chara_mod name=akane face=default
+あ、デザインや色はお約束のCSSです！！！[p]
+
+@chara_mod name=yamato face=default
+未読分に「New!」を付ける方法については以上です。[p]
+@jump target=*index cond=tf.tip_index==true
+
+
+
+#akane
+最後に、注意点などを簡単に説明しますね。[p]
+*index10
+[見出し消去]
+[見出し text=10．その他注意点など]
+[pushlog text=<b>---10．その他注意点など---</b>]
 
 #akane
 まず、CSVデータに、「[code text=key]」の項目は必須です。[r]
@@ -592,7 +705,7 @@ CSVデータの文字コードは必ず [tip key="utf-8"]UTF-8[endtip] で保存
 
 #yamato
 @chara_mod name=yamato face=happy
-そうそう、Ver3.0まではcsvデータの最後に「_EOF」付けろとか言ってたけど、Ver4.0では必要なくなってるぞ！[p]
+そうそう、Ver3.0まではCSVデータの最後に「_EOF」付けろとか言ってたけど、Ver4.0では必要なくなってるぞ！[p]
 
 #akane
 @chara_mod name=akane face=sad
@@ -605,7 +718,7 @@ CSVデータの文字コードは必ず [tip key="utf-8"]UTF-8[endtip] で保存
 #akane
 @chara_mod name=yamato face=default
 @chara_mod name=akane face=default
-もし、最後の項目がうまく表示されない場合は、csvの最後に不要な文字列を入れておいてください。eofで無くても大丈夫です。[p]
+もし、最後の項目がうまく表示されない場合は、CSVの最後に不要な文字列を入れておいてください。eofで無くても大丈夫です。[p]
 
 #yamato
 あとは、「カンマ区切りテキスト」でさえあれば、[tip key=filename-extension]拡張子[endtip]は必ずしも「.csv」である必要はないぞ。[p]

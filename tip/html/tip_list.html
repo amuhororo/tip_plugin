@@ -3,13 +3,14 @@
 
 	<div class="button_close menu_close"></div>
 
-	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> / <span class="maxnum">{{:maxnum}}</span></div>
+	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> (未読：{{:unread}}) / <span class="maxnum">{{:maxnum}}</span></div>
 
 	{{for tips}}
-		<li class="tips_item tip_list{{if flag!=true}}_none{{/if}}" data-num={{:id}}>
+		<li class="tips_item tip_list{{if flag<0}}_none{{/if}}" data-num={{:id}}>
 		  <div class="tips_body">
 				<span class="tip_id">Tip {{if id<9}}0{{/if}}{{:id +1}}</span>
-				<span class="tip_title ">{{if flag==true}}{{:title}}{{else}}？？？？？{{/if}}</span>
+				<span class="tip_title">{{if flag>=0}}{{:title}}{{else}}？？？？？{{/if}}</span>
+				{{if flag==0}}<span class="new">New!</span>{{/if}}
 			</div>
 		</li>
 	{{/for}}

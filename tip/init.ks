@@ -1,5 +1,5 @@
-;【TIPプラグイン ver4.01b】
-; 2020/11/23更新  v504対応版
+;【TIPプラグイン ver4.02】
+; 2021/01/03更新  v505対応版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -57,7 +57,7 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 ;js、css読み込み
 [loadjs storage="plugin/tip/js/tip.js"]
 [loadjs storage="plugin/tip/js/tip_click.js"]
-[loadcss file="./data/others/plugin/tip/js/tip.css" ]
+[loadcss file="./data/others/plugin/tip/css/tip.css" ]
 
 
 
@@ -65,18 +65,16 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 ;///◆CSV読み込み///////////////////////////////////////////////////////////////////
 [macro name="tip_loadcsv"]
 [iscript]
-	var tip_conf = tf.system.tip_conf;
-	var file_name = (mp.file) ? mp.file.split('.',1) : tip_conf.data_name;//file名を取得
-
+	//var file_name = (mp.file) ? mp.file.split('.',1) : tf.system.tip_conf.data_name;//file名を取得
 	//初期値
-	mp.file          =  mp.file          ||  tip_conf.file;               //csvファイル。
-	mp.flag          =  mp.flag          ||  tip_conf.flag;               //リスト表示をフラグ管理するか
-	mp.flag_var      =  mp.flag_var      ||  tip_conf.flag_var;           //フラグ用変数の種類
-	mp.tip_html      =  mp.tip_html      ||  tip_conf.tip_html;           //TIP表示用html
-	mp.tiplist_html  =  mp.tiplist_html  ||  tip_conf.tiplist_html;       //TIPリスト表示用html
-	//mp.nextend       =  mp.nextend       ||  "close";                     //nextの最後のイベント
-	//mp.join          =  mp.join          ||  "false";                     //データを追加するか※使い方注意
-	mp.data_name     =  file_name;
+	mp.file          =  mp.file          ||  tf.system.tip_conf.file;             //csvファイル。
+	mp.flag          =  mp.flag          ||  tf.system.tip_conf.flag;             //リスト表示をフラグ管理するか
+	mp.flag_var      =  mp.flag_var      ||  tf.system.tip_conf.flag_var;         //フラグ用変数の種類
+	mp.tip_html      =  mp.tip_html      ||  tf.system.tip_conf.tip_html;         //TIP表示用html
+	mp.tiplist_html  =  mp.tiplist_html  ||  tf.system.tip_conf.tiplist_html;     //TIPリスト表示用html
+	//mp.nextend       =  mp.nextend       ||  "close";                             //nextの最後のイベント
+	//mp.join          =  mp.join          ||  "false";                             //データを追加するか※使い方注意
+	mp.data_name     =  mp.file.split('.',1);
 	var pm = mp;
 	tipLoadcsv(pm);
 
@@ -89,16 +87,14 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 ;///◆[tiplist_show]タグ///////////////////////////////////////////////////////////////////
 [macro name="tip_list"]
 [iscript]
-	var tip_conf = tf.system.tip_conf;
-
 	//初期値
-	mp.tip_clickse    =  mp.tip_clickse    ||  tip_conf.tip_clickse;      //TIPのクリック音
-	mp.tip_enterse    =  mp.tip_enterse    ||  tip_conf.tip_enterse;      //TIPにマウスカーソルが乗った時
-	mp.tip_leavese    =  mp.tip_leavese    ||  tip_conf.tip_leavese;      //TIPからマウスカーソルが外れた時
-	mp.list_clickse   =  mp.list_clickse   ||  tip_conf.list_clickse;     //TIPリストのクリック音
-	mp.list_enterse   =  mp.list_enterse   ||  tip_conf.list_enterse;     //TIPリストにマウスカーソルが乗った時
-	mp.list_leavese   =  mp.list_leavese   ||  tip_conf.list_leavese;     //TIPリストからマウスカーソルが外れた時
-	mp.data_name      =  mp.data_name      ||  tip_conf.data_name;        //csvデータ名
+	mp.tip_clickse    =  mp.tip_clickse    ||  tf.system.tip_conf.tip_clickse;    //TIPのクリック音
+	mp.tip_enterse    =  mp.tip_enterse    ||  tf.system.tip_conf.tip_enterse;    //TIPにマウスカーソルが乗った時
+	mp.tip_leavese    =  mp.tip_leavese    ||  tf.system.tip_conf.tip_leavese;    //TIPからマウスカーソルが外れた時
+	mp.list_clickse   =  mp.list_clickse   ||  tf.system.tip_conf.list_clickse;   //TIPリストのクリック音
+	mp.list_enterse   =  mp.list_enterse   ||  tf.system.tip_conf.list_enterse;   //TIPリストにマウスカーソルが乗った時
+	mp.list_leavese   =  mp.list_leavese   ||  tf.system.tip_conf.list_leavese;   //TIPリストからマウスカーソルが外れた時
+	mp.data_name      =  mp.data_name      ||  tf.system.tip_conf.data_name;      //csvデータ名
 	var pm = mp;
 
 	displayTiplist(pm);
@@ -111,13 +107,11 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 ;///◆[tip_flag]タグ///////////////////////////////////////////////////////////////////
 [macro name="tip_flag"]
 [iscript]
-	var tip_conf = tf.system.tip_conf;
-
 	//初期値
-	mp.key            =  mp.key            ||  null;　　　　　　　　　　　　//必須
-	mp.data_name      =  mp.data_name      ||  tip_conf.data_name;        //データ名
-	mp.flag_name      =  mp.flag_name      ||  "flag";                    //フラグの名前
-	mp.flag_val       =  mp.flag_val       ||  true;　　　　　　　　　　　　//フラグの値
+	mp.key            =  mp.key            ||  null;　　　　　　　　　　　　        //必須
+	mp.data_name      =  mp.data_name      ||  tf.system.tip_conf.data_name;      //データ名
+	mp.flag_name      =  mp.flag_name      ||  "flag";                            //フラグの名前
+	mp.flag_val       =  mp.flag_val       ||  true;　　　　　　　　　　　　        //フラグの値
 	var pm = mp;
 
 	tipflag(pm);
@@ -130,18 +124,16 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 ;///◆[tip]タグ///////////////////////////////////////////////////////////////////
 [macro name="tip"]
 [iscript]
-	var tip_conf = tf.system.tip_conf;
-
 	//初期値
-	mp.key           =  mp.key            ||  null;                       //必須
-	mp.color         =  mp.color          ||  "";                         //TIPの色。
-	mp.entercolor    =  mp.entercolor     ||  "";                         //TIPにマウスカーソルが乗った時の色。
-	mp.mark          =  mp.mark           ||  tip_conf.mark;              //TIPにマークを付ける
-	mp.clickse       =  mp.clickse        ||  tip_conf.tip_clickse;       //TIPのクリック音
-	mp.enterse       =  mp.enterse        ||  tip_conf.tip_enterse;       //TIPにマウスカーソルが乗った時の音
-	mp.leavese       =  mp.leavese        ||  tip_conf.tip_leavese;       //TIPからマウスカーソルが外れた時の音
-	mp.data_name     =  mp.data_name      ||  tip_conf.data_name;         //データの名前
-	mp.page          =  mp.page           ||  "";                         //開くページ名
+	mp.key           =  mp.key            ||  null;                               //必須
+	mp.color         =  mp.color          ||  "";                                 //TIPの色。
+	mp.entercolor    =  mp.entercolor     ||  "";                                 //TIPにマウスカーソルが乗った時の色。
+	mp.mark          =  mp.mark           ||  tf.system.tip_conf.mark;            //TIPにマークを付ける
+	mp.clickse       =  mp.clickse        ||  tf.system.tip_conf.tip_clickse;     //TIPのクリック音
+	mp.enterse       =  mp.enterse        ||  tf.system.tip_conf.tip_enterse;     //TIPにマウスカーソルが乗った時の音
+	mp.leavese       =  mp.leavese        ||  tf.system.tip_conf.tip_leavese;     //TIPからマウスカーソルが外れた時の音
+	mp.data_name     =  mp.data_name      ||  tf.system.tip_conf.data_name;       //データの名前
+	mp.page          =  mp.page           ||  "";                                 //開くページ名
 	var pm = mp;
 
 	tip(pm);
@@ -152,13 +144,26 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 
 ;///◆[endtip]タグ///////////////////////////////////////////////////////////////////
 [macro name="endtip"]
-[iscript]
-
-	endtip();
-
-[endscript]
+	[iscript]
+		endtip();
+	[endscript]
 [endmacro]
 
 
+;///◆[tip_btn]タグ///////////////////////////////////////////////////////////////////
+;ボタン用の未読数をカウント表示するマクロです。
+[macro name="tip_btn"]
+	[wait time=20]
+	[iscript]
+		mp.data_name     =  mp.data_name   ||  tf.system.tip_conf.data_name;                         //データの名前
+		var pm = mp;
+		tipBtn(pm);
+	[endscript]
+[endmacro]
+
+
+
 [tip_loadcsv]
+
+
 [return]
