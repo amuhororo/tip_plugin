@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.02】 2021/01/03
+// 【TIPプラグイン ver4.02a】 2021/01/04
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 //--- ◆ csv読み込み -----------------------------------------------------------------------
@@ -111,6 +111,7 @@ function displayTiplist(pm) {
 	};
 
 	var layer_menu = TYRANO.kag.layer.getMenuLayer();
+	layer_menu.empty(); //メニューが残ってる場合があるので必須
 	var speed = parseInt(tip_conf.fade_speed);
 
 	var tipdata = {};
