@@ -111,8 +111,8 @@ else if( h < 11) tf.aisatu = "おはよう！！";
 @chara_mod name=akane face=happy
 #あかねちゃん
 [emb exp="tf.aisatu"][r]
-[tip key=tip][mc_ruby text=てぃっぷ]TIP[endruby][endtip][tip key=plugin color=0xff9999]プラグイン[endtip]を[font color=0xff9999]DL[resetfont]してくれてありがとう！[p]
-TIPプラグインは、[tip key="machi"]「[ruby text=まち]街」[endtip][tip key="428"]「[mc_ruby text=しぶや]428[endruby]」[endtip]のTIP機能のように、[r]
+[tip key=tip]TIP[endtip][tip key=plugin color=0xff9999]プラグイン[endtip]をDLしてくれてありがとう！[p]
+TIPプラグインは、[tip key="machi"]「街」[endtip][tip key="428"]「428」[endtip]のTIP機能のように、[r]
 メッセージのテキストをクリックして別窓で解説を表示できるプラグインです。[p]
 
 [cm]
