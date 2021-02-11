@@ -1,9 +1,8 @@
-/* 【TIPプラグイン ver4.02a】 2021/01/04        */
+/* 【TIPプラグイン ver4.03】 2021/02/11        */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
-* {
-	box-sizing: border-box;
-}
+@charset "utf-8";
+* { box-sizing: border-box; }
 
 
 /*******************************************
@@ -26,12 +25,16 @@
 	content:"";
 	position: absolute;
 	right:-15px;
-	/*top:-5px;*/
+	bottom:0.8em; /*ルビがある時変な位置になるのでbottom指定*/
 	width:14px;
 	height:14px;
 	display: inline-block;
 	background:url(../image/tip_mark.png);
 	background-size:14px;
+	visibility:hidden;
+}
+.tip.mark_on:after {
+	visibility:visible;
 }
 /* 縦書き用マーク */
 .vertical .tip.mark {
@@ -50,6 +53,7 @@
 	/*margin: 0px;*/
 }
 .log_body .tip.mark:after{
+	visibility:visible;
 	/*background:none;*/
 }
 
@@ -93,16 +97,26 @@
 	color: red;
 	margin-left: 0.5em;
 }
-/* new ボタン */
+
+/*******************************************
+   Button・glink用の未読数表示
+********************************************/
 .tipbtn {
 	position: absolute;
+	text-align: center;
 }
-.tipbtn.tipnew {
+.glink_button .tipbtn {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	right: 0;
+}
+.tipbtn.tipnew span {
+	position: absolute;
+	display: inline-block;
 	color: #fff;
 	background-color: red;
-	display: inline-block;
 	font-weight: bold;
-	text-align: center;
 	font-size: 18px;
 	line-height: 30px;
 	width: 30px;
@@ -110,9 +124,39 @@
 	border-radius: 50%;
 	z-index: 99999999;
 }
-.glink_button .tipbtn {
+.tipbtn.tipnew.rt span,
+.glink_button .tipbtn.rt span {
 	top: -10px;
 	right: -10px;
+}
+.tipbtn.tipnew.lt span,
+.glink_button .tipbtn.lt span {
+	top: -10px;
+	left: -10px;
+}
+.tipbtn.tipnew.rb span,
+.glink_button .tipbtn.rb span {
+	bottom: -10px;
+	right: -10px;
+}
+.tipbtn.tipnew.lb span,
+.glink_button .tipbtn.lb span {
+	bottom: -10px;
+	left: -10px;
+}
+.tipbtn.tipnew.ct span,
+.glink_button .tipbtn.ct span {
+	position: relative;
+	top: -25px;
+}
+.tipbtn.tipnew.cb span,
+.glink_button .tipbtn.cb span {
+	position: relative;
+	bottom: -25px;
+}
+.glink_button .tipbtn.cb {
+	top: auto;
+	height: initial;
 }
 
 
@@ -243,6 +287,7 @@
 	border:2px solid #0077c1;
 	border-radius: 50%;
 	background: #fff;
+	cursor: pointer;
 }
 .tips_nav a:hover {
 	color:rgba(0,0,80,0.75);
@@ -399,6 +444,7 @@
 	background:rgba(255,255,255,0.8);
 	border-radius:6px;
 	border:2px solid #0077c1;
+	cursor: pointer;
 }
 .tip_nav a:hover {
 	color:rgba(0,0,80,1);
@@ -538,7 +584,6 @@
 }
 .save_list_item .tip{
 	pointer-events : none;
-	color: #666 !important;
 }
 .save_list_item .tip.mark{
 	margin: 0px;

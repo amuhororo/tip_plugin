@@ -1,9 +1,8 @@
-// 【TIPプラグイン ver4.02a】 2021/01/04
+// 【TIPプラグイン ver4.03】 2021/02/11
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 //--- ◆ csv読み込み -----------------------------------------------------------------------
 function tipLoadcsv(pm) {
-
 	$.ajax({
 		type: "GET",
 		url: "./data/others/plugin/tip/csv/"+pm.file,
@@ -37,38 +36,19 @@ function tipLoadcsv(pm) {
 		var tip_flag = [];
 		var flag_val = -1;
 		if(pm.flag=="false") flag_val = 0;
-
 		if(pm.flag_var == "f") var vn = TYRANO.kag.stat.f;
 		else var vn = TYRANO.kag.variable.sf;
+
 		if (vn.tip_flag[pm.data_name]===undefined) {
 			vn.tip_flag[pm.data_name] = [];
-			for (var i = 0; i < csvNew.length; i++) {
+		}
+		for (var i = 0; i < csvNew.length; i++) {
+			if(vn.tip_flag[pm.data_name][i]===undefined){
 				vn.tip_flag[pm.data_name][i] = {};
 				vn.tip_flag[pm.data_name][i]["flag"] = flag_val;
 			}
 		}
 		tip_flag = vn.tip_flag[pm.data_name];
-		/*
-		if ( pm.flag_var == "f" ) {
-			if (TYRANO.kag.stat.f.tip_flag[pm.data_name]===undefined) {
-				TYRANO.kag.stat.f.tip_flag[pm.data_name] = [];
-				for (var i = 0; i < csvNew.length; i++) {
-					TYRANO.kag.stat.f.tip_flag[pm.data_name][i] = {};
-					TYRANO.kag.stat.f.tip_flag[pm.data_name][i]["flag"] = flag_val;
-				}
-			}
-			tip_flag = TYRANO.kag.stat.f.tip_flag[pm.data_name];
-		} else {
-			if(TYRANO.kag.variable.sf.tip_flag[pm.data_name]===undefined) {
-				TYRANO.kag.variable.sf.tip_flag[pm.data_name] = [];
-				for (var i = 0; i < csvNew.length; i++) {
-					TYRANO.kag.variable.sf.tip_flag[pm.data_name][i] = {};
-					TYRANO.kag.variable.sf.tip_flag[pm.data_name][i]["flag"] = flag_val;
-				}
-			}
-			tip_flag = TYRANO.kag.variable.sf.tip_flag[pm.data_name];
-		};
-		*/
 
 		//CSVデータの配列の各行をループ処理する
 		for (var i = 1; i < csvNew.length; i++) {
@@ -111,25 +91,27 @@ function displayTiplist(pm) {
 	};
 
 	var layer_menu = TYRANO.kag.layer.getMenuLayer();
-	layer_menu.empty(); //メニューが残ってる場合があるので必須
+	if(layer_menu.find(".display_menu").length) layer_menu.empty();	//メニューがこのってたら消す。チラつき防止
 	var speed = parseInt(tip_conf.fade_speed);
 
+	//リストデータ取得
 	var tipdata = {};
 	tipdata.tips = tip_conf["data_"+pm.data_name];
 	tipdata.maxnum = tip_conf["data_"+pm.data_name].length;
 
+	//テンプレートファイル名取得
 	var tip_html = tipdata.tips[0]["tip_html"];
 	var tiplist_html = tipdata.tips[0]["tiplist_html"];
 
-	//解放数
+	//解放数数える
 	var tip_true = 0;
 	var tip_unread = 0;
 	for (var i = 0;  i < tipdata.tips.length; i++) {
 		if(tipdata.tips[i]["flag"] >= 0) tip_true++;
 		if(tipdata.tips[i]["flag"] == 0) tip_unread++;
 	}
-	tipdata.truenum = tip_true;
-	tipdata.unread= tip_unread;
+	tipdata.truenum = tip_true; //解放数
+	tipdata.unread = tip_unread; //未読数
 
 	if($("#tip_list_wrap").length == 0) {
 		layer_menu.append("<div id='tip_list_wrap'></div>");
@@ -361,10 +343,13 @@ function displayTip(pm) {
 		//閉じるイベント
 		function close_ev(){
 			if($("#tip_list_wrap").length){
+				displayTiplist(pm);
+				$(this).remove();
 				$("#tip_wrap").fadeOut(speed, function(){
-					displayTiplist(pm);
-					$(this).remove();
+					//displayTiplist(pm);
+					//$(this).remove();
 				});
+				//displayTiplist(pm);
 			}else if($(".log_body").length){
 				$("#tip_wrap").fadeOut(speed, function(){
 					$(this).remove();
@@ -612,10 +597,11 @@ function tip(pm) {
 			pm.color = tip_conf.color;
 			tip_conf.color_conf = "false";
 		};
-		var color = "";
+		//var color = "";
 		if(tip_conf.color_conf=="true"){
+			tip_conf.color_tmp = TYRANO.kag.stat.font.color; //元カラーを一次保存
 			TYRANO.kag.stat.font.color = $.convertColor(pm.color);
-			color = " style='color:" + $.convertColor(pm.color) + "'";
+			//color = " style='color:" + $.convertColor(pm.color) + "'";
 		};
 		if(!pm.entercolor && tip_conf.entercolor) pm.entercolor = $.convertColor(tip_conf.entercolor);
 
@@ -626,8 +612,12 @@ function tip(pm) {
 		j_span.attr("data-obj",data_obj);                    //data-key追加
 		var tip_id = tip[0]["id"];                           //idというか配列順取得
 
+
 		//マーク※endtipでclass追加しないと、先にマークが出ちゃって変
-		if(pm.mark=="true") TYRANO.kag.variable.tf.tip_mark = pm.key ;
+		if(pm.mark=="true"){
+			$("[data-key='"+pm.key+"']").addClass("mark");
+			TYRANO.kag.variable.tf.tip_mark = pm.key ;
+		}
 
 		//フラグ
 		if(tip_conf["data_"+pm.data_name][tip_id]["flag"] == -1){
@@ -647,14 +637,18 @@ function tip(pm) {
 				tip_conf.tiplog_name = " tip " + pm.key + mark;
 				tip_conf.tiplog_key = " data-key='"+pm.key+"'";
 				tip_conf.tiplog_obj = " data-obj='"+data_obj+"'";
-				if(tip_conf.color_conf=="true") TYRANO.kag.tmp.backlog.font.color =  $.convertColor(pm.color);
-				if(TYRANO.kag.tmp.backlog.font_style == "true" && tip_conf.color_conf=="true") TYRANO.kag.tmp.backlog.font_flag = "true" ;
+				if(tip_conf.color_conf=="true" && TYRANO.kag.tmp.backlog.font_style == "true"){
+					TYRANO.kag.tmp.backlog.font = {};
+					TYRANO.kag.tmp.backlog.font.color =  pm.color;
+					TYRANO.kag.tmp.backlog.font_flag = "true";
+				}
 			}else{
 				if(chara_name!="" && TYRANO.kag.stat.f_chara_ptext=="true"){
 					TYRANO.kag.pushBackLog("<b class='backlog_chara_name "+chara_name+"'>"+chara_name+"</b>：","add");
 					TYRANO.kag.stat.f_chara_ptext="false";
 				}
-				backlog += "<span class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' data-key='" + pm.key + "' data-obj='" + data_obj +"'"+ color +">";
+				//backlog += "<span class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' data-key='" + pm.key + "' data-obj='" + data_obj +"'"+ color +">";
+				backlog += "<span class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' data-key='" + pm.key + "' data-obj='" + data_obj +"'>";
 			}
 			backlog += "<script>$.getScript('./data/others/plugin/tip/js/tip_click.js');</script>";
 
@@ -665,7 +659,7 @@ function tip(pm) {
 
 	//クリックイベント呼び出し※innerに入れないと、sleepgameから戻った後クリック出来ない。
 	$('.message_inner').prepend("<script>$.getScript('./data/others/plugin/tip/js/tip_click.js');</script>");
-	tipBtn(pm)
+	tipBtn(pm);
 };
 //--- ◆ end -----------------------------------------------------------------------------
 
@@ -674,19 +668,20 @@ function tip(pm) {
 function endtip() {
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	//マーク
-	if(TYRANO.kag.variable.tf.tip_mark)$("[data-key='"+TYRANO.kag.variable.tf.tip_mark+"']").addClass("mark");
-	TYRANO.kag.variable.tf.tip_mark = "";
+	if(TYRANO.kag.variable.tf.tip_mark){
+		$("[data-key='"+TYRANO.kag.variable.tf.tip_mark+"']").addClass("mark_on");
+		TYRANO.kag.variable.tf.tip_mark = "";
+	}
 	//バックログ
-	if(tip_conf.log=="true" && !TYRANO.kag.tmp.backlog) TYRANO.kag.pushBackLog("</span>","join");
-	//バックログプラグイン用フラグリセット
-	tip_conf.tiplog_name = "";
-	tip_conf.tiplog_key = "";
-	if(TYRANO.kag.tmp.backlog){
-		TYRANO.kag.tmp.backlog.font_flag = "false";//フォントフラグ解除
-		TYRANO.kag.tmp.backlog.font = {};//バックログ用styleリセット
+	if(tip_conf.log=="true") TYRANO.kag.pushBackLog("</span>","join");
+	if(tip_conf.color_conf == "true"){
+		TYRANO.kag.stat.font.color = tip_conf.color_tmp; //元の色に戻す
+		tip_conf.color_conf == "false";
+		if(TYRANO.kag.tmp.backlog){
+			TYRANO.kag.tmp.backlog.font_flag = "false";//フォントフラグ解除
+		}
 	}
 	var j_span = TYRANO.kag.setMessageCurrentSpan();
-	TYRANO.kag.stat.font = $.extend(true, {}, TYRANO.kag.stat.default_font);
 };
 //--- ◆ end ------------------------------------------------------------------------------
 
@@ -727,7 +722,6 @@ function tipflag(pm) {
 //--- ◆ end ------------------------------------------------------------------------------
 
 
-
 //--- ◆ tip_btnタグ ------------------------------------------------------------------------
 function tipBtn(pm) {
 	var unread = 0;
@@ -741,15 +735,21 @@ function tipBtn(pm) {
 			var top = $('img.tip_btn.'+pm.data_name).css("top");
 			var left = $('img.tip_btn.'+pm.data_name).css("left");
 			var width = $('img.tip_btn.'+pm.data_name).width();
-			left = parseInt(left) + Number(width) - 20;
-			top = parseInt(top)-10;
-			$('img.tip_btn.'+pm.data_name).after('<div class="tipbtn fixlayer '+pm.data_name+'"></div>');
-			$('img + .tipbtn.'+pm.data_name).css("top",top+"px").css("left",left+"px");
+			var height = $('img.tip_btn.'+pm.data_name).height();
+			left = parseInt(left);
+			top = parseInt(top);
+			$('img.tip_btn.'+pm.data_name).after('<div class="tipbtn fixlayer '+pm.data_name+' '+pm.pos+'"><span></span></div>');
+			$('img + .tipbtn.'+pm.data_name).css({
+				"top":top+"px",
+				"left":left+"px",
+				"width":width+"px",
+				"height":height+"px"
+			});
 		};
 		if($('.glink_button.tip_btn.'+pm.data_name+' .tipbtn').length == 0){
-			$('.glink_button.tip_btn.'+pm.data_name).append('<div class="tipbtn '+pm.data_name+'"></div>');
+			$('.glink_button.tip_btn.'+pm.data_name).append('<div class="tipbtn '+pm.data_name+' '+pm.pos+'"><span></span></div>');
 		}
-		$('.tipbtn.'+pm.data_name).text(unread);
+		$('.tipbtn.'+pm.data_name).find('span').text(unread);
 		if(unread > 0) $('.tipbtn.'+pm.data_name).addClass('tipnew');
 		if(unread <= 0) $('.tipbtn.'+pm.data_name).removeClass('tipnew');
 	}
