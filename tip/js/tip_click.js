@@ -1,10 +1,9 @@
-// 【TIPプラグイン ver4.03】 2021/02/11
+// 【TIPプラグイン ver4.04】 2021/08/05
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 
 //クリックイベント
 $(function(){
-//function tipClick(key) {
 	if(TYRANO.kag.variable.tf.tip_open===undefined)TYRANO.kag.variable.tf.tip_open=false;
 	var tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	click_on = false;
@@ -52,4 +51,3 @@ $(function(){
 		}
 	});
 });
-//};

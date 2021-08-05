@@ -1,4 +1,4 @@
-/* 【TIPプラグイン ver4.03】 2021/02/11        */
+/* 【TIPプラグイン ver4.04】 2021/08/05        */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
 @charset "utf-8";
@@ -208,6 +208,28 @@
 	font-size:18px;
 }
 
+/* ソートボタン */
+.sort {
+	position: absolute;
+	top:30px;
+	left:10%;
+	width: 80%;
+	text-align: center;
+}
+.tip_sort {
+	border: 2px solid #0077c1;
+	border-radius: 8px;
+	padding: 6px;
+	background: #fff;
+	font-size: 16px;
+}
+.tip_sort:hover {
+	color:rgba(0,0,80,0.75);
+	background: #fff001;
+	text-shadow: 1px 1px 0px rgba(0,0,0,0.7);
+}
+
+/* tip表示エリア */
 .tip_list_area {
 	height:100%;
 	display: flex;
@@ -257,8 +279,8 @@
 .tips_nav {
 	position: absolute;
 	top: 90px;
-	left: 0;
-	width:100%;
+	left: 10%;
+	width:80%;
 	text-align:center;
 }
 /* 縦画面用 */
