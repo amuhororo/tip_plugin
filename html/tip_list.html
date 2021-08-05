@@ -1,0 +1,34 @@
+
+<div id="tip_list_container">
+
+	<!-- 閉じるボタン -->
+	<div class="button_close menu_close"></div>
+
+	<!-- 解放/未読数 -->
+	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> (未読：{{:unread}}) / <span class="maxnum">{{:maxnum}}</span></div>
+
+	<!-- ソートボタン例
+	<div class="sort">
+		<span class="tip_sort" data-sortkey="id">idでソート</span>
+		<span class="tip_sort" data-sortkey="title" data-reverse="">titleでソート</span>
+	</div>
+	-->
+
+	<!-- TIPs -->
+	{{for tips}}
+		<li class="tips_item tip_list{{if flag<0}}_none{{/if}}" data-num={{:id}}>
+		  <div class="tips_body">
+				<span class="tip_id">Tip {{if id<9}}0{{/if}}{{:id +1}}</span>
+				<span class="tip_title">{{if flag>=0}}{{:title}}{{else}}？？？？？{{/if}}</span>
+				{{if flag==0}}<span class="new">New!</span>{{/if}}
+			</div>
+		</li>
+	{{/for}}
+
+	<!-- タイトル画像 -->
+	<img class="img_label img_label_save" src='data/others/plugin/tip/image/label_tips.png' style='left:0;top:0;position:absolute;'>
+
+	<!-- 背景画像 -->
+	<img class="img_bg_base" src='./tyrano/images/system/bg_base.png' style='z-index:-2;left:0;top:0;width:100%;height:100%;position:absolute;'>
+
+</div>

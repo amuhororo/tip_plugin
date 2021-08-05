@@ -1,0 +1,33 @@
+
+<div id="tip_container">
+
+	<!-- 閉じるボタン -->
+	<div class="tip_close_area"><a class="tip_close_button menu_close">✖</a></div>
+
+	<!-- TIP -->
+	<div class="tip_area">
+		<section class="tip_{{:id}} tip_item" data-num={{:id}}>
+
+			<!--タイトル-->
+			<h1 class="tip_head">
+				<span class="tip_id">Tip {{if id<9}}0{{/if}}{{:id +1}}</span>
+				<span class="tip_title">{{:title}}</span>
+				{{if flag==1}}<span class="new">New!</span>{{/if}} <!-- NEW表示 不要なら削除 -->
+			</h1>
+
+			<!--１ページ目-->
+			<div class="tip_body">
+				<div class="tip_text">{{:tip}}</div>
+			</div>
+
+			<!--2ページ目-->
+			{{if flag2==true && tip2!=""}} <!-- フラグ用のif 不要なら削除 -->
+				<div class="tip_body" data-page="testpage">
+					<div class="tip_text">{{:tip2}}</div>
+				</div>
+			{{/if}} <!-- フラグ用のendif 不要なら削除 -->
+
+		</section>
+	</div>
+
+</div>
