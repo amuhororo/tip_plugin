@@ -23,7 +23,7 @@
 @plugin name=tip mark=true
 
 
-@eval exp="tf.title='「TIPプラグインv4.03\x20サンプルゲーム」\x20v506b動作確認版'"
+@eval exp="tf.title='「TIPプラグイン\x20v4.04a\x20サンプルゲーム」\x20v510e動作確認版'"
 @ptext text="&tf.title" layer="1" x="6" y="6" width=600 size=20 color=0xffffff shadow=0x333333 name=btn_05_black align=center
 
 ;コード文字色用マクロ
@@ -51,6 +51,7 @@
   [free name="midasi" layer=1]
 [endmacro]
 
+
 ;メッセージウィンドウの設定
 [position layer="message0" width="1280" height="210" top="510" left="0"]
 [position layer="message0" frame="frame.png" margint="50" marginl="100" marginr="1" opacity="230" page="fore"]
@@ -71,7 +72,7 @@
 ;名前枠の設定
 [ptext name="chara_name_area" layer="message0" color="0xFAFAFA" size="30" bold="true" x="100" y="508" bold=bold]
 ;キャラ設定
-[chara_config ptext="chara_name_area" talk_focus=brightness brightness_value=60 time=100 pos_change_time=300]
+[chara_config ptext="chara_name_area" talk_focus=brightness brightness_value=60 time=100 pos_change_time=500]
 [chara_new  name="akane" storage="chara/akane/normal.png" jname="あかね"  ]
 [chara_face name="akane" face="angry" storage="chara/akane/angry.png"]
 [chara_face name="akane" face="doki" storage="chara/akane/doki.png"]
@@ -84,7 +85,7 @@
 [chara_face name="yamato" face="sad" storage="chara/yamato/sad.png"]
 
 
-[chara_show  name="akane" time=300]
+[chara_show  name="akane" time=300 wait=false]
 [chara_show  name="yamato" time=300]
 
 
@@ -97,7 +98,6 @@
 ;目次ボタン
 [button x=890 y=513 name="tipindex"  fix=true folder="others" graphic="plugin/sample/tip_index_button.gif" target=*index]
 
-
 [iscript]
 //なんとなく時間別挨拶
 var now = new Date();
@@ -109,7 +109,7 @@ else if( h < 11) tf.aisatu = "おはよう！！";
 
 
 @chara_mod name=akane face=happy
-#あかねちゃん
+#あかね
 [emb exp="tf.aisatu"][r]
 [tip key=tip]TIP[endtip][tip key=plugin color=0xff9999]プラグイン[endtip]をDLしてくれてありがとう！[p]
 TIPプラグインは、[tip key="machi"]「街」[endtip][tip key="428"]「428」[endtip]のTIP機能のように、[r]
@@ -119,16 +119,16 @@ TIPプラグインは、[tip key="machi"]「街」[endtip][tip key="428"]「428�
 #yamato
 @chara_mod name=yamato face=happy
 [tip key=ver4]Ver4.0[endtip]で、またちょびっと機能が増えてるぞ！[r]
-因みにこれは、ver4.03対応だぞ！[p]
+因みにこれは、ver4.04対応だぞ！[p]
 
 #akane
 @chara_mod name=akane face=default
 @chara_mod name=yamato face=default
-4.03の変更点だけ見ますか？
+4.04の変更点だけ見ますか？
 
-@glink color=btn_04_red width=650 x=300 y=100 text=Ver4.03の分だけ見る target=*ver403
-@glink color=btn_04_red width=650 x=300 y=&100+130 text=全部見る target=*ver400
-@glink color=btn_04_red width=650 x=300 y=&100+(130*2) text=いいから目次出して！ target=*index
+@glink color=btn_04_red size=26 width=650 x=300 y=100 text=Ver4.04の分だけ見る target=*ver404
+@glink color=btn_04_red size=26 width=650 x=300 y=&100+130 text=全部見る target=*ver400
+@glink color=btn_04_red size=26 width=650 x=300 y=&100+(130*2) text=いいから目次出して！ target=*index
 [s]
 
 *ver400
@@ -280,9 +280,30 @@ TIP部分だけ影付けたい！でもCSSはわからん！[r]
 #akane
 [code text="pos"] パラメータについては、readme.text または、ブログで確認してくだささいね～[p]
 
+*ver404
+@chara_mod name=akane face=default
+[見出し消去]
+[見出し text=Ver4.04での変更点について]
+
+#akane
+4.04では、TIPリストを「ソート」する事ができるようになりました！[p]
+
+#yamato
+機能を入れといて用途が思い浮かばない中の人なんだが…[r]
+アイテム一覧とかで、ステータス順に並び変えたりとか？[p]
+
+#akane
+攻略キャラを好感度順に並べたりとかも出来そうだね！[p]
+
+#yamato
+使い方はあなた次第！！！[p]
+
+#akane
+詳しい使い方は、使い方目次から「ソートする」を確認してください。[p]
+
 @chara_mod name=akane face=default
 @chara_mod name=yamato face=default
-では、4.0の新機能を詳しく説明しますが、[r]
+では、4.0の機能を詳しく説明しますが、[r]
 このまま、だらだらと説明を聞きますか？[p]
 
 #yamato
@@ -302,16 +323,18 @@ TIP部分だけ影付けたい！でもCSSはわからん！[r]
 @chara_mod name=akane face=default
 @chara_mod name=yamato face=default
 [eval exp="tf.tip_index=true"]
-@glink color=btn_04_red width=500 x=100 y=30 text=1．プラグインを読み込む target=*index01
-@glink color=btn_04_red width=500 x=100 y=&30+(95*1) text=2．CSVを読み込む target=*index02
-@glink color=btn_04_red width=500 x=100 y=&30+(95*2) text='3．[tip]タグを使う' target=*index03
-@glink color=btn_04_red width=500 x=100 y=&30+(95*3) text=4．TIPリストを表示する target=*index04
-@glink color=btn_04_red width=500 x=100 y=&30+(95*4) text=5．フラグを追加する target=*index05
-@glink color=btn_04_red width=500 x=650 y=&30 text=6．テンプレートを指定する target=*index06
-@glink color=btn_04_red width=500 x=650 y=&30+(95*1) text=7．TIPから別のTIPを表示する target=*index07
-@glink color=btn_04_red width=500 x=650 y=&30+(95*2) text=8．ページを指定してTIPを開く target=*index08
-@glink color=btn_04_red width=500 x=650 y=&30+(95*3) text=9．未読分に「New!」を付ける target=*index09
-@glink color=btn_04_red width=500 x=650 y=&30+(95*4) text=10．その他注意点など target=*index10
+@glink color=btn_04_red size=28 width=500 x=100 y=30 text=1．プラグインを読み込む target=*index01
+@glink color=btn_04_red size=28 width=500 x=100 y=&30+(95*1) text=2．CSVを読み込む target=*index02
+@glink color=btn_04_red size=28 width=500 x=100 y=&30+(95*2) text='3．[tip]タグを使う' target=*index03
+@glink color=btn_04_red size=28 width=500 x=100 y=&30+(95*3) text=4．TIPリストを表示する target=*index04
+@glink color=btn_04_red size=28 width=500 x=100 y=&30+(95*4) text=5．フラグを追加する target=*index05
+@glink color=btn_04_red size=28 width=500 x=100 y=&30+(95*5) text=6．テンプレートを指定する target=*index06
+@glink color=btn_04_red size=28 width=500 x=650 y=&30 text=7．TIPから別のTIPを表示する target=*index07
+@glink color=btn_04_red size=28 width=500 x=650 y=&30+(95*1) text=8．ページを指定してTIPを開く target=*index08
+@glink color=btn_04_red size=28 width=500 x=650 y=&30+(95*2) text=9．未読分に「New!」を付ける target=*index09
+@glink color=btn_04_red size=28 width=500 x=650 y=&30+(95*3) text=10．TIPリストをソートする target=*index10
+@glink color=btn_04_red size=28 width=500 x=650 y=&30+(95*4) text=11．その他注意点など target=*index11
+@clearstack
 @s
 
 *ex_start
@@ -714,10 +737,38 @@ glink の場合も基本的には同じだぞ！[r]
 @jump target=*index cond=tf.tip_index==true
 
 
+*index10
+[見出し消去]
+[見出し text=10．TIPリストをソートする]
+
+リストをソート表示するには、[code text="[tip_list]"] に [code text="sort_key"] パラメータを指定します。[r]
+id順でソートする場合は、[eval exp="tf.text='[tip_list\x20sort_key=id]'"][code][p]
+[code text="sort_key"] パラメータには、CSVの見出しと、追加した [code text="flag"] 名も使えますよ！[p]
+
+#yamato
+降順ソートする時は、[code text="sort_reverse"] パラメータを指定するぞ！[r]
+[eval exp="tf.text='[tip_list\x20sort_key=id\x20sort_reverse=true]'"][code][p]
+
+#akane
+TIPリストにソートボタンを付ける時は、[code text="tip_list.html"] に [code text="htmlタグ"] を記述する必要があります。[p]
+[code text="htmlタグ"] は [code text="<span>"] でも [code text="<div>"] でも何でも大丈夫です。[p]
+
+[code text="htmlタグ"] に、[code text="class名「tip_sort」"]を指定します。[r]
+このclassが指定されてないと、ソートボタンになりません。[p]
+
+ソート順を固定する場合は [code text="data-reverse"] を指定します。[r]
+[code text="data-reverse=fasle"] で昇順、[code text="data-reverse=true"] で降順です。[r]
+指定が無ければtoggleボタンになります。[p]
+
+[eval exp="tf.text='<span\x20class=\'tip_sort\'\x20data-sortkey=\'id\'>idでソート</span>'"][code][r]
+@chara_mod name=yamato face=default
+ソートについては以上です。[p]
+@jump target=*index cond=tf.tip_index==true
+
 
 #akane
 最後に、注意点などを簡単に説明しますね。[p]
-*index10
+*index11
 [見出し消去]
 [見出し text=10．その他注意点など]
 
