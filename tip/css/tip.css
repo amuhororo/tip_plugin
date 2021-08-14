@@ -1,8 +1,15 @@
-/* 【TIPプラグイン ver4.04】 2021/08/05        */
+/* 【TIPプラグイン ver4.04a】 2021/08/15        */
 /*  by hororo http://hororo.wp.xdomain.jp/22/  */
 
 @charset "utf-8";
-* { box-sizing: border-box; }
+
+*,*:before,*:after {
+  box-sizing: inherit;
+}
+#tip_list_wrap,
+#tip_wrap {
+  box-sizing: border-box;
+}
 
 
 /*******************************************
@@ -33,7 +40,8 @@
 	background-size:14px;
 	visibility:hidden;
 }
-.tip.mark_on:after {
+.tip.mark_on:after,
+.tip_area .tip.mark:after {
 	visibility:visible;
 }
 /* 縦書き用マーク */
@@ -222,6 +230,7 @@
 	padding: 6px;
 	background: #fff;
 	font-size: 16px;
+	cursor:pointer;
 }
 .tip_sort:hover {
 	color:rgba(0,0,80,0.75);
@@ -329,6 +338,14 @@
 .tips_nav a.prev,
 .tips_nav a.next {
 	/*display: none;*/
+}
+/* prev・nextが必要ない時*/
+.tips_nav a.prev.now,
+.tips_nav a.next.now {
+	/*visibility: hidden;*/
+	color: #bbb;
+	border-color: #bbb;
+	background: linear-gradient(to bottom, #fff, #eee);
 }
 
 
@@ -486,6 +503,13 @@
 .tip_nav a.next {
 	/*display: none;*/
 }
+.tip_nav a.prev.now,
+.tip_nav a.next.now {
+	/*visibility: hidden;*/
+	color:#bbb;
+	background:#fff;
+	border-color:#bbb;
+}
 
 
 
@@ -515,7 +539,7 @@
 }
 
 .vertical .tip_id {
-    /*height: 3.7em;*/
+	/*height: 3.7em;*/
 }
 /* 影方向調整 */
 .vertical .tips_body .tip_list:hover {

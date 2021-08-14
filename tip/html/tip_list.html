@@ -4,15 +4,18 @@
 	<!-- 閉じるボタン -->
 	<div class="button_close menu_close"></div>
 
+	<!-- ナビボタン <li>は自動で追加されます -->
+	<ul class="tips_nav"></ul>
+
 	<!-- 解放/未読数 -->
 	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> (未読：{{:unread}}) / <span class="maxnum">{{:maxnum}}</span></div>
 
-	<!-- ソートボタン例
+	<!-- ソートボタン例-->
 	<div class="sort">
 		<span class="tip_sort" data-sortkey="id">idでソート</span>
 		<span class="tip_sort" data-sortkey="title" data-reverse="">titleでソート</span>
 	</div>
-	-->
+	<!-- -->
 
 	<!-- TIPs -->
 	{{for tips}}
