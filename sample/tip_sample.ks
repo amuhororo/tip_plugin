@@ -698,7 +698,7 @@ TIP詳細は、1 回目の表示時が New って事だぞ！！[p]
 未読数は、指定が無ければ右上に表示されますが、[r]
 [code text="pos"] パラメータで表示位置を指定出来ますよ！[p]
 #yamato
-[code text="pos"] の値は、[code text="lt"](左上) [code text="rt"](右上) [code text="ct"](中上) [code text="lb"](左下) [code text="rb"](右下) [code text="bc"](中下) の6種類。[r]
+[code text="pos"] の値は、[code text="lt"](左上) [code text="rt"](右上) [code text="ct"](中上) [code text="lb"](左下) [code text="rb"](右下) [code text="cb"](中下) の6種類。[r]
 「left」「right」「center」「top」「bottom」の頭文字だぞ！[p]
 
 #akane
