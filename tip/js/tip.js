@@ -362,11 +362,11 @@ function tip(pm) {
 	const j_span = TYRANO.kag.setMessageCurrentSpan();
 	const data = tip_conf["data_"+pm.data_name];
 
-	//データにkeyが存在するかチェック
-	const tip = $.grep(data,function(e, i) {return (e.key == pm.key);});
-
 	//idでも呼び出せる※key優先
 	if(pm.id && !pm.key) pm.key = data[pm.id]["key"];
+
+	//データにkeyが存在するかチェック
+	const tip = $.grep(data,function(e, i) {return (e.key == pm.key);});
 
 	//keyが無い時アラート
 	if(pm.key === undefined){
@@ -585,7 +585,8 @@ function flag_save(pm) {
 	const data = tip_conf["data_"+pm.data_name];
 	const vn = (data[0]["flag_var"] == "f") ? TYRANO.kag.stat.f : TYRANO.kag.variable.sf;
 
-	if(pm.id === undefined){
+	console.log("key：",pm.key);
+	if(pm.key != "undefined"){
 		const tip = $.grep(data,function(e, i) { return (e.key == pm.key) });
 		pm.id = tip[0]["id"];
 	}
