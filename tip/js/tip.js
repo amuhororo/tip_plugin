@@ -87,11 +87,13 @@ function tipLoadcsv(pm) {
 function displayTiplist(pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	pm.data_name = pm.data_name || tip_conf.data_name;
+	/*
 	pm.tip_enterse = pm.tip_enterse || tip_conf.tip_enterse;
 	pm.tip_leavese = pm.tip_leavese || tip_conf.tip_leavese;
 	pm.list_clickse = pm.list_clickse || tip_conf.list_clickse;
 	pm.list_enterse = pm.list_enterse || tip_conf.list_enterse;
 	pm.list_leavese = pm.list_leavese || tip_conf.list_leavese;
+	*/
 
 	skip_save(true); //skip・autoを保存して停止
 
@@ -161,7 +163,7 @@ function displayTiplist(pm) {
 
 			//クリックイベント
 			$(".tip_list").on('click mouseenter mouseleave',function(e){
-				playse(e.type,"list");
+				playse(e.type,"list",pm);
 				if(e.type == "click"){
 					const _pm = pm;
 					const num = $(this).attr("data-num");
@@ -173,7 +175,7 @@ function displayTiplist(pm) {
 			});
 			//閉じるボタン
 			$(".button_close").on('click mouseenter mouseleave',function(e){
-				playse(e.type,"close");
+				playse(e.type,"close",pm);
 				if(e.type == "click"){
 					layer_menu.fadeOut(speed, function(){
 						tipBtn(pm);
@@ -187,7 +189,7 @@ function displayTiplist(pm) {
 			});
 			//ソートボタン
 			$(".tip_sort").on('click mouseenter mouseleave',function(e){
-				playse(e.type,"navi");
+				playse(e.type,"navi",pm);
 				if(e.type == "click"){
 					if($(this).attr('data-sortkey')) pm.sort_key = $(this).attr('data-sortkey');
 					if($(this).attr('data-reverse')) pm.sort_reverse = $(this).attr('data-reverse');
@@ -255,7 +257,7 @@ function displayTip(pm) {
 
 	//フラグ
 	pm.nextend = pm.nextend || tip[0]["nextend"];
-	pm.flag_val = (tip_conf["data_"+pm.data_name][tip[0]["id"]]["flag"] == -1) ? 2 : 1;
+	pm.flag_val = (tipdata[tip[0]["id"]]["flag"] == -1) ? 2 : 1;
 	flag_save(pm);
 
 	//レイヤー
@@ -283,7 +285,7 @@ function displayTip(pm) {
 
 		//閉じるボタン
 		$(".tip_close_button").on('click mouseenter mouseleave',function(e){
-			playse(e.type,"close");
+			playse(e.type,"close",pm);
 			if(e.type == "click"){
 				tipBtn(pm);
 				close_ev(pm);
@@ -311,7 +313,7 @@ function displayTip(pm) {
 		//クリック
 		$(".tip_body .tip").on('click mouseenter mouseleave',function(e){
 			if($(".log_body").length > 0 && tip_conf.log_se=="false"){
-			}else{ playse(e.type,"tip"); }
+			}else{ playse(e.type,"tip",pm); }
 			if(e.type == "click"){
 				let _pm = $(this).data('obj') || {};
 				_pm.key =  $(this).attr('data-key');
@@ -384,9 +386,9 @@ function tip(pm) {
 		//data_obj += '"tiplist_html":"' + pm.tiplist_html + '",';
 		data_obj += '"color":"' + pm.color + '",';
 		data_obj += '"entercolor":"' + pm.entercolor + '",';
-		data_obj += '"clickse":"' + pm.clickse + '",';
-		data_obj += '"enterse":"' + pm.enterse + '",';
-		data_obj += '"leavese":"' + pm.leavese + '",';
+		data_obj += '"tip_clickse":"' + pm.clickse + '",';
+		data_obj += '"tip_enterse":"' + pm.enterse + '",';
+		data_obj += '"tip_leavese":"' + pm.leavese + '",';
 		data_obj += '"page":"' + pm.page + '"';
 		data_obj += '}';
 
@@ -407,6 +409,7 @@ function tip(pm) {
 		j_span.attr("data-key",pm.key);                      //data-key追加
 		j_span.attr("data-name",pm.data_name);               //data-name追加
 		j_span.attr("data-obj",data_obj);                    //data-obj追加
+		j_span.attr("onClick","tipClick('"+pm.key+"')");                    //data-obj追加
 
 		//マーク※endtipでclass追加しないと、先にマークが出ちゃって変
 		if(pm.mark=="true"){
@@ -440,15 +443,20 @@ function tip(pm) {
 					TYRANO.kag.pushBackLog("<b class='backlog_chara_name "+chara_name+"'>"+chara_name+"</b>：","add");
 					TYRANO.kag.stat.f_chara_ptext="false";
 				}
-				backlog += "<span class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' data-key='" + pm.key + "' data-obj='" + data_obj +"'>";
+				backlog += "<span ";
+				backlog += "class='backlog_text "+ chara_name + " tip " + pm.key + mark + "' ";
+				backlog += "data-key='" + pm.key + "' ";
+				backlog += "data-obj='" + data_obj + "' ";
+				backlog += "onClick='tipClick(";
+				backlog += '"' + pm.key + '"';
+				backlog += ")' ";
+				backlog += ">";
+				backlog += "<script class='tipjs' src='./data/others/plugin/tip/js/tip_click.js'></script>";
 			}
-			backlog += "<script>$.getScript('./data/others/plugin/tip/js/tip_click.js');</script>";
 			TYRANO.kag.pushBackLog(backlog,"join");
 		};
 	}; //keyがある時終わり
 
-	//クリックイベント呼び出し※innerに入れないと、sleepgameから戻った後クリック出来ない。
-	$('.message_inner').prepend("<script>$.getScript('./data/others/plugin/tip/js/tip_click.js');</script>");
 	tipBtn(pm); //未読マーク
 };
 //--- ◆ end -----------------------------------------------------------------------------
@@ -478,10 +486,11 @@ function endtip() {
 
 //--- ◆ tip_flagタグ ----------------------------------------------------------------------
 function tipflag(pm) {
+
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	pm.data_name = pm.data_name || tip_conf.data_name;
-	pm.flag_val = pm.flag_val || true;
 	const data = tip_conf["data_"+pm.data_name];
+	pm.flag_val = pm.flag_val || true;
 
 	if(data === undefined){
 		alert("data 「" + pm.data_name +" 」 は存在しません。");
@@ -563,10 +572,10 @@ function skip_save(name) {
 };
 
 //se
-function playse(e,name) {
+function playse(e,name,pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	if(e.indexOf("mouse") > -1) e = e.replace("mouse","");
-	const se_name = tip_conf[name+"_"+e+"se"];
+	const se_name = pm[name+"_"+e+"se"] || tip_conf[name+"_"+e+"se"];
 	if(se_name && se_name!="none" && !tip_conf.click_on){
 		TYRANO.kag.ftag.startTag("playse",{storage:se_name,stop:"true"});
 		if(e == "click"){
@@ -579,24 +588,23 @@ function playse(e,name) {
 //フラグセーブ
 function flag_save(pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
-
-	pm.flag_name = pm.flag_name || "flag";
-
 	const data = tip_conf["data_"+pm.data_name];
 	const vn = (data[0]["flag_var"] == "f") ? TYRANO.kag.stat.f : TYRANO.kag.variable.sf;
 
-	console.log("key：",pm.key);
 	if(pm.key != "undefined"){
 		const tip = $.grep(data,function(e, i) { return (e.key == pm.key) });
 		pm.id = tip[0]["id"];
 	}
 
-	let flagval = pm.flag_val || 1;
-	if(pm.flag_name == "flag") flagval = data[pm.id][pm.flag_name] + flagval;
+	pm.flag_name = pm.flag_name || "flag";
+	if(pm.flag_val == "true") pm.flag_val = true;
+	else if(pm.flag_val == "false") pm.flag_val = false;
+	else pm.flag_val = pm.flag_val || 1;
+	if(pm.flag_name == "flag") pm.flag_val = data[pm.id][pm.flag_name] + pm.flag_val;
 
-	data[pm.id][pm.flag_name] = flagval;
+	data[pm.id][pm.flag_name] = pm.flag_val;
 	TYRANO.kag.ftag.startTag("eval",{
-		exp:vn.tip_flag[pm.data_name][pm.id][pm.flag_name] = flagval,
+		exp:vn.tip_flag[pm.data_name][pm.id][pm.flag_name] = pm.flag_val,
 		next:"false"
 	});
 
@@ -640,7 +648,7 @@ function navi(pm,name) {
 		//クリックイベント
 		tip_nav.find("a").on('click mouseenter mouseleave',function(e){
 			if($(this).hasClass("now") == false){
-				playse(e.type,"navi"); //se
+				playse(e.type,"navi",pm); //se
 
 				if(e.type == "click"){
 					if($(this).hasClass("prev")) {

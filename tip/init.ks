@@ -12,7 +12,7 @@ mp.all_leavese   =  mp.all_leavese   || "none";                    //共通の�
 	tf.system.tip_conf = {
 
 		file          : mp.file          || "tip_data.csv",            //csvファイル。
-		color         : mp.color         || TG.stat.default_font.color,//TG.config.defaultChColor,  //TIPの色。
+		color         : mp.color         || TG.stat.default_font.color,//TIPの色。
 		entercolor    : mp.entercolor    || "",                        //TIPにマウスカーソルが乗った時の色。
 		flag          : mp.flag          || "true",                    //リスト表示をフラグ管理するか
 		flag_var      : mp.flag_var      || "sf",                      //フラグ用変数の種類
@@ -72,7 +72,6 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
-
 ;///◆[tip_list]タグ///////////////////////////////////////////////////////////////////
 [macro name="tip_list"]
 	[iscript]
@@ -81,14 +80,21 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
+;///◆[tip_show]タグ///////////////////////////////////////////////////////////////////
+[macro name="tip_show"]
+	[iscript]
+		displayTip(mp);
+	[endscript]
+[endmacro]
+
 
 ;///◆[tip_flag]タグ///////////////////////////////////////////////////////////////////
 [macro name="tip_flag"]
 	[iscript]
+		console.log("type",$.type(mp.flag_val),$.type(false));
 		tipflag(mp);
-		[endscript]
+	[endscript]
 [endmacro]
-
 
 
 ;///◆[tip]タグ///////////////////////////////////////////////////////////////////
