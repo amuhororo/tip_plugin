@@ -1,6 +1,7 @@
 // 【TIPプラグイン ver4.04a】 2021/08/15
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
+
 //--- ◆ csv読み込み -----------------------------------------------------------------------
 function tipLoadcsv(pm) {
 
@@ -86,6 +87,7 @@ function tipLoadcsv(pm) {
 //--- ◆ TIP一覧 --------------------------------------------------------------------------
 function displayTiplist(pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	if(tip_conf.skip && TYRANO.kag.stat.is_skip) return;
 	pm.data_name = pm.data_name || tip_conf.data_name;
 	/*
 	pm.tip_enterse = pm.tip_enterse || tip_conf.tip_enterse;
@@ -94,6 +96,7 @@ function displayTiplist(pm) {
 	pm.list_enterse = pm.list_enterse || tip_conf.list_enterse;
 	pm.list_leavese = pm.list_leavese || tip_conf.list_leavese;
 	*/
+	const speed = TYRANO.kag.stat.is_skip == true ? 0 : parseInt(tip_conf.fade_speed);	//フェードのスピード
 
 	skip_save(true); //skip・autoを保存して停止
 
@@ -107,12 +110,13 @@ function displayTiplist(pm) {
 	//メニューがこのってたら消す。チラつき防止
 	if(layer_menu.find(".display_menu").length) layer_menu.empty();
 
-	const speed = parseInt(tip_conf.fade_speed);
-
 	//リストデータ取得
 	let tipdata = {};
 	tipdata.tips = tip_conf["data_"+pm.data_name];
-	tipdata.maxnum = tip_conf["data_"+pm.data_name].length;
+	//tipdata.maxnum = tip_conf["data_"+pm.data_name].length;
+	tipdata.maxnum = tipdata.tips.length;
+
+	//フラグ読み込み
 
 	//ソート ※元データは変更しない
 	pm.sort_key = pm.sort_key || "id";
@@ -125,13 +129,13 @@ function displayTiplist(pm) {
 	});
 
 	//テンプレートファイル名取得
-	const tip_html = tipdata.tips[0]["tip_html"];
-	const tiplist_html = tipdata.tips[0]["tiplist_html"];
+	const tip_html = pm.tip_html || tipdata.tips[0]["tip_html"];
+	const tiplist_html = pm.tiplist_html || tipdata.tips[0]["tiplist_html"];
 
 	//解放数・未読数など数える
 	let tip_true = 0;
 	let tip_unread = 0;
-	for (let i = 0;  i < tipdata.tips.length; i++) {
+	for (let i = 0;  i < tipdata.maxnum; i++) {
 		if(tipdata.tips[i]["flag"] >= 0) tip_true++;
 		if(tipdata.tips[i]["flag"] == 0) tip_unread++;
 	}
@@ -155,6 +159,9 @@ function displayTiplist(pm) {
 			$("#tip_list_wrap").css("font-family", TYRANO.kag.config.userFace);//デフォルトフォント指定
 			if(tip_conf.vertical=="true") $("#tip_list_wrap").addClass("vertical"); //縦書き
 
+			//追加のjs
+			$.getScript("./data/others/plugin/tip/js/add_event.js");
+
 			//ソートのclass処理
 			$(".tip_sort").removeClass("now");
 			if(pm.sort_key) $(".tip_sort[data-sortkey="+pm.sort_key+"]").addClass("now");
@@ -167,12 +174,12 @@ function displayTiplist(pm) {
 				if(e.type == "click"){
 					const _pm = pm;
 					const num = $(this).attr("data-num");
-					//const key = tipdata.tips[num]["key"];
 					_pm.key = tipdata.tips[num]["key"];
 					displayTip(_pm);
 				}
 				e.preventDefault();
 			});
+
 			//閉じるボタン
 			$(".button_close").on('click mouseenter mouseleave',function(e){
 				playse(e.type,"close",pm);
@@ -182,11 +189,13 @@ function displayTiplist(pm) {
 						$(this).empty();
 					});
 					if(TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
-					TYRANO.kag.ftag.startTag("awakegame");
+					//TYRANO.kag.ftag.startTag("awakegame");
+					if(TYRANO.kag.tmp.sleep_game != null) TYRANO.kag.ftag.startTag("awakegame");
 					skip_save(false); //skip・autoを戻す
 				}
 				e.preventDefault();
 			});
+
 			//ソートボタン
 			$(".tip_sort").on('click mouseenter mouseleave',function(e){
 				playse(e.type,"navi",pm);
@@ -233,7 +242,11 @@ function displayTiplist(pm) {
 //--- ◆ TIP詳細 --------------------------------------------------------------------------
 function displayTip(pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+
+	if(tip_conf.skip && TYRANO.kag.stat.is_skip) return;
+
 	pm.data_name = pm.data_name || tip_conf.data_name;
+	const speed = TYRANO.kag.stat.is_skip ? 0 : parseInt(tip_conf.fade_speed);
 
 	skip_save(true); //skip・autoを保存して停止
 
@@ -245,18 +258,17 @@ function displayTip(pm) {
 
 	//idでも呼び出せる※key優先
 	if(pm.id && !pm.key){
+		pm.id = parseInt(pm.id);
 		pm.key = tipdata[pm.id]["key"];
-		alert(pm.id + "は「" + pm.key +" 」です。");
 	}
 	//TIPデータ取り出し
 	const tip = $.grep(tipdata,function(e, i) { return (e.key == pm.key) });
-	//テンプレート
-	const tip_html = tip[0]["tip_html"];
-	//スピード
-	const speed = parseInt(tip_conf.fade_speed);
+	//テンプレートファイル
+	const tip_html = pm.tip_html || tip[0]["tip_html"];
+	//ナビボタンのあれ
+	pm.nextend = pm.nextend || tip[0]["nextend"];
 
 	//フラグ
-	pm.nextend = pm.nextend || tip[0]["nextend"];
 	pm.flag_val = (tipdata[tip[0]["id"]]["flag"] == -1) ? 2 : 1;
 	flag_save(pm);
 
@@ -271,6 +283,10 @@ function displayTip(pm) {
 		layer_menu.append("<div id='tip_wrap' style='display:none;'></div>");
 	};
 
+	//$.getScript("./data/others/plugin/tip/js/converters.js", function(data) {
+	//		$.views.converters(TYRANO.kag.tmp.tip_converter);
+	//});
+
 	//テンプレ呼び出し
 	$.ajax({
 		url:"./data/others/plugin/tip/html/" + tip_html,
@@ -278,10 +294,14 @@ function displayTip(pm) {
 		dataType: 'html'
 	})
 	.done(function(data) {
+
 		const template = $.templates(data);  //テンプレート指定
 		$("#tip_wrap").html(template.render(tip));   //JsRender
 		$("#tip_wrap").css("font-family", TYRANO.kag.config.userFace); //デフォルトフォント
 		if(tip_conf.vertical=="true") $("#tip_wrap").addClass("vertical"); //縦書き
+
+		//追加のjs
+		$.getScript("./data/others/plugin/tip/js/add_event.js");
 
 		//閉じるボタン
 		$(".tip_close_button").on('click mouseenter mouseleave',function(e){
@@ -294,7 +314,6 @@ function displayTip(pm) {
 		});
 
 		navi(pm,"tip");  //ナビ
-
 
 		//TIP内TIP
 		//フラグチェック
@@ -365,7 +384,10 @@ function tip(pm) {
 	const data = tip_conf["data_"+pm.data_name];
 
 	//idでも呼び出せる※key優先
-	if(pm.id && !pm.key) pm.key = data[pm.id]["key"];
+	if(pm.id && !pm.key){
+		pm.id = parseInt(pm.id)
+		pm.key = data[pm.id]["key"];
+	}
 
 	//データにkeyが存在するかチェック
 	const tip = $.grep(data,function(e, i) {return (e.key == pm.key);});
@@ -431,6 +453,7 @@ function tip(pm) {
 				tip_conf.tiplog_name = " tip " + pm.key + mark;
 				tip_conf.tiplog_key = " data-key='"+pm.key+"'";
 				tip_conf.tiplog_obj = " data-obj='"+data_obj+"'";
+				tip_conf.tiplog_onClick = " onClick=tipClick('"+pm.key+"')";
 				if(tip_conf.color_conf=="true" && TYRANO.kag.tmp.backlog.font_style == "true"){
 					TYRANO.kag.tmp.backlog.font = {};
 					TYRANO.kag.tmp.backlog.font.color =  pm.color;
@@ -451,8 +474,8 @@ function tip(pm) {
 				backlog += '"' + pm.key + '"';
 				backlog += ")' ";
 				backlog += ">";
-				backlog += "<script class='tipjs' src='./data/others/plugin/tip/js/tip_click.js'></script>";
 			}
+			backlog += "<script class='tipjs' src='./data/others/plugin/tip/js/tip_click.js'></script>";
 			TYRANO.kag.pushBackLog(backlog,"join");
 		};
 	}; //keyがある時終わり
@@ -556,8 +579,8 @@ function tipBtn(pm) {
 //--- ◆ end ------------------------------------------------------------------------------
 
 
-//--- ◆ 関数 ------------------------------------------------------------------------------
-//スキップ・オート
+//--- ◆ その他 ------------------------------------------------------------------------------
+//スキップ・オート状態を保存して戻す用
 function skip_save(name) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	if(name == true){
@@ -571,7 +594,7 @@ function skip_save(name) {
 	}
 };
 
-//se
+//SE
 function playse(e,name,pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	if(e.indexOf("mouse") > -1) e = e.replace("mouse","");
@@ -610,7 +633,7 @@ function flag_save(pm) {
 
 };
 
-//ナビ
+//ナビ作成
 function navi(pm,name) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
 	const pages = name=="list" ? $(".tip_list_area") : $(".tip_body");
@@ -690,10 +713,10 @@ function navi(pm,name) {
 	};
 };
 
-//TIP詳細閉じるイベント
+//TIP閉じるイベント
 function close_ev(pm){
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
-	const speed = parseInt(tip_conf.fade_speed);
+	const speed = tip_conf.is_skip ? 0 : parseInt(tip_conf.fade_speed);
 	const layer_menu = TYRANO.kag.layer.getMenuLayer();
 	if($("#tip_list_wrap").length){
 		displayTiplist(pm);
@@ -708,7 +731,8 @@ function close_ev(pm){
 		layer_menu.fadeOut(speed, function(){
 			$(this).empty();
 		});
-		if (TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
+		if(TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
+		if(TYRANO.kag.tmp.sleep_game != null) TYRANO.kag.ftag.startTag("awakegame");
 	}
-	skip_save(); //スキップ・オート戻す
+	skip_save(false); //スキップ・オート戻す
 };
