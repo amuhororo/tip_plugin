@@ -1,14 +1,16 @@
-;【TIPプラグイン ver4.04a】
-; 2021/08/15更新  v510e対応版
+;【TIPプラグイン ver4.05】
+; 2021/09/30更新  v510h対応版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
-mp.all_clickse   =  mp.all_clickse   || "none";                    //共通のクリック音
-mp.all_enterse   =  mp.all_enterse   || "none";                    //共通のマウスカーソルが乗った時の音
-mp.all_leavese   =  mp.all_leavese   || "none";                    //共通のマウスカーソルが外れた時の音
+	const file_name  = (mp.file) ? mp.file.split('.',1) : "tip_data";
+
+	mp.all_clickse   =  mp.all_clickse   || "none";                    //共通のクリック音
+	mp.all_enterse   =  mp.all_enterse   || "none";                    //共通のマウスカーソルが乗った時の音
+	mp.all_leavese   =  mp.all_leavese   || "none";                    //共通のマウスカーソルが外れた時の音
 
 //if(tf.system.tip_conf===undefined){
-	var file_name = (mp.file) ? mp.file.split('.',1) : "tip_data";
+//	const file_name = (mp.file) ? mp.file.split('.',1) : "tip_data";
 	tf.system.tip_conf = {
 
 		file          : mp.file          || "tip_data.csv",            //csvファイル。
@@ -58,12 +60,11 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 ;js、css読み込み
 [loadjs storage="plugin/tip/js/tip.js"]
 [loadjs storage="plugin/tip/js/tip_click.js"]
-[loadcss file="./data/others/plugin/tip/css/tip.css" ]
+[loadcss file="./data/others/plugin/tip/css/tip_main.css"]
+[loadcss file="./data/others/plugin/tip/css/tip_vertical.css" cond="tf.system.tip_conf.vertical=='true'"]
 
 
-
-
-;///◆CSV読み込み///////////////////////////////////////////////////////////////////
+;///◆CSV読み込み///////////////////////////////////////////////////////////////
 [macro name="tip_loadcsv"]
 	[iscript]
 		tipLoadcsv(mp);
@@ -72,7 +73,7 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
-;///◆[tip_list]タグ///////////////////////////////////////////////////////////////////
+;///◆[tip_list]タグ////////////////////////////////////////////////////////////
 [macro name="tip_list"]
 	[iscript]
 		displayTiplist(mp);
@@ -80,7 +81,7 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
-;///◆[tip_show]タグ///////////////////////////////////////////////////////////////////
+;///◆[tip_show]タグ////////////////////////////////////////////////////////////
 [macro name="tip_show"]
 	[iscript]
 		displayTip(mp);
@@ -88,24 +89,24 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
-;///◆[tip_flag]タグ///////////////////////////////////////////////////////////////////
+;///◆[tip_flag]タグ////////////////////////////////////////////////////////////
 [macro name="tip_flag"]
 	[iscript]
-		console.log("type",$.type(mp.flag_val),$.type(false));
 		tipflag(mp);
 	[endscript]
 [endmacro]
 
 
-;///◆[tip]タグ///////////////////////////////////////////////////////////////////
+;///◆[tip]タグ/////////////////////////////////////////////////////////////////
 [macro name="tip"]
 	[iscript]
+		mp.da_name = mp.csv;
 		tip(mp);
 	[endscript]
 [endmacro]
 
 
-;///◆[endtip]タグ///////////////////////////////////////////////////////////////////
+;///◆[endtip]タグ//////////////////////////////////////////////////////////////
 [macro name="endtip"]
 	[iscript]
 		endtip();
@@ -113,8 +114,8 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
-;///◆[tip_btn]タグ///////////////////////////////////////////////////////////////////
-;ボタン用の未読数をカウント表示するマクロです。
+;///◆[tip_btn]タグ  ボタン用の未読数をカウント表示するマクロです。///////////////
+;
 [macro name="tip_btn"]
 	[wait time=100]
 	[iscript]
@@ -124,7 +125,6 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 
 
 
+;tip_data.csv読み込み
 [tip_loadcsv]
-
-
 [return]

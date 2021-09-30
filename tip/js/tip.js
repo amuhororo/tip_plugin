@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.04a】 2021/08/15
+// 【TIPプラグイン ver4.05】 2021/09/30
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 
@@ -11,7 +11,7 @@ function tipLoadcsv(pm) {
 	pm.flag_var = pm.flag_var || tip_conf.flag_var;
 	pm.tip_html = pm.tip_html || tip_conf.tip_html;
 	pm.tiplist_html = pm.tiplist_html || tip_conf.tiplist_html;
-	pm.data_name = pm.file.split('.',1);
+	pm.data_name = (pm.join=="true") ? pm.data_name || tip_conf.data_name : pm.file.split('.',1);
 
 	$.ajax({
 		type: "GET",
@@ -87,15 +87,8 @@ function tipLoadcsv(pm) {
 //--- ◆ TIP一覧 --------------------------------------------------------------------------
 function displayTiplist(pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
-	if(tip_conf.skip && TYRANO.kag.stat.is_skip) return;
+	if(pm.skip && TYRANO.kag.stat.is_skip == true) return;
 	pm.data_name = pm.data_name || tip_conf.data_name;
-	/*
-	pm.tip_enterse = pm.tip_enterse || tip_conf.tip_enterse;
-	pm.tip_leavese = pm.tip_leavese || tip_conf.tip_leavese;
-	pm.list_clickse = pm.list_clickse || tip_conf.list_clickse;
-	pm.list_enterse = pm.list_enterse || tip_conf.list_enterse;
-	pm.list_leavese = pm.list_leavese || tip_conf.list_leavese;
-	*/
 	const speed = TYRANO.kag.stat.is_skip == true ? 0 : parseInt(tip_conf.fade_speed);	//フェードのスピード
 
 	skip_save(true); //skip・autoを保存して停止
@@ -107,14 +100,13 @@ function displayTiplist(pm) {
 
 	//メニューレイヤーを取得
 	const layer_menu = TYRANO.kag.layer.getMenuLayer();
-	//メニューがこのってたら消す。チラつき防止
+	//メニューが残ってたら消す。チラつき防止
 	if(layer_menu.find(".display_menu").length) layer_menu.empty();
 
 	//リストデータ取得
 	let tipdata = {};
 	tipdata.tips = tip_conf["data_"+pm.data_name];
-	//tipdata.maxnum = tip_conf["data_"+pm.data_name].length;
-	tipdata.maxnum = tipdata.tips.length;
+	tipdata.maxnum = tipdata.tips.length;   //総データ数
 
 	//フラグ読み込み
 
@@ -141,6 +133,8 @@ function displayTiplist(pm) {
 	}
 	tipdata.truenum = tip_true; //解放数
 	tipdata.unread = tip_unread; //未読数
+	tipdata.f = TYRANO.kag.stat.f;
+	tipdata.sf = TYRANO.kag.variable.sf;
 
 	if($("#tip_list_wrap").length == 0) {
 		layer_menu.append("<div id='tip_list_wrap'></div>");
@@ -242,9 +236,7 @@ function displayTiplist(pm) {
 //--- ◆ TIP詳細 --------------------------------------------------------------------------
 function displayTip(pm) {
 	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
-
-	if(tip_conf.skip && TYRANO.kag.stat.is_skip) return;
-
+	if(pm.skip && TYRANO.kag.stat.is_skip == true) return;
 	pm.data_name = pm.data_name || tip_conf.data_name;
 	const speed = TYRANO.kag.stat.is_skip ? 0 : parseInt(tip_conf.fade_speed);
 
@@ -255,6 +247,8 @@ function displayTip(pm) {
 	if(tipdata === undefined){
 		alert("data 「" + pm.data_name +" 」 は存在しません。");
 	};
+	tipdata.f = TYRANO.kag.stat.f;
+	tipdata.sf = TYRANO.kag.variable.sf;
 
 	//idでも呼び出せる※key優先
 	if(pm.id && !pm.key){
@@ -282,10 +276,6 @@ function displayTip(pm) {
 	if($("#tip_wrap").length == 0 && pm.intip != true) {
 		layer_menu.append("<div id='tip_wrap' style='display:none;'></div>");
 	};
-
-	//$.getScript("./data/others/plugin/tip/js/converters.js", function(data) {
-	//		$.views.converters(TYRANO.kag.tmp.tip_converter);
-	//});
 
 	//テンプレ呼び出し
 	$.ajax({
@@ -374,6 +364,8 @@ function tip(pm) {
 	pm.clickse = pm.clickse || tip_conf.tip_clickse;     //TIPのクリック音
 	pm.enterse = pm.enterse || tip_conf.tip_enterse;     //TIPにマウスカーソルが乗った時の音
 	pm.leavese = pm.leavese || tip_conf.tip_leavese;     //TIPからマウスカーソルが外れた時の音
+	pm.tip_html = pm.tip_html || tip_conf.tip_html;
+	pm.nextend = pm.nextend || "";
 
 	//データが見つからない場合
 	if(!tip_conf["data_"+pm.data_name]){
@@ -404,14 +396,15 @@ function tip(pm) {
 		let data_obj = '{';
 		data_obj += '"key":"' + pm.key + '",';
 		data_obj += '"data_name":"' + pm.data_name + '",';
-		//data_obj += '"tip_html":"' + pm.tip_html + '",';
+		data_obj += '"tip_html":"' + pm.tip_html + '",';
 		//data_obj += '"tiplist_html":"' + pm.tiplist_html + '",';
 		data_obj += '"color":"' + pm.color + '",';
 		data_obj += '"entercolor":"' + pm.entercolor + '",';
 		data_obj += '"tip_clickse":"' + pm.clickse + '",';
 		data_obj += '"tip_enterse":"' + pm.enterse + '",';
 		data_obj += '"tip_leavese":"' + pm.leavese + '",';
-		data_obj += '"page":"' + pm.page + '"';
+		data_obj += '"page":"' + pm.page + '",';
+		data_obj += '"nextend":"' + pm.nextend + '"';
 		data_obj += '}';
 
 		//カラー
@@ -431,7 +424,7 @@ function tip(pm) {
 		j_span.attr("data-key",pm.key);                      //data-key追加
 		j_span.attr("data-name",pm.data_name);               //data-name追加
 		j_span.attr("data-obj",data_obj);                    //data-obj追加
-		j_span.attr("onClick","tipClick('"+pm.key+"')");                    //data-obj追加
+		j_span.attr("onClick","tipClick('"+pm.key+"')");     //onClick追加
 
 		//マーク※endtipでclass追加しないと、先にマークが出ちゃって変
 		if(pm.mark=="true"){

@@ -8,9 +8,9 @@
 	<ul class="tips_nav"></ul>
 
 	<!-- 解放/未読数 -->
-	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> (未読：{{:unread}}) / <span class="maxnum">{{:maxnum}}</span></div>
+	<div class="tip_count">解放数 <span class="truenum">{{:truenum}}</span> <span class="unread">(未読：{{:unread}})</span> / <span class="maxnum">{{:maxnum}}</span></div>
 
-	<!-- ソートボタン例-->
+	<!-- ソートボタン例 -->
 	<div class="sort">
 		<span class="tip_sort" data-sortkey="id">idでソート</span>
 		<span class="tip_sort" data-sortkey="title" data-reverse="">titleでソート</span>
@@ -29,8 +29,7 @@
 	{{/for}}
 
 	<!-- タイトル画像 -->
-	<img class="img_label img_label_save" src='data/others/plugin/tip/image/label_tips.png' style='left:0;top:0;position:absolute;'>
-
+	<img class="img_label img_label_tips" src='data/others/plugin/tip/image/label_tips.png' style='left:0;top:0;position:absolute;'>
 	<!-- 背景画像 -->
 	<img class="img_bg_base" src='./tyrano/images/system/bg_base.png' style='z-index:-2;left:0;top:0;width:100%;height:100%;position:absolute;'>
 

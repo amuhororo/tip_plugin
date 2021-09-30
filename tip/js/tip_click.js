@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.04a】 2021/08/15
+// 【TIPプラグイン ver4.05】 2021/09/30
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 
@@ -15,7 +15,6 @@ $(function(){
 			playse(e.type,"tip",obj)
 		}
 		if(e.type == "click" && $(this).hasClass(obj.key)){
-			//alert( $(this).attr('data-key') + "です。" + $(".tip[data-key]").length);
 			//displayTip(obj);
 		}else if(e.type == "mouseenter"){
 			if(tip_conf.entercolor) $(this).css("color",$.convertColor(tip_conf.entercolor));
@@ -27,7 +26,7 @@ $(function(){
 });
 
 function tipClick(key){
-	//alert( $(this) + "です。" +key +"です。" + $(".tip[data-key]").length);
+	//clickはonClickだああああああ
 	//console.log($(".tip[data-key='"+key+"']").data('obj'));
 	const obj = $(".tip[data-key='"+key+"']").data('obj');
 	playse("click","tip",obj)

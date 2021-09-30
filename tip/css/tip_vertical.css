@@ -1,0 +1,144 @@
+/*******************************************
+	【TIPプラグイン】　縦書き
+********************************************/
+
+@charset "utf-8";
+
+
+/*******************************************
+	マーク
+********************************************/
+.vertical .tip.mark {
+	margin-right: 0;
+}
+.vertical .tip.mark:after {
+	position: relative;
+	top: 1px;
+	right: -12px;
+	margin-bottom: 3px;
+	background:url(../image/tip_mark_vertical.png);
+	background-size:14px;
+}
+
+
+
+/*******************************************
+	TIPリスト
+********************************************/
+.vertical .tip_list_area {
+	writing-mode: vertical-rl;
+	-webkit-writing-mode: vertical-rl;
+	-ms-writing-mode: tb-rl;
+	text-orientation: upright;
+	-webkit-text-orientation: upright;
+	margin: 0 auto; /*中央寄せ*/
+}
+.vertical .tips_item {
+	width: 45px;
+	height:95%;
+	height:calc(100% - 30px);
+	margin: 15px 13px;
+	padding: 15px 7px;
+	background: linear-gradient(to left, #02afea, #0077c1);
+}
+/* 影方向調整 */
+.vertical .tips_body .tip_list:hover {
+	text-shadow: -2px 2px 0px rgba(0,0,0,0.7);
+}
+@media (max-width: 768px) and (orientation:portrait) {
+	.tips_item {width: 96%;}
+	.vertical .tips_item {height: 46%;}
+	/* ページナビ全体 */
+	.tips_nav {
+		top: 100px;
+		margin-left: 80px;
+		text-align:left;
+	}
+}
+
+
+/*******************************************
+	TIP詳細
+********************************************/
+.vertical .tip_area {
+	writing-mode: vertical-rl;
+	-webkit-writing-mode: vertical-rl;
+	-ms-writing-mode: tb-rl;
+	text-orientation: upright;
+	-webkit-text-orientation: upright;
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+.vertical .tip_item {
+	left:auto;
+	right:0;
+}
+
+/* 見出し */
+.vertical .tip_head {
+	padding: 15px 7px;
+	height:100%;
+	width: 44px;
+}
+.vertical .tip_head .tip_id {
+}
+.vertical .tip_head .tip_title {
+	text-shadow: -2px 2px 0px rgba(0,0,0,0.7); /* 影方向調整 */
+}
+
+/* 本文 */
+.vertical .tip_body {
+	margin: 0 2%;
+	padding: 10px 0;
+	height: 100%;
+	width: 85%;
+}
+@media (max-width: 768px) and (orientation:portrait) {
+	.tip_area {
+		padding: 50px 5%;
+	}
+	.tip_close_area {
+		right: 5%;
+	}
+
+	/* 本文 */
+	.vertical .tip_body {
+		margin:1em 0;
+		height: 85%;
+		padding:10px 0;
+		width: 80%;
+	}
+}
+
+/* ナビ */
+.vertical .tip_nav {
+	bottom: 0;
+	left: 0;
+}
+.vertical .tip_nav li {
+	margin-right: auto;
+	margin-bottom: 5px;
+}
+.vertical .tip_nav a {
+	width:40px;
+	height:36px;
+	line-height:36px;
+	writing-mode: lr;
+}
+.vertical .tip_nav a.prev,
+.vertical .tip_nav a.next {
+	writing-mode: vertical-lr;
+	text-orientation: mixed;
+}
+
+
+/*****************************************************
+	縦中横
+******************************************************/
+.vertical .tcy {
+	-webkit-text-combine: horizontal;
+	-ms-text-combine-horizontal: all;
+	text-combine-upright: all;
+}

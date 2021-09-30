@@ -1,0 +1,198 @@
+/* 【TIPプラグイン ver4.05】 2021/09/30        */
+/*  by hororo http://hororo.wp.xdomain.jp/22/  */
+
+@charset "utf-8";
+
+@import url("tip_list.css");
+@import url("tip.css");
+
+
+/*******************************************
+	box-sizing
+********************************************/
+*,*:before,*:after {
+	box-sizing: inherit;
+}
+#tip_list_wrap,
+#tip_wrap {
+	box-sizing: border-box;
+}
+
+
+/*******************************************
+	TIPテキスト
+********************************************/
+/* TIPテキスト */
+.message_inner .tip,
+.log_body .tip {
+	position:relative;
+	cursor:pointer;
+}
+.message_inner .tip:hover,
+.log_body .tip:hover {
+}
+
+/* マーク */
+.tip.mark {
+	position: relative;
+	margin-right: 15px;
+}
+.tip.mark:after {
+	content:"";
+	position: absolute;
+	right:-15px;
+	bottom:0.8em; /*ルビがある時変な位置になるのでbottom指定*/
+	width:14px;
+	height:14px;
+	display: inline-block;
+	background:url(../image/tip_mark.png);
+	background-size:14px;
+	visibility:hidden;
+}
+/*マーク表示*/
+.tip.mark_on:after,
+.tip_area .tip.mark:after {
+	visibility:visible;
+}
+
+/* バックログのマーク */
+.log_body .tip.mark{
+	/*margin: 0px;*/
+}
+.log_body .tip.mark:after{
+	visibility:visible;
+	/*background:none;*/
+}
+
+
+
+/*******************************************
+	スクロールバー
+********************************************/
+/*スクロールバー全体*/
+.tip_body::-webkit-scrollbar,
+.tip_list_container::-webkit-scrollbar {
+	width: 10px;
+}
+
+/*スクロールバーの軌道*/
+.tip_body::-webkit-scrollbar-track,
+.tip_list_container::-webkit-scrollbar-track {
+	border-radius: 10px;
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+}
+
+/*スクロールバーの動く部分*/
+.tip_body::-webkit-scrollbar-thumb,
+.tip_list_container::-webkit-scrollbar-thumb {
+	background-color: #0077c1;
+	border-radius: 10px;
+	box-shadow:0 0 0 1px rgba(255, 255, 255, .3);
+}
+
+
+
+/*******************************************
+	Button・glink用の未読数表示
+********************************************/
+.tipbtn {
+	position: absolute;
+	text-align: center;
+}
+.glink_button .tipbtn {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	right: 0;
+}
+.tipbtn span {
+	position: absolute;
+	display: inline-block;
+	color: #fff;
+	background-color: red;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 30px;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	z-index: 99999999;
+	text-shadow: none;
+	visibility: hidden;
+}
+.tipbtn.tipnew span {
+	visibility: visible;
+}
+.tipbtn.tipnew.rt span,
+.glink_button .tipbtn.rt span {
+	top: -10px;
+	right: -10px;
+}
+.tipbtn.tipnew.lt span,
+.glink_button .tipbtn.lt span {
+	top: -10px;
+	left: -10px;
+}
+.tipbtn.tipnew.rb span,
+.glink_button .tipbtn.rb span {
+	bottom: -10px;
+	right: -10px;
+}
+.tipbtn.tipnew.lb span,
+.glink_button .tipbtn.lb span {
+	bottom: -10px;
+	left: -10px;
+}
+.tipbtn.tipnew.ct span,
+.glink_button .tipbtn.ct span {
+	position: relative;
+	top: -25px;
+}
+.tipbtn.tipnew.cb span,
+.glink_button .tipbtn.cb span {
+	position: relative;
+	bottom: -25px;
+}
+.glink_button .tipbtn.cb {
+	top: auto;
+	height: initial;
+}
+
+
+
+
+/*****************************************************
+	セーブ・ロードでクリックさせないように
+******************************************************/
+
+.save_list_item {
+	z-index: 10;
+}
+.save_list_item .tip{
+	pointer-events : none;
+}
+.save_list_item .tip.mark{
+	margin: 0px;
+}
+.save_list_item .tip.mark:after{
+	background:none;
+}
+
+
+/*****************************************************
+	以下削除・変更禁止
+	※メッセージ上でクリックさせたくない場合のみ削除
+******************************************************/
+.message_inner {
+	z-index:auto !important;
+	box-sizing: content-box;
+}
+.message_inner p span,
+.img_next {
+	position:relative;
+	z-index:999;
+}
+.message_inner p span.tip {
+	z-index:10000;
+	cursor:pointer;
+}

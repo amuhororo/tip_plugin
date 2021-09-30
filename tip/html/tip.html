@@ -2,7 +2,7 @@
 <div id="tip_container">
 
 	<!-- 閉じるボタン -->
-	<div class="tip_close_area"><a class="tip_close_button menu_close">✖</a></div>
+	<div class="tip_close_area"><a class="tip_close_button menu_close">×</a></div>
 
 
 	<!-- TIP -->
@@ -26,11 +26,11 @@
 			</div>
 
 			<!--2ページ目-->
-			{{if flag2==true && tip2!=""}} <!-- フラグ用のif 不要なら削除 -->
-				<div class="tip_body" data-page="testpage">
+			{{if tip2 && flag2 == true}}
+				<div class="tip_body" data-page="page2">
 					<div class="tip_text">{{:tip2}}</div>
 				</div>
-			{{/if}} <!-- フラグ用のendif 不要なら削除 -->
+			{{/if}}  <!--フラグ用のendif 不要なら削除 -->
 
 		</section>
 	</div>
