@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.05】 2021/09/30
+// 【TIPプラグイン ver4.06】 2022/04/30
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 

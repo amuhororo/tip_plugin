@@ -1,5 +1,5 @@
-;【TIPプラグイン ver4.05】
-; 2021/09/30更新  v510h対応版
+;【TIPプラグイン ver4.06】
+; 2022/04/30更新  v513c確認版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -9,8 +9,6 @@
 	mp.all_enterse   =  mp.all_enterse   || "none";                    //共通のマウスカーソルが乗った時の音
 	mp.all_leavese   =  mp.all_leavese   || "none";                    //共通のマウスカーソルが外れた時の音
 
-//if(tf.system.tip_conf===undefined){
-//	const file_name = (mp.file) ? mp.file.split('.',1) : "tip_data";
 	tf.system.tip_conf = {
 
 		file          : mp.file          || "tip_data.csv",            //csvファイル。
@@ -49,7 +47,7 @@
 		tiplog_key    : "",
 		tiplog_obj    : ""
 	};
-//};
+
 //フラグ保存用変数を定義
 if(sf.tip_flag===undefined) sf.tip_flag = {};
 if(f.tip_flag===undefined)  f.tip_flag  = {};
@@ -115,7 +113,6 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 
 
 ;///◆[tip_btn]タグ  ボタン用の未読数をカウント表示するマクロです。///////////////
-;
 [macro name="tip_btn"]
 	[wait time=100]
 	[iscript]
@@ -124,7 +121,34 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 
+;///◆[tip_flag_reset]タグ  フラグ値をリセットするマクロです。/////////////////////
+;/// ※ clear=true とするとsf変数もクリアするのでご注意ください。
+[macro name="tip_flag_reset"]
+	[iscript]
+		mp.data_name = mp.data_name || "tip_data";
+		const data = tf.system.tip_conf['data_'+mp.data_name];
+		const vn = (data[0]['flag_var'] == "f") ? TYRANO.kag.stat.f : TYRANO.kag.variable.sf;
+		//削除
+		if(mp.clear){
+			vn.tip_flag = {};
+			vn.tip_flag[mp.data_name] = [];
+			for (let i = 0; i < data.length; i++) {
+				vn.tip_flag[mp.data_name][i]={};
+				vn.tip_flag[mp.data_name][i]['flag'] = -1;
+			}
+		}
+		//入れ替え
+		tip_flag = vn.tip_flag[mp.data_name];
+		for (let i = 0; i < data.length; i++) {
+			for (let key in tip_flag[i]) {
+				data[i][key] = tip_flag[i][key];
+			}
+		};
+		if(mp.tip_btn=='true') tipBtn(mp);
+	[endscript]
+[endmacro]
 
 ;tip_data.csv読み込み
 [tip_loadcsv]
+
 [return]

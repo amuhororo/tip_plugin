@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.05】 2021/09/30
+// 【TIPプラグイン ver4.06】 2022/04/30
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 
@@ -181,11 +181,13 @@ function displayTiplist(pm) {
 					layer_menu.fadeOut(speed, function(){
 						tipBtn(pm);
 						$(this).empty();
+						//layer_menu.empty();
 					});
-					if(TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
-					//TYRANO.kag.ftag.startTag("awakegame");
-					if(TYRANO.kag.tmp.sleep_game != null) TYRANO.kag.ftag.startTag("awakegame");
-					skip_save(false); //skip・autoを戻す
+					setTimeout(function(){
+						if(TYRANO.kag.stat.visible_menu_button == true) $(".button_menu").show();
+						if(TYRANO.kag.tmp.sleep_game != null) TYRANO.kag.ftag.startTag("awakegame");
+						skip_save(false); //skip・autoを戻す
+					}, speed);
 				}
 				e.preventDefault();
 			});
@@ -713,10 +715,16 @@ function close_ev(pm){
 	const speed = tip_conf.is_skip ? 0 : parseInt(tip_conf.fade_speed);
 	const layer_menu = TYRANO.kag.layer.getMenuLayer();
 	if($("#tip_list_wrap").length){
-		displayTiplist(pm);
-		$("#tip_wrap").fadeOut(speed, function(){
-			$(this).remove();
-		});
+		if($("#tip_wrap").length){
+			displayTiplist(pm);
+			$("#tip_wrap").fadeOut(speed, function(){
+				$(this).remove();
+			});
+		}else{
+			$("#tip_list_wrap").fadeOut(speed, function(){
+				$(this).remove();
+			});
+		}
 	}else if($(".log_body").length){
 		$("#tip_wrap").fadeOut(speed, function(){
 			$(this).remove();
