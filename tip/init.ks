@@ -65,8 +65,7 @@ if(mp.color) sf.tip_conf.color_conf = "true";
 ;///◆CSV読み込み///////////////////////////////////////////////////////////////
 [macro name="tip_loadcsv"]
 	[iscript]
-		console.log("マクロ",mp)
-		//tipLoadcsv(mp);
+		tipLoadcsv(mp);
 	[endscript]
 	[wait time=1]
 [endmacro]
@@ -150,6 +149,6 @@ if(mp.color) sf.tip_conf.color_conf = "true";
 [endmacro]
 
 ;tip_data.csv読み込み
-;[tip_loadcsv]
+[tip_loadcsv]
 
 [return]
