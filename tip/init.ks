@@ -9,7 +9,7 @@
 	mp.all_enterse   =  mp.all_enterse   || "none";                    //共通のマウスカーソルが乗った時の音
 	mp.all_leavese   =  mp.all_leavese   || "none";                    //共通のマウスカーソルが外れた時の音
 
-	tf.system.tip_conf = {
+	sf.tip_conf = {
 
 		file          : mp.file          || "tip_data.csv",            //csvファイル。
 		color         : mp.color         || TG.stat.default_font.color,//TIPの色。
@@ -52,20 +52,21 @@
 if(sf.tip_flag===undefined) sf.tip_flag = {};
 if(f.tip_flag===undefined)  f.tip_flag  = {};
 //文字色判別用
-if(mp.color) tf.system.tip_conf.color_conf = "true";
+if(mp.color) sf.tip_conf.color_conf = "true";
 [endscript]
 
 ;js、css読み込み
 [loadjs storage="plugin/tip/js/tip.js"]
 [loadjs storage="plugin/tip/js/tip_click.js"]
 [loadcss file="./data/others/plugin/tip/css/tip_main.css"]
-[loadcss file="./data/others/plugin/tip/css/tip_vertical.css" cond="tf.system.tip_conf.vertical=='true'"]
+[loadcss file="./data/others/plugin/tip/css/tip_vertical.css" cond="sf.tip_conf.vertical=='true'"]
 
 
 ;///◆CSV読み込み///////////////////////////////////////////////////////////////
 [macro name="tip_loadcsv"]
 	[iscript]
-		tipLoadcsv(mp);
+		console.log("マクロ",mp)
+		//tipLoadcsv(mp);
 	[endscript]
 	[wait time=1]
 [endmacro]
@@ -126,7 +127,7 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [macro name="tip_flag_reset"]
 	[iscript]
 		mp.data_name = mp.data_name || "tip_data";
-		const data = tf.system.tip_conf['data_'+mp.data_name];
+		const data = sf.tip_conf['data_'+mp.data_name];
 		const vn = (data[0]['flag_var'] == "f") ? TYRANO.kag.stat.f : TYRANO.kag.variable.sf;
 		//削除
 		if(mp.clear){
@@ -149,6 +150,6 @@ if(mp.color) tf.system.tip_conf.color_conf = "true";
 [endmacro]
 
 ;tip_data.csv読み込み
-[tip_loadcsv]
+;[tip_loadcsv]
 
 [return]
