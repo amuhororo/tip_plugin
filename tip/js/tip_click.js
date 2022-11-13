@@ -1,10 +1,10 @@
-// 【TIPプラグイン ver4.06】 2022/04/30
+// 【TIPプラグイン ver4.07】 2022/11/13
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 
 //クリックイベント
 $(function(){
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	$('#tyrano_base').on('click mouseenter mouseleave','.tip[data-key]',function(e){
 		const obj = $(this).data('obj');
 		obj.key = $(this).attr('data-key');

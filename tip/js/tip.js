@@ -1,11 +1,14 @@
-// 【TIPプラグイン ver4.06】 2022/04/30
+// 【TIPプラグイン ver4.07】 2022/11/13
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
+
+//セーブ属性追加
+if (TYRANO.kag.version >= 515) tyrano.plugin.kag.array_white_attr.push("data-key", "data-name", "data-obj", "onclick");
 
 //--- ◆ csv読み込み -----------------------------------------------------------------------
 function tipLoadcsv(pm) {
 
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	pm.file = pm.file || tip_conf.file;
 	pm.flag = pm.flag || tip_conf.flag;
 	pm.flag_var = pm.flag_var || tip_conf.flag_var;
@@ -86,7 +89,7 @@ function tipLoadcsv(pm) {
 
 //--- ◆ TIP一覧 --------------------------------------------------------------------------
 function displayTiplist(pm) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	if(pm.skip && TYRANO.kag.stat.is_skip == true) return;
 	pm.data_name = pm.data_name || tip_conf.data_name;
 	const speed = TYRANO.kag.stat.is_skip == true ? 0 : parseInt(tip_conf.fade_speed);	//フェードのスピード
@@ -237,7 +240,7 @@ function displayTiplist(pm) {
 
 //--- ◆ TIP詳細 --------------------------------------------------------------------------
 function displayTip(pm) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	if(pm.skip && TYRANO.kag.stat.is_skip == true) return;
 	pm.data_name = pm.data_name || tip_conf.data_name;
 	const speed = TYRANO.kag.stat.is_skip ? 0 : parseInt(tip_conf.fade_speed);
@@ -360,7 +363,7 @@ function displayTip(pm) {
 
 //--- ◆ tipタグ --------------------------------------------------------------------------
 function tip(pm) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	pm.data_name = pm.data_name || tip_conf.data_name;
 	pm.mark = pm.mark || tip_conf.mark;            //TIPにマークを付ける
 	pm.clickse = pm.clickse || tip_conf.tip_clickse;     //TIPのクリック音
@@ -482,7 +485,7 @@ function tip(pm) {
 
 //--- ◆ endtipタグ -----------------------------------------------------------------------
 function endtip() {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	//マーク
 	if(TYRANO.kag.variable.tf.tip_mark){
 		$("[data-key='"+TYRANO.kag.variable.tf.tip_mark+"']").addClass("mark_on");
@@ -505,7 +508,7 @@ function endtip() {
 //--- ◆ tip_flagタグ ----------------------------------------------------------------------
 function tipflag(pm) {
 
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	pm.data_name = pm.data_name || tip_conf.data_name;
 	const data = tip_conf["data_"+pm.data_name];
 	pm.flag_val = pm.flag_val || true;
@@ -538,9 +541,9 @@ function tipflag(pm) {
 //--- ◆ tip_btnタグ ------------------------------------------------------------------------
 function tipBtn(pm) {
 	let unread = 0;
-	pm.data_name = pm.data_name || TYRANO.kag.variable.tf.system.tip_conf.data_name;
+	pm.data_name = pm.data_name || TYRANO.kag.variable.sf.tip_conf.data_name;
 	pm.pos = pm.pos || "rt";
-	const tipdata = TYRANO.kag.variable.tf.system.tip_conf["data_"+pm.data_name];
+	const tipdata = TYRANO.kag.variable.sf.tip_conf["data_"+pm.data_name];
 	if(tipdata){
 		//flagの数数える
 		for (let i = 0;  i < tipdata.length; i++) {
@@ -578,7 +581,7 @@ function tipBtn(pm) {
 //--- ◆ その他 ------------------------------------------------------------------------------
 //スキップ・オート状態を保存して戻す用
 function skip_save(name) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	if(name == true){
 		tip_conf.is_skip = TYRANO.kag.stat.is_skip;
 		tip_conf.is_auto = TYRANO.kag.stat.is_auto;
@@ -592,7 +595,7 @@ function skip_save(name) {
 
 //SE
 function playse(e,name,pm) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	if(e.indexOf("mouse") > -1) e = e.replace("mouse","");
 	const se_name = pm[name+"_"+e+"se"] || tip_conf[name+"_"+e+"se"];
 	if(se_name && se_name!="none" && !tip_conf.click_on){
@@ -606,7 +609,7 @@ function playse(e,name,pm) {
 
 //フラグセーブ
 function flag_save(pm) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	const data = tip_conf["data_"+pm.data_name];
 	const vn = (data[0]["flag_var"] == "f") ? TYRANO.kag.stat.f : TYRANO.kag.variable.sf;
 
@@ -631,7 +634,7 @@ function flag_save(pm) {
 
 //ナビ作成
 function navi(pm,name) {
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	const pages = name=="list" ? $(".tip_list_area") : $(".tip_body");
 	const tip_nav = name=="list" ? $(".tips_nav") : $(".tip_nav");
 	const id = name=="list" ? "nav" : "d";
@@ -711,7 +714,7 @@ function navi(pm,name) {
 
 //TIP閉じるイベント
 function close_ev(pm){
-	const tip_conf = TYRANO.kag.variable.tf.system.tip_conf;
+	const tip_conf = TYRANO.kag.variable.sf.tip_conf;
 	const speed = tip_conf.is_skip ? 0 : parseInt(tip_conf.fade_speed);
 	const layer_menu = TYRANO.kag.layer.getMenuLayer();
 	if($("#tip_list_wrap").length){
