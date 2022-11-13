@@ -1,5 +1,5 @@
-;【TIPプラグイン ver4.06】
-; 2022/04/30更新  v513c確認版
+;【TIPプラグイン ver4.07a】
+; 2022/11/14更新  v520c確認版
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
