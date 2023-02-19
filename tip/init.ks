@@ -1,5 +1,4 @@
-;【TIPプラグイン ver4.07b】
-; 2022/11/23更新  v520c確認版
+; 【TIPプラグイン ver4.07c】 2023/2/19
 ; by hororo http://hororo.wp.xdomain.jp/22/
 ;
 [iscript]
@@ -12,13 +11,14 @@
   sf.tip_conf = {
 
     file          : mp.file          || "tip_data.csv",            //csvファイル。
-    color         : mp.color         || TG.stat.default_font.color,//TIPの色。
+    color         : mp.color         || "",                        //TIPの色。
     entercolor    : mp.entercolor    || "",                        //TIPにマウスカーソルが乗った時の色。
     flag          : mp.flag          || "true",                    //リスト表示をフラグ管理するか
     flag_var      : mp.flag_var      || "sf",                      //フラグ用変数の種類
     mark          : mp.mark          || "false",                   //TIPにマークを付ける
     log           : mp.log           || "true",                    //バックログからもTIP表示させるか
     log_se        : mp.log_se        || "false",                   //バックログのTIP に SE を入れるか
+    log_color     : mp.log_color     || "false",                   //バックログのTIP にも color をつけるか
     tip_clickse   : mp.tip_clickse   || mp.all_clickse,            //TIPのクリック音
     tip_enterse   : mp.tip_enterse   || mp.all_enterse,            //TIPにマウスカーソルが乗った時
     tip_leavese   : mp.tip_leavese   || mp.all_leavese,            //TIPからマウスカーソルが外れた時

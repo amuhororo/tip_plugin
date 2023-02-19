@@ -1,4 +1,4 @@
-// 【TIPプラグイン ver4.07b】 2022 / 11 / 23
+// 【TIPプラグイン ver4.07c】 2023/2/19
 //  by hororo http://hororo.wp.xdomain.jp/22/
 
 //セーブ属性追加
@@ -370,6 +370,8 @@ function displayTip(pm) {
 function tip(pm) {
   const tip_conf = TYRANO.kag.variable.sf.tip_conf;
   pm.data_name = pm.data_name || tip_conf.data_name;
+  pm.color = pm.color || tip_conf.color; //TIPの色
+  pm.entercolor = pm.entercolor || tip_conf.entercolor;
   pm.mark = pm.mark || tip_conf.mark; //TIPにマークを付ける
   pm.clickse = pm.clickse || tip_conf.tip_clickse; //TIPのクリック音
   pm.enterse = pm.enterse || tip_conf.tip_enterse; //TIPにマウスカーソルが乗った時の音
@@ -420,12 +422,14 @@ function tip(pm) {
     data_obj += "}";
 
     //カラー
-    if (pm.color) tip_conf.color_conf = "true";
-    else {
-      pm.color = tip_conf.color;
+    if (!pm.color && tip_conf.color) pm.color = $.convertColor(tip_conf.color);
+    if (pm.color) {
+      tip_conf.color_conf = "true";
+    } else {
+      //pm.color = TYRANO.kag.stat.default_font.color;
       tip_conf.color_conf = "false";
     }
-    if (tip_conf.color_conf == "true") {
+    if (pm.color && tip_conf.color_conf == "true") {
       tip_conf.color_tmp = TYRANO.kag.stat.font.color; //元カラーを一次保存
       TYRANO.kag.stat.font.color = $.convertColor(pm.color);
     }
@@ -478,6 +482,7 @@ function tip(pm) {
         backlog += "onClick='tipClick(";
         backlog += '"' + pm.key + '"';
         backlog += ")' ";
+        if (tip_conf.log_color == "true" && pm.color) backlog += "style='color:" + TYRANO.kag.stat.font.color + "'";
         backlog += ">";
       }
       backlog += "<script class='tipjs' src='./data/others/plugin/tip/js/tip_click.js'></script>";
