@@ -30,6 +30,37 @@ $(function () {
       }
     }
     e.preventDefault();
+  }).on("click", ".tip.next[data-num], .tip.prev[data-num]", function (e) {
+    const currentNum = Number(this.getAttribute("data-num"));
+    const dataName = this.getAttribute("data-name") || tip_conf.data_name;
+    const data = tip_conf["data_" + dataName];
+    const isNext = this.className.indexOf("next") >= 0;
+    //データが見つからない場合
+    if (!data) {
+      alert("「" + dataName + ".csv」を読み込んでいません。");
+      return;
+    }
+    for (let i = 1; i <= data.length; i++) {
+      let nextNum = isNext ? currentNum + i : currentNum - i;
+      if(nextNum >= data.length) {
+        nextNum -= data.length;
+      } else if(nextNum < 0) {
+        nextNum += data.length;
+      }
+      if(data[nextNum].flag < 0) {
+        continue;
+      }
+      const speed = TYRANO.kag.stat.is_skip ? 0 : parseInt(tip_conf.fade_speed);
+      $("#tip_container").fadeOut(speed / 2, function () {
+        $(this).remove();
+        displayTip({
+          intip: true,
+          data_name: dataName,
+          key: data[nextNum].key,
+        });
+      });
+      return;
+    }
   });
 });
 
