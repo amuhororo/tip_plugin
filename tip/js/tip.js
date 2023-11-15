@@ -376,7 +376,6 @@ function tip(pm) {
   pm.clickse = pm.clickse || tip_conf.tip_clickse; //TIPのクリック音
   pm.enterse = pm.enterse || tip_conf.tip_enterse; //TIPにマウスカーソルが乗った時の音
   pm.leavese = pm.leavese || tip_conf.tip_leavese; //TIPからマウスカーソルが外れた時の音
-  pm.tip_html = pm.tip_html || tip_conf.tip_html;
   pm.nextend = pm.nextend || "";
 
   //データが見つからない場合
@@ -406,6 +405,8 @@ function tip(pm) {
 
     //keyがある時
   } else {
+    // タグの指定 > data上の指定 > 共通設定の優先順位で参照
+    pm.tip_html = pm.tip_html || data[0].tip_html || tip_conf.tip_html;
     //オブジェクト作成
     let data_obj = "{";
     data_obj += '"key":"' + pm.key + '",';
